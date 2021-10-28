@@ -1,44 +1,48 @@
-use crate::teachers::{Profesor, Profesores};
+use crate::asignatura::Asignaturas;
 use crate::repo;
 use crate::textos;
 use crate::views::View;
 use crate::vista;
+use crate::asignatura::Asignatura;
 
-pub struct MenuProfesores;
 
-impl MenuProfesores {
+pub struct MenuAsignaturas;
+
+impl MenuAsignaturas {
     pub fn abrir_menu(&self, vista: &vista::Vista) {
-        let mut profesores = repo::get_profesores();
+        let mut asignaturas = repo::get_asignaturas();
         loop {
-            vista.mostrar(textos::OPCIONES_MENU_PROFESORES);
+            vista.mostrar(textos::OPCIONES_MENU_ASIGNATURAS);
             let eleccion = vista.get_input();
             match eleccion.as_str() {
-                "1" => self.mostrar_lista_profes(&profesores, &vista),
-                "2" => self.abrir_menu_anadir_profe(&mut profesores, &vista),
+                "1" => self.mostrar_lista_asignaturas(&asignaturas, &vista),
+                "2" => {
+                    self.abrir_menu_anadir_asignatura(&mut asignaturas, &vista)
+                }
                 "3" => return,
                 _ => continue,
             }
         }
     }
 
-    fn mostrar_lista_profes(
+    fn mostrar_lista_asignaturas(
         &self,
-        profesores: &Profesores,
+        asignaturas: &Asignaturas,
         vista: &vista::Vista,
     ) {
-        for profe in profesores {
-            vista.mostrar(&profe.crear_linea_tabla());
+        for asignatura in asignaturas {
+            vista.mostrar(&asignatura.crear_linea_tabla());
         }
     }
 
-    fn abrir_menu_anadir_profe(
+    fn abrir_menu_anadir_asignatura(
         &self,
-        profesores: &mut Profesores,
+        asignaturas: &mut Asignaturas,
         vista: &vista::Vista,
     ) {
         let new_id: u32;
         {
-            let last_profe = get_last_element(profesores);
+            let last_profe = get_last_element(asignaturas);
             match last_profe {
                 None => {
                     vista.mostrar("Error: no se encontró ningún profesor");
@@ -48,18 +52,17 @@ impl MenuProfesores {
             }
         }
 
-        vista.mostrar(textos::INTRODUCE_NOMBRE_PROFESOR);
+        vista.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA);
         let nombre_introducido = vista.get_input();
         match nombre_introducido.as_str() {
             "" => return,
             _ => {
-                let nuevo_profe = Profesor {
+                let nueva = Asignatura {
                     nombre: String::from(nombre_introducido),
                     id: new_id,
-                    telefono: String::new(),
                 };
-                profesores.push(nuevo_profe);
-                repo::save_profesores(profesores.clone());
+                asignaturas.push(nueva);
+                repo::save_asignaturas(asignaturas.clone());
             }
         }
     }
