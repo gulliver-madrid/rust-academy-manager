@@ -4,3 +4,5 @@ pub struct Profesor {
     pub id: i32,
     pub telefono: String,
 }
+
+pub type Profesores = Vec<Profesor>;

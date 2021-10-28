@@ -6,50 +6,76 @@ mod teachers;
 use dirs::data_dir;
 use helpers::set_number_chars;
 use serializable::SerializableTeacher;
-use teachers::Profesor;
+use teachers::{Profesor, Profesores};
 
 use std::fs::File;
+use std::fs::OpenOptions;
 use std::io;
 use std::io::BufReader;
+use std::io::Write;
 use std::path::PathBuf;
 
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 
-use std::fs::OpenOptions;
-use std::io::Write;
 fn main() {
     println!("\nPROFESORES\n");
-    let serialized = read_json_profesores();
-    let mut datos = serialization::convert_serialized_to_teachers(serialized);
+    let menu = MenuProfesores {};
+    menu.abrir_menu();
 
-    loop {
-        for profe in &datos {
-            println!("{}", format_profe(profe.clone()));
+    println!("\nPrograma finalizado\n");
+}
+
+struct MenuProfesores;
+
+impl MenuProfesores {
+    fn abrir_menu(&self) {
+        let serialized = read_json_profesores();
+        let mut profesores = serialization::convert_serialized_to_teachers(serialized);
+        loop {
+            for profe in &profesores {
+                println!("{}", format_profe(&profe));
+            }
+            loop {
+                println!(
+                    "\nPulsa enter para anadir un profesor, o s para salir\n"
+                );
+                let nombre = get_input();
+                if nombre.trim() == "s" {
+                    return;
+                } else if nombre.trim() == "" {
+                    break;
+                }
+            }
+
+            self.abrir_menu_anadir_profe(&mut profesores);
         }
-        let last_index = datos.len() - 1;
-        let last_profe = &datos.get(last_index).unwrap().clone();
+    }
+
+    fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores) {
+        let last_index = profesores.len() - 1;
+        let last_profe = profesores.get(last_index).unwrap().clone();
         let new_id = last_profe.id + 1;
-        println!("Introduce el nombre de un nuevo profesor (dejalo en blanco para salir)");
+        println!("Introduce el nombre de un nuevo profesor (dejalo en blanco para volver al menu principal)");
         let nombre = get_input();
         if nombre.trim() == "" {
-            break;
+            return;
         } else {
             let nuevo_profe = Profesor {
                 nombre,
                 id: new_id,
                 telefono: String::new(),
             };
-            datos.push(nuevo_profe);
+            profesores.push(nuevo_profe);
             let data_to_serialize =
-                serialization::convert_teachers_to_serializable(datos.clone());
+                serialization::convert_teachers_to_serializable(
+                    profesores.clone(),
+                );
             let serialized =
                 serde_json::to_string_pretty(&data_to_serialize).unwrap();
             write_in_file(&get_teachers_path(), serialized);
         }
     }
-
-    println!("\nPrograma finalizado\n");
 }
 
 fn get_teachers_path() -> PathBuf {
@@ -89,7 +115,7 @@ fn read_json_profesores() -> Vec<SerializableTeacher> {
     serde_json::from_reader(reader).unwrap()
 }
 
-fn format_profe(profe: Profesor) -> String {
+fn format_profe(profe: &Profesor) -> String {
     let profe_str = set_number_chars(&profe.nombre, 22);
     let tlf_str = match profe.telefono.as_str() {
         "" => "desconocido",
