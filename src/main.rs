@@ -2,6 +2,7 @@ mod helpers;
 mod serializable;
 mod serialization;
 mod teachers;
+mod vista;
 
 use dirs::data_dir;
 use helpers::set_number_chars;
@@ -10,7 +11,6 @@ use teachers::{Profesor, Profesores};
 
 use std::fs::File;
 use std::fs::OpenOptions;
-use std::io;
 use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
@@ -22,7 +22,6 @@ fn main() {
     println!("\nPROFESORES\n");
     let menu = MenuProfesores {};
     menu.abrir_menu();
-
     println!("\nPrograma finalizado\n");
 }
 
@@ -32,32 +31,47 @@ impl MenuProfesores {
     fn abrir_menu(&self) {
         let serialized = read_json_profesores();
         let mut profesores = serialization::convert_serialized_to_teachers(serialized);
+        let vista = vista::Vista {};
         loop {
-            for profe in &profesores {
-                println!("{}", format_profe(&profe));
+            vista.mostrar(
+                "
+Elige una opción:\n
+1 - Ver la lista de profesores
+2 - Añadir un profesor
+3 - Salir
+",
+            );
+            let nombre = vista.get_input();
+            let eleccion = nombre.trim();
+            match eleccion {
+                "1" => self.mostrar_lista_profes(&profesores, &vista),
+                "2" => self.abrir_menu_anadir_profe(&mut profesores, &vista),
+                "3" => return,
+                _ => continue,
             }
-            loop {
-                println!(
-                    "\nPulsa enter para anadir un profesor, o s para salir\n"
-                );
-                let nombre = get_input();
-                if nombre.trim() == "s" {
-                    return;
-                } else if nombre.trim() == "" {
-                    break;
-                }
-            }
-
-            self.abrir_menu_anadir_profe(&mut profesores);
         }
     }
 
-    fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores) {
+    fn mostrar_lista_profes(
+        &self,
+        profesores: &Profesores,
+        vista: &vista::Vista,
+    ) {
+        for profe in profesores {
+            vista.mostrar(&format_profe(&profe));
+        }
+    }
+
+    fn abrir_menu_anadir_profe(
+        &self,
+        profesores: &mut Profesores,
+        vista: &vista::Vista,
+    ) {
         let last_index = profesores.len() - 1;
         let last_profe = profesores.get(last_index).unwrap().clone();
         let new_id = last_profe.id + 1;
-        println!("Introduce el nombre de un nuevo profesor (dejalo en blanco para volver al menu principal)");
-        let nombre = get_input();
+        vista.mostrar("Introduce el nombre de un nuevo profesor (dejalo en blanco para volver al menu principal)");
+        let nombre = vista.get_input();
         if nombre.trim() == "" {
             return;
         } else {
@@ -98,15 +112,6 @@ fn write_in_file(ruta: &PathBuf, texto: String) {
         .open(ruta)
         .unwrap();
     writeln!(&mut file, "{}", texto.as_str()).unwrap();
-}
-
-fn get_input() -> String {
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("error: unable to read user input");
-    let input = String::from(input.trim());
-    input
 }
 
 fn read_json_profesores() -> Vec<SerializableTeacher> {
