@@ -4,15 +4,13 @@ use crate::textos;
 use crate::views::View;
 use crate::vista;
 
-
 pub struct MenuProfesores;
 
 impl MenuProfesores {
-    pub fn abrir_menu(&self) {
+    pub fn abrir_menu(&self, vista: &vista::Vista) {
         let mut profesores = repo::get_profesores();
-        let vista = vista::Vista {};
         loop {
-            vista.mostrar(textos::OPCIONES_MENU_PRINCIPAL);
+            vista.mostrar(textos::OPCIONES_MENU_PROFESORES);
             let nombre = vista.get_input();
             let eleccion = nombre.trim();
             match eleccion {
