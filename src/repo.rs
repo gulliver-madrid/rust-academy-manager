@@ -6,9 +6,9 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
-use crate::serialization;
 use crate::serializable::SerializableTeacher;
-use crate::teachers::{Profesores};
+use crate::serialization;
+use crate::teachers::Profesores;
 
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";

@@ -1,4 +1,4 @@
-use super::Profesor;
+use super::teachers::Profesor;
 use super::serializable::SerializableTeacher;
 
 pub fn convert_teachers_to_serializable(
