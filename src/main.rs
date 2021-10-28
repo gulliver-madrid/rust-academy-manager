@@ -1,4 +1,5 @@
 mod helpers;
+mod menu_principal;
 mod menu_profes;
 mod repo;
 mod serializable;
@@ -10,7 +11,7 @@ mod vista;
 
 fn main() {
     println!("\nPROFESORES\n");
-    let menu = menu_profes::MenuProfesores {};
+    let menu = menu_principal::MenuPrincipal {};
     menu.abrir_menu();
     println!("\nPrograma finalizado\n");
 }
