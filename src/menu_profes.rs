@@ -1,4 +1,5 @@
 use crate::teachers::{Profesor, Profesores};
+use crate::helpers;
 use crate::repo;
 use crate::textos;
 use crate::views::View;
@@ -38,7 +39,7 @@ impl MenuProfesores {
     ) {
         let new_id: u32;
         {
-            let last_profe = get_last_element(profesores);
+            let last_profe = helpers::get_last_element(profesores);
             match last_profe {
                 None => {
                     vista.mostrar("Error: no se encontró ningún profesor");
@@ -63,10 +64,4 @@ impl MenuProfesores {
             }
         }
     }
-}
-
-fn get_last_element<T>(vector: &Vec<T>) -> Option<&T> {
-    let last_index = vector.len() - 1;
-    let last_element = vector.get(last_index).unwrap().clone();
-    Some(last_element)
 }

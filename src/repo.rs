@@ -1,6 +1,7 @@
 use std::fs::File;
 
 use dirs::data_dir;
+use serde::Serialize;
 use std::fs::OpenOptions;
 use std::io::BufReader;
 use std::io::Write;
@@ -18,13 +19,13 @@ const SUBJECTS_PATH: &str = "subjects.json";
 pub fn save_profesores(profesores: Profesores) {
     let data_to_serialize =
         serialization::convert_teachers_to_serializable(profesores.clone());
-    let json = serde_json::to_string_pretty(&data_to_serialize).unwrap();
+    let json = to_json(&data_to_serialize);
     self::write_in_file(&get_teachers_path(), json);
 }
 pub fn save_asignaturas(asignaturas: Asignaturas) {
     let data_to_serialize =
         serialization::convert_subjects_to_serializable(asignaturas.clone());
-    let json = serde_json::to_string_pretty(&data_to_serialize).unwrap();
+    let json = to_json(&data_to_serialize);
     self::write_in_file(&get_subjects_path(), json);
 }
 
@@ -76,4 +77,11 @@ pub fn read_json_asignaturas() -> Vec<SerializableSubject> {
     let file = File::open(get_subjects_path()).unwrap();
     let reader = BufReader::new(file);
     serde_json::from_reader(reader).unwrap()
+}
+
+fn to_json<T>(item: &T) -> String
+where
+    T: ?Sized + Serialize,
+{
+    serde_json::to_string_pretty(item).unwrap()
 }
