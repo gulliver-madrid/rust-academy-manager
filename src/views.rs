@@ -1,3 +1,4 @@
+use crate::asignatura::Asignatura;
 use crate::helpers::set_number_chars;
 use crate::teachers::Profesor;
 
@@ -16,6 +17,17 @@ impl View for Profesor {
             profe_str,
             format!("{:0>3}", self.id),
             tlf_str
+        )
+    }
+}
+impl View for Asignatura {
+    fn crear_linea_tabla(&self) -> String {
+        let asignatura_str = set_number_chars(&self.nombre, 28);
+
+        format!(
+            "Asignatura: {}  Id: {}",
+            asignatura_str,
+            format!("{:0>3}", self.id)
         )
     }
 }

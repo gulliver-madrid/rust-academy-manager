@@ -7,8 +7,7 @@ impl Vista {
         io::stdin()
             .read_line(&mut input)
             .expect("error: unable to read user input");
-        let input = String::from(input.trim());
-        input
+        String::from(input.trim())
     }
 
     pub fn mostrar(&self, texto: &str) {

@@ -1,4 +1,6 @@
 mod helpers;
+mod asignatura;
+mod menu_asignaturas;
 mod menu_principal;
 mod menu_profes;
 mod repo;
