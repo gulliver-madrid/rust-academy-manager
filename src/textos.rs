@@ -7,14 +7,10 @@ Elige una opción:\n
 2 - Añadir un profesor
 3 - Volver al menú principal
 ";
-pub const OPCIONES_MENU_ASIGNATURAS: &str = "
+pub const TITULO_MENU_ASIGNATURAS: &str = "
 Menú Asignaturas
 ---------------
 
-Elige una opción:\n
-1 - Ver la lista de asignaturas
-2 - Añadir una asignatura
-3 - Volver al menú principal
 ";
 
 pub const TITULO_MENU_PRINCIPAL: &str = "

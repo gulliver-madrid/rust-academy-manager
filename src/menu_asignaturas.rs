@@ -1,37 +1,55 @@
+use crate::asignatura::Asignatura;
 use crate::asignatura::Asignaturas;
 use crate::helpers;
 use crate::repo;
 use crate::textos;
 use crate::views::View;
 use crate::vista;
-use crate::asignatura::Asignatura;
 
+use crate::shared_menus as menus;
+
+enum Opcion {
+    MostrarLista,
+    AnadirAsignatura,
+    Volver,
+}
+
+const ITEMS_MENU_DATA: [(&Opcion, menus::TextoOpcion); 3] = [
+    (&Opcion::MostrarLista, "Ver la lista de asignaturas"),
+    (&Opcion::AnadirAsignatura, "Añadir una asignatura"),
+    (&Opcion::Volver, "Volver al menú principal"),
+];
 
 pub struct MenuAsignaturas;
 
 impl MenuAsignaturas {
     pub fn abrir_menu(&self, vista: &vista::Vista) {
         let mut asignaturas = repo::get_asignaturas();
+        let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             vista.clear_screen();
-            vista.mostrar(textos::OPCIONES_MENU_ASIGNATURAS);
+            vista.mostrar(textos::TITULO_MENU_ASIGNATURAS);
+            let opciones_string = menus::crear_texto_opciones(&items_menu);
+            vista.mostrar(&opciones_string);
             let eleccion = vista.get_input();
-            match eleccion.as_str() {
-                "1" => self.mostrar_lista_asignaturas(&asignaturas, &vista),
-                "2" => {
-                    self.abrir_menu_anadir_asignatura(&mut asignaturas, &vista)
+            let posible_opcion = menus::extraer_opcion(eleccion, &items_menu);
+            if let Some(opcion) = posible_opcion {
+                match opcion {
+                    Opcion::MostrarLista => {
+                        self.mostrar_lista_asignaturas(&asignaturas, &vista)
+                    }
+                    Opcion::AnadirAsignatura => {
+                        self.abrir_menu_anadir_asignatura(&mut asignaturas, &vista)
+                    }
+                    Opcion::Volver => return,
                 }
-                "3" => return,
-                _ => continue,
+            } else {
+                continue;
             }
         }
     }
 
-    fn mostrar_lista_asignaturas(
-        &self,
-        asignaturas: &Asignaturas,
-        vista: &vista::Vista,
-    ) {
+    fn mostrar_lista_asignaturas(&self, asignaturas: &Asignaturas, vista: &vista::Vista) {
         vista.clear_screen();
         vista.mostrar("\nLista de asignaturas");
         vista.mostrar("-------------------\n");

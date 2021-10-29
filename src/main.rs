@@ -1,4 +1,3 @@
-
 mod asignatura;
 mod helpers;
 mod menu_asignaturas;
@@ -15,7 +14,8 @@ mod vista;
 
 fn main() {
     println!("\nPROFESORES\n");
-    let menu = menu_principal::MenuPrincipal {};
+    let vista = vista::Vista {};
+    let menu = menu_principal::MenuPrincipal { vista: &vista };
     menu.abrir_menu();
     println!("\nPrograma finalizado\n");
 }
