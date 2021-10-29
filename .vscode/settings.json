@@ -1,0 +1,12 @@
+{
+    "rust-analyzer.inlayHints.parameterHints": false,
+    "rust-analyzer.inlayHints.typeHints": false,
+    "rust-analyzer.inlayHints.chainingHints": false,
+
+    "[rust]": {
+        "editor.defaultFormatter": "matklad.rust-analyzer", // Makes the magic
+        "editor.formatOnSave": true // Optional
+    },
+    "editor.bracketPairColorization.enabled": true,
+    "files.autoSave": "afterDelay"
+}
