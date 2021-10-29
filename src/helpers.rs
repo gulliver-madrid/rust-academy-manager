@@ -18,8 +18,7 @@ pub fn set_number_chars(s: &str, n: usize) -> String {
     }
 }
 
-
-fn add_repeated_char(s: String, c: char, n: usize) -> String {
+pub fn add_repeated_char(s: String, c: char, n: usize) -> String {
     // Anade el caracter c repetido n veces
     let mut repeated = String::new();
     for _i in 0..n {
