@@ -5,6 +5,12 @@ pub struct ItemMenu<'a, OpcionMenu> {
 
 pub type TextoOpcion = &'static str;
 
+pub struct SalirMenu;
+
+pub trait Menu {
+    fn abrir_menu(&self);
+}
+
 pub fn extraer_opcion<'a, OpcionMenu>(
     eleccion: String,
     items_menu: &'a Vec<ItemMenu<OpcionMenu>>,
@@ -29,9 +35,12 @@ pub fn crear_texto_opciones<T>(items_menu: &Vec<ItemMenu<T>>) -> String {
 }
 
 /// Genera un vector de ItemMenu a partir de un array de tuplas
-pub fn crear_items_menu<'a, OpcionMenu: Clone, const N: usize>(
+pub fn crear_items_menu<'a, OpcionMenu, const N: usize>(
     items_menu_data: [(OpcionMenu, TextoOpcion); N],
-) -> Vec<ItemMenu<'a, OpcionMenu>> {
+) -> Vec<ItemMenu<'a, OpcionMenu>>
+where
+    OpcionMenu: Clone,
+{
     // items_menu_data es un array de tuplas (OpcionMenu, TextoOpcion)
     // OpcionMenu es una enum simple
     // TextoOpcion es una str estatica
