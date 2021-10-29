@@ -3,6 +3,8 @@ pub struct ItemMenu<'a, OpcionMenu> {
     pub opcion: OpcionMenu,
 }
 
+pub type TextoOpcion = &'static str;
+
 pub fn extraer_opcion<'a, OpcionMenu>(
     eleccion: String,
     items_menu: &'a Vec<ItemMenu<OpcionMenu>>,
@@ -13,4 +15,25 @@ pub fn extraer_opcion<'a, OpcionMenu>(
     let num_opcion: usize = eleccion.parse().ok()?;
     let &item_elegido = &items_menu.get(num_opcion - 1)?;
     return Some(&item_elegido.opcion);
+}
+
+pub fn crear_texto_opciones<T>(items_menu: &Vec<ItemMenu<T>>) -> String {
+    // Crea el texto correspondiente a la lista de ItemMenu recibidos
+    String::from("Elige una opción:\n")
+        + &items_menu
+            .iter()
+            .enumerate()
+            .map(|(i, item)| format!("{} - {}", i + 1, item.texto))
+            .collect::<Vec<String>>()
+            .join("\n")
+}
+pub fn crear_items_menu<OpcionMenu, const N: usize>(
+    items_menu_data: [(&'static OpcionMenu, TextoOpcion); N],
+) -> Vec<ItemMenu<&'static OpcionMenu>> {
+    // Genera un vector de ItemMenu a partir de un array de tuplas
+    let mut items_menu = Vec::new();
+    for (opcion, texto) in items_menu_data {
+        items_menu.push(ItemMenu { texto, opcion });
+    }
+    items_menu
 }

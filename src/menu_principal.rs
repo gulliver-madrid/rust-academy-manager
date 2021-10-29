@@ -1,6 +1,6 @@
 use crate::menu_asignaturas;
 use crate::menu_profes;
-use crate::shared_menus::{extraer_opcion, ItemMenu};
+use crate::shared_menus as menus;
 use crate::textos;
 use crate::vista;
 
@@ -10,40 +10,31 @@ enum Opcion {
     Salir,
 }
 
-pub struct MenuPrincipal;
+const ITEMS_MENU_DATA: [(&Opcion, menus::TextoOpcion); 3] = [
+    (&Opcion::Profesores, "Profesores"),
+    (&Opcion::Asignaturas, "Asignaturas"),
+    (&Opcion::Salir, "Salir"),
+];
 
-impl MenuPrincipal {
+pub struct MenuPrincipal<'a> {
+    pub vista: &'a vista::Vista,
+}
+
+impl<'a> MenuPrincipal<'a> {
     pub fn abrir_menu(&self) {
-        let vista = vista::Vista {};
-        let items_menu = vec![
-            ItemMenu {
-                texto: "Profesores",
-                opcion: Opcion::Profesores,
-            },
-            ItemMenu {
-                texto: "Asignaturas",
-                opcion: Opcion::Asignaturas,
-            },
-            ItemMenu {
-                texto: "Salir",
-                opcion: Opcion::Salir,
-            },
-        ];
-
+        let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            vista.clear_screen();
-            vista.mostrar(textos::TITULO_MENU_PRINCIPAL);
+            self.vista.clear_screen();
+            self.vista.mostrar(textos::TITULO_MENU_PRINCIPAL);
+            let opciones_string = menus::crear_texto_opciones(&items_menu);
+            self.vista.mostrar(&opciones_string);
 
-            for (i, item) in items_menu.iter().enumerate() {
-                vista.mostrar(&format!("{} - {}", i + 1, item.texto))
-            }
-
-            let eleccion = vista.get_input();
-            let posible_opcion = extraer_opcion(eleccion, &items_menu);
+            let eleccion = self.vista.get_input();
+            let posible_opcion = menus::extraer_opcion(eleccion, &items_menu);
             if let Some(opcion) = posible_opcion {
                 match opcion {
-                    Opcion::Asignaturas => self.abrir_menu_asignaturas(&vista),
-                    Opcion::Profesores => self.abrir_menu_profes(&vista),
+                    Opcion::Asignaturas => self.abrir_menu_asignaturas(self.vista),
+                    Opcion::Profesores => self.abrir_menu_profes(self.vista),
                     Opcion::Salir => return,
                 }
             } else {
