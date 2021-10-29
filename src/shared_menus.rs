@@ -27,13 +27,19 @@ pub fn crear_texto_opciones<T>(items_menu: &Vec<ItemMenu<T>>) -> String {
             .collect::<Vec<String>>()
             .join("\n")
 }
-pub fn crear_items_menu<OpcionMenu, const N: usize>(
-    items_menu_data: [(&'static OpcionMenu, TextoOpcion); N],
-) -> Vec<ItemMenu<&'static OpcionMenu>> {
-    // Genera un vector de ItemMenu a partir de un array de tuplas
-    let mut items_menu = Vec::new();
-    for (opcion, texto) in items_menu_data {
-        items_menu.push(ItemMenu { texto, opcion });
-    }
-    items_menu
+
+/// Genera un vector de ItemMenu a partir de un array de tuplas
+pub fn crear_items_menu<'a, OpcionMenu: Clone, const N: usize>(
+    items_menu_data: [(OpcionMenu, TextoOpcion); N],
+) -> Vec<ItemMenu<'a, OpcionMenu>> {
+    // items_menu_data es un array de tuplas (OpcionMenu, TextoOpcion)
+    // OpcionMenu es una enum simple
+    // TextoOpcion es una str estatica
+    items_menu_data
+        .iter()
+        .map(|(opcion, texto)| ItemMenu {
+            texto,
+            opcion: opcion.clone(),
+        })
+        .collect()
 }
