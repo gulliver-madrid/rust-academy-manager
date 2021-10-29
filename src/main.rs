@@ -8,6 +8,7 @@ mod repo;
 mod serializable;
 mod serialization;
 mod teachers;
+mod shared_menus;
 mod textos;
 mod views;
 mod vista;
