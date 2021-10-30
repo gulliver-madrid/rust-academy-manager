@@ -11,7 +11,6 @@ mod views;
 use menus::{Menu, MenuPrincipal};
 
 fn main() {
-    println!("\nPROFESORES\n");
     let consola = consola::Consola {};
     let mut menu = MenuPrincipal { consola: &consola };
     menu.abrir_menu();

@@ -14,6 +14,13 @@ impl Consola {
         String::from(input.trim())
     }
 
+    pub fn pide_texto_a_usuario(&self) -> Option<String> {
+        match self.get_input().trim() {
+            "" => None,
+            texto => Some(String::from(texto)),
+        }
+    }
+
     pub fn mostrar(&self, texto: &str) {
         println!("{}", texto);
     }
