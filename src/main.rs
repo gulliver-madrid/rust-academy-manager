@@ -1,7 +1,6 @@
-mod asignatura;
 mod consola;
+mod dominio;
 mod helpers;
-mod teachers;
 mod menus;
 mod repo;
 mod serializable;

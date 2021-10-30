@@ -1,6 +1,6 @@
-use crate::asignatura::Asignatura;
+use crate::dominio::Asignatura;
+use crate::dominio::Profesor;
 use crate::helpers::set_number_chars;
-use crate::teachers::Profesor;
 
 pub trait View {
     fn crear_linea_tabla(&self) -> String;

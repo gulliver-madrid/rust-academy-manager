@@ -3,9 +3,10 @@ use super::shared::ItemMenu;
 use super::shared::Menu;
 use super::shared::SalirMenu;
 use crate::consola;
+use crate::dominio::teachers::Profesores;
+use crate::dominio::Profesor;
 use crate::helpers;
 use crate::repo;
-use crate::teachers::{Profesor, Profesores};
 use crate::textos;
 use crate::views::View;
 
