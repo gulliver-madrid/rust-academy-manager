@@ -39,11 +39,7 @@ impl Menu for MenuPrincipal<'_> {
 
 impl MenuPrincipal<'_> {
     fn mostrar_iteracion_menu(&self, items_menu: &ItemMenus) -> Option<SalirMenu> {
-        self.consola.clear_screen();
-        self.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
-        let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.consola.mostrar(&texto_opciones);
-
+        self.mostrar_texto_menu(items_menu);
         let eleccion = self.consola.get_input();
         let opcion = menus::extraer_opcion(eleccion, &items_menu)?;
         match opcion {
@@ -52,6 +48,12 @@ impl MenuPrincipal<'_> {
             Opcion::Salir => return Some(SalirMenu),
         }
         return None;
+    }
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
+        self.consola.clear_screen();
+        self.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
+        let texto_opciones = menus::crear_texto_opciones(&items_menu);
+        self.consola.mostrar(&texto_opciones);
     }
 
     fn abrir_menu_profes(&self) {
