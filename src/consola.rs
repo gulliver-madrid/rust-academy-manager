@@ -1,7 +1,5 @@
-use std::io;
-
 use crate::helpers;
-
+use std::io;
 pub struct Consola;
 
 impl Consola {

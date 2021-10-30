@@ -1,8 +1,9 @@
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
-use crate::asignatura::{Asignatura, Asignaturas};
 use crate::consola;
+use crate::dominio::asignatura::Asignaturas;
+use crate::dominio::Asignatura;
 use crate::helpers;
 use crate::repo;
 use crate::textos;

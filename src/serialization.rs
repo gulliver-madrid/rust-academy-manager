@@ -1,7 +1,6 @@
-use crate::asignatura::Asignatura;
-use crate::serializable::SerializableSubject;
-
-use super::teachers::Profesor;
+use super::dominio::asignatura::Asignatura;
+use super::serializable::SerializableSubject;
+use super::dominio::teachers::Profesor;
 use super::serializable::SerializableTeacher;
 
 pub fn convert_teachers_to_serializable(
