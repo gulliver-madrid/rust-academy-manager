@@ -1,11 +1,10 @@
+use super::menu_anadir_asignatura;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
 use crate::consola;
 use crate::dominio::asignatura::Asignaturas;
-use crate::dominio::Asignatura;
-use crate::helpers;
-use crate::repo;
+
 use crate::textos;
 use crate::views::View;
 
@@ -80,33 +79,11 @@ impl MenuAsignaturas<'_> {
             .collect::<Vec<String>>()
             .join("\n")
     }
-
     fn abrir_menu_anadir_asignatura(&mut self) {
-        let next_id: u32;
-        {
-            let last_asignatura = helpers::get_last_element(&self.asignaturas);
-            match last_asignatura {
-                Some(last_asignatura) => next_id = last_asignatura.id + 1,
-                None => {
-                    self.consola
-                        .mostrar("Error: no se encontró ningún profesor");
-                    return;
-                }
-            }
-        }
-
-        self.consola.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA);
-        let nombre_introducido = self.consola.get_input();
-        match nombre_introducido.as_str() {
-            "" => return,
-            _ => {
-                let nueva = Asignatura {
-                    nombre: String::from(nombre_introducido),
-                    id: next_id,
-                };
-                self.asignaturas.push(nueva);
-                repo::save_asignaturas(self.asignaturas.clone());
-            }
-        }
+        let mut menu = menu_anadir_asignatura::MenuAnadirAsignatura::new(
+            self.consola,
+            &mut self.asignaturas,
+        );
+        menu.abrir_menu();
     }
 }

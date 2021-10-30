@@ -20,30 +20,27 @@ impl MenuAnadirProfesor<'_> {
             profesores,
         }
     }
+
     fn _abrir_menu(&mut self) {
         let next_id: u32 = self.get_next_id();
         self.mostrar_texto_menu();
-        let nombre = self.pide_nombre_a_usuario();
-        match nombre {
+        match self.consola.pide_texto_a_usuario() {
             None => return,
             Some(nombre) => {
                 let nuevo_profe = self.crear_nuevo_profe(nombre, next_id);
-                self.profesores.push(nuevo_profe);
-                repo::save_profesores(self.profesores.clone());
+                self.anadir_profe(nuevo_profe);
             }
-        }
-    }
-    fn pide_nombre_a_usuario(&self) -> Option<String> {
-        let entrada_usuario = self.consola.get_input();
-        let nombre_introducido = entrada_usuario.trim();
-        match nombre_introducido {
-            "" => None,
-            _ => Some(String::from(nombre_introducido)),
         }
     }
     fn mostrar_texto_menu(&self) {
         self.consola.mostrar(textos::INTRODUCE_NOMBRE_PROFESOR);
     }
+
+    fn anadir_profe(&mut self, profesor: Profesor) {
+        self.profesores.push(profesor);
+        repo::save_profesores(self.profesores.clone());
+    }
+
     fn get_next_id(&self) -> u32 {
         let last_profe = helpers::get_last_element(&self.profesores) //
             .expect(textos::ERROR_NO_PROFESOR);
