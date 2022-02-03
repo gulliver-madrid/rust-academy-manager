@@ -1,5 +1,5 @@
 use crate::{
-    consola,
+    consola::Consola,
     dominio::{asignatura::Asignaturas, Asignatura},
     helpers, repo, textos,
 };
@@ -7,12 +7,13 @@ use crate::{
 use super::Menu;
 
 pub struct MenuAnadirAsignatura<'a> {
-    _consola: &'a consola::Consola,
+    _consola: &'a Consola,
     asignaturas: &'a mut Asignaturas,
 }
+
 impl MenuAnadirAsignatura<'_> {
     pub fn new<'a>(
-        consola: &'a consola::Consola,
+        consola: &'a Consola,
         asignaturas: &'a mut Asignaturas,
     ) -> MenuAnadirAsignatura<'a> {
         MenuAnadirAsignatura {
@@ -27,8 +28,7 @@ impl MenuAnadirAsignatura<'_> {
         match self._consola.pide_texto_a_usuario() {
             None => return,
             Some(nombre) => {
-                let nueva = self.crear_nueva_asignatura(nombre, next_id);
-                self.anadir_asignatura(nueva);
+                self.anadir_nueva_asignatura(nombre, next_id);
             }
         }
     }
@@ -37,19 +37,16 @@ impl MenuAnadirAsignatura<'_> {
         self._consola.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA);
     }
 
-    fn anadir_asignatura(&mut self, asignatura: Asignatura) {
-        self.asignaturas.push(asignatura);
+    fn anadir_nueva_asignatura(&mut self, nombre: String, id: u32) {
+        let nueva = Asignatura { nombre, id };
+        self.asignaturas.push(nueva);
         repo::save_asignaturas(self.asignaturas.clone());
     }
 
     fn get_next_id(&self) -> u32 {
-        let last_profe = helpers::get_last_element(&self.asignaturas) //
+        let last_profe = helpers::get_last_element(&self.asignaturas)
             .expect(textos::errores::NO_ASIGNATURA);
         last_profe.id + 1
-    }
-
-    fn crear_nueva_asignatura(&self, nombre: String, id: u32) -> Asignatura {
-        Asignatura { nombre, id }
     }
 }
 
