@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Profesor {
     pub nombre: String,
     pub id: u32,

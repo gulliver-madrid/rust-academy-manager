@@ -10,7 +10,7 @@ impl Consola {
         let mut input = String::new();
         io::stdin()
             .read_line(&mut input)
-            .expect("error: unable to read user input");
+            .expect("Error: no se pudo leer la entrada del usuario");
         String::from(input.trim())
     }
 
