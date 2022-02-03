@@ -39,10 +39,11 @@ impl MenuProfesores<'_> {
         let mut profesores = repo::load_profesores();
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            if let Some(_instruccion) =
-                self.mostrar_iteracion_menu(&items_menu, &mut profesores)
-            {
-                break;
+            match self.mostrar_iteracion_menu(&items_menu, &mut profesores) {
+                Some(SalirMenu) => {
+                    break;
+                }
+                _ => continue,
             }
         }
     }
