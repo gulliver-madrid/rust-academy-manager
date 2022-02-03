@@ -1,4 +1,3 @@
-use super::menu_anadir_asignatura;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
@@ -7,6 +6,8 @@ use crate::dominio::asignatura::Asignaturas;
 
 use crate::textos;
 use crate::views::View;
+
+use super::menu_anadir_asignatura::MenuAnadirAsignatura;
 
 #[derive(Clone)]
 enum Opcion {
@@ -46,12 +47,9 @@ impl MenuAsignaturas<'_> {
             asignaturas,
         }
     }
-    fn mostrar_iteracion_menu(&mut self, items_menu: &ItemMenus) -> Option<SalirMenu> {
-        self.consola.clear_screen();
-        self.consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
-        let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.consola.mostrar(&texto_opciones);
 
+    fn mostrar_iteracion_menu(&mut self, items_menu: &ItemMenus) -> Option<SalirMenu> {
+        self.mostrar_texto_menu(items_menu);
         let entrada_usuario = self.consola.get_input();
         let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
@@ -60,6 +58,13 @@ impl MenuAsignaturas<'_> {
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
+    }
+
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
+        self.consola.clear_screen();
+        self.consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
+        let texto_opciones = menus::crear_texto_opciones(&items_menu);
+        self.consola.mostrar(&texto_opciones);
     }
 
     fn mostrar_lista_asignaturas(&self) {
@@ -80,10 +85,7 @@ impl MenuAsignaturas<'_> {
             .join("\n")
     }
     fn abrir_menu_anadir_asignatura(&mut self) {
-        let mut menu = menu_anadir_asignatura::MenuAnadirAsignatura::new(
-            self.consola,
-            &mut self.asignaturas,
-        );
+        let mut menu = MenuAnadirAsignatura::new(self.consola, &mut self.asignaturas);
         menu.abrir_menu();
     }
 }

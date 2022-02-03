@@ -44,7 +44,7 @@ impl MenuAnadirAsignatura<'_> {
 
     fn get_next_id(&self) -> u32 {
         let last_profe = helpers::get_last_element(&self.asignaturas) //
-            .expect(textos::ERROR_NO_ASIGNATURA);
+            .expect(textos::errores::NO_ASIGNATURA);
         last_profe.id + 1
     }
 
