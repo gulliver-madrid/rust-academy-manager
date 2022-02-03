@@ -1,10 +1,15 @@
 use crate::helpers;
 use std::io;
+
+const USAR_BORRADO: bool = true;
+
 pub struct Consola;
 
 impl Consola {
     pub fn clear_screen(&self) {
-        clearscreen::clear().unwrap();
+        if USAR_BORRADO {
+            clearscreen::clear().unwrap();
+        }
     }
     pub fn get_input(&self) -> String {
         let mut input = String::new();

@@ -33,8 +33,11 @@ impl Menu for MenuAsignaturas<'_> {
     fn abrir_menu(&mut self) {
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            if let Some(_instruccion) = self.mostrar_iteracion_menu(&items_menu) {
-                break;
+            match self.mostrar_iteracion_menu(&items_menu) {
+                Some(SalirMenu) => {
+                    break;
+                }
+                _ => continue,
             }
         }
     }
