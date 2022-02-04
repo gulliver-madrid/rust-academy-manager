@@ -1,6 +1,6 @@
 use crate::{
     components::Control,
-    dominio::{asignatura::Asignaturas, Asignatura},
+    dominio::asignatura::{Asignatura, Asignaturas},
     helpers, textos,
 };
 
@@ -16,14 +16,20 @@ impl MenuAnadirAsignatura<'_> {
     }
 
     fn _abrir_menu(&mut self, control: &Control) {
-        let next_id: u32 = self.get_next_id();
+        let next_id: u32 = self._get_next_id();
         self.mostrar_texto_menu(control);
         match control.consola.pide_texto_a_usuario() {
-            None => return,
+            None => (),
             Some(nombre) => {
                 self._anadir_nueva_asignatura(nombre, next_id, control);
             }
         }
+    }
+
+    fn _get_next_id(&self) -> u32 {
+        let last_profe = helpers::get_last_element(&self.asignaturas)
+            .expect(textos::errores::NO_ASIGNATURA);
+        last_profe.id + 1
     }
 
     fn mostrar_texto_menu(&self, control: &Control) {
@@ -34,12 +40,6 @@ impl MenuAnadirAsignatura<'_> {
         let nueva = Asignatura { nombre, id };
         self.asignaturas.push(nueva);
         control.repository.save_asignaturas(&self.asignaturas);
-    }
-
-    fn get_next_id(&self) -> u32 {
-        let last_profe = helpers::get_last_element(&self.asignaturas)
-            .expect(textos::errores::NO_ASIGNATURA);
-        last_profe.id + 1
     }
 }
 

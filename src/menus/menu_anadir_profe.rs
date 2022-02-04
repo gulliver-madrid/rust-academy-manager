@@ -15,13 +15,13 @@ impl MenuAnadirProfesor<'_> {
     }
 
     fn _abrir_menu(&mut self, control: &Control) {
-        let next_id: u32 = self.get_next_id();
+        let next_id: u32 = self._get_next_id();
         self.mostrar_texto_menu(control);
         match control.consola.pide_texto_a_usuario() {
             None => return,
             Some(nombre) => {
                 let nuevo_profe = self.crear_nuevo_profe(nombre, next_id);
-                self.anadir_profe(nuevo_profe, control);
+                self._anadir_profe(nuevo_profe, control);
             }
         }
     }
@@ -30,12 +30,12 @@ impl MenuAnadirProfesor<'_> {
         control.consola.mostrar(textos::INTRODUCE_NOMBRE_PROFESOR);
     }
 
-    fn anadir_profe(&mut self, profesor: Profesor, control: &Control) {
+    fn _anadir_profe(&mut self, profesor: Profesor, control: &Control) {
         self.profesores.push(profesor);
         control.repository.save_profesores(&self.profesores);
     }
 
-    fn get_next_id(&self) -> u32 {
+    fn _get_next_id(&self) -> u32 {
         let last_profe = helpers::get_last_element(&self.profesores) //
             .expect(textos::errores::NO_PROFESOR);
         last_profe.id + 1
