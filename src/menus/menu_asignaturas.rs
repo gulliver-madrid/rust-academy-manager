@@ -89,10 +89,7 @@ impl MenuAsignaturas {
         control.consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
         let texto_lista_asignaturas = self.crear_lista_asignaturas();
         control.consola.mostrar(texto_lista_asignaturas.as_str());
-        control
-            .consola
-            .mostrar("\nPulsa ENTER para volver al menú de asignaturas");
-        control.consola.get_input();
+        control.consola.pausa_enter("volver al menú de asignaturas");
     }
 
     fn crear_lista_asignaturas(&self) -> String {

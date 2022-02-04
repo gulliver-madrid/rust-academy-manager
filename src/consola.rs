@@ -41,4 +41,9 @@ impl Consola {
         s.push('\n');
         self.mostrar(&s);
     }
+
+    pub fn pausa_enter(&self, texto: &str){
+        self.mostrar(&format!("Pulsa ENTER para {}", texto));
+        self.get_input();
+    }
 }
