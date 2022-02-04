@@ -1,3 +1,4 @@
+use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
@@ -14,14 +15,16 @@ use super::menu_anadir_asignatura::MenuAnadirAsignatura;
 enum Opcion {
     MostrarLista,
     AnadirAsignatura,
+    EliminarAsignatura,
     Volver,
 }
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
+const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 4] = [
     (Opcion::MostrarLista, "Ver la lista de asignaturas"),
     (Opcion::AnadirAsignatura, "Añadir una asignatura"),
+    (Opcion::EliminarAsignatura, "Eliminar una asignatura"),
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
@@ -68,6 +71,7 @@ impl MenuAsignaturas {
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(control),
             Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(control),
+            Opcion::EliminarAsignatura => self.abrir_menu_eliminar_asignatura(control),
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
@@ -101,6 +105,10 @@ impl MenuAsignaturas {
 
     fn abrir_menu_anadir_asignatura(&mut self, control: &Control) {
         let mut menu = MenuAnadirAsignatura::new(&mut self.asignaturas);
+        menu.abrir_menu(control);
+    }
+    fn abrir_menu_eliminar_asignatura(&mut self, control: &Control) {
+        let mut menu = MenuEliminarAsignatura::new(&mut self.asignaturas);
         menu.abrir_menu(control);
     }
 }

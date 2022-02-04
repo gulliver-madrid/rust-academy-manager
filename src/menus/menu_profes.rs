@@ -1,4 +1,5 @@
 use super::menu_anadir_profe;
+use super::menu_eliminar_profesor::MenuEliminarProfesor;
 use super::shared as menus;
 use super::shared::ItemMenu;
 use super::shared::Menu;
@@ -12,13 +13,15 @@ use crate::views::View;
 enum Opcion {
     MostrarLista,
     AnadirProfe,
+    EliminarProfesor,
     Volver,
 }
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
+const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 4] = [
     (Opcion::MostrarLista, "Ver la lista de profesores"),
     (Opcion::AnadirProfe, "Añadir un profesor"),
+    (Opcion::EliminarProfesor, "Eliminar un profesor"),
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
@@ -45,7 +48,7 @@ impl MenuProfesores {
         }
     }
     fn mostrar_iteracion_menu(
-        &self,
+        &mut self,
         items_menu: &ItemMenus,
         profesores: &mut Profesores,
         control: &Control,
@@ -57,6 +60,9 @@ impl MenuProfesores {
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_profes(profesores, control),
             Opcion::AnadirProfe => self.abrir_menu_anadir_profe(profesores, control),
+            Opcion::EliminarProfesor => {
+                self.abrir_menu_eliminar_profesor(profesores, control)
+            }
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
@@ -81,6 +87,15 @@ impl MenuProfesores {
 
     fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores, control: &Control) {
         let mut menu = menu_anadir_profe::MenuAnadirProfesor::new(profesores);
+        menu.abrir_menu(control);
+    }
+
+    fn abrir_menu_eliminar_profesor(
+        &mut self,
+        profesores:  &mut Profesores,
+        control: &Control,
+    ) {
+        let mut menu = MenuEliminarProfesor::new(profesores);
         menu.abrir_menu(control);
     }
 }
