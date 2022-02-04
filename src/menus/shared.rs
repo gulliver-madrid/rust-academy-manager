@@ -1,3 +1,5 @@
+use crate::components::Control;
+
 pub struct ItemMenu<'a, OpcionMenu> {
     pub texto: &'a str,
     pub opcion: OpcionMenu,
@@ -8,7 +10,7 @@ pub type TextoOpcion = &'static str;
 pub struct SalirMenu;
 
 pub trait Menu {
-    fn abrir_menu(&mut self);
+    fn abrir_menu(&mut self, control: &Control);
 }
 
 pub fn extraer_opcion<'a, OpcionMenu>(
