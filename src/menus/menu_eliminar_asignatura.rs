@@ -17,8 +17,7 @@ impl MenuEliminarAsignatura<'_> {
             None => (),
             Some(nombre) => {
                 self._eliminar_asignatura(nombre, control);
-                control.consola.mostrar("Pulsa ENTER para continuar");
-                control.consola.get_input();
+                control.consola.pausa_enter("continuar");
             }
         }
     }

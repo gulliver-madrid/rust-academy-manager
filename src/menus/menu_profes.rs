@@ -79,10 +79,7 @@ impl MenuProfesores {
         for profe in profesores {
             control.consola.mostrar(&profe.crear_linea_tabla());
         }
-        control
-            .consola
-            .mostrar("\nPulsa ENTER para volver al menú de profesores");
-        control.consola.get_input();
+        control.consola.pausa_enter("volver al menú de profesores");
     }
 
     fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores, control: &Control) {

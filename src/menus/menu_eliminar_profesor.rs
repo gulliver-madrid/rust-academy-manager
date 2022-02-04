@@ -23,8 +23,7 @@ impl MenuEliminarProfesor<'_> {
             None => (),
             Some(nombre) => {
                 self.eliminar_profesor(nombre, control);
-                control.consola.mostrar("Pulsa ENTER para continuar");
-                control.consola.get_input();
+                control.consola.pausa_enter("continuar");
             }
         }
     }
