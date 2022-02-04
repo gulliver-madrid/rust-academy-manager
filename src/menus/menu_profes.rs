@@ -3,9 +3,8 @@ use super::shared as menus;
 use super::shared::ItemMenu;
 use super::shared::Menu;
 use super::shared::SalirMenu;
-use crate::consola;
+use crate::components::Control;
 use crate::dominio::teachers::Profesores;
-use crate::repo;
 use crate::textos;
 use crate::views::View;
 
@@ -23,23 +22,21 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
-pub struct MenuProfesores<'a> {
-    consola: &'a consola::Consola,
-}
-impl Menu for MenuProfesores<'_> {
-    fn abrir_menu(&mut self) {
-        self._abrir_menu();
+pub struct MenuProfesores {}
+impl Menu for MenuProfesores {
+    fn abrir_menu(&mut self, control: &Control) {
+        self._abrir_menu(control);
     }
 }
-impl MenuProfesores<'_> {
-    pub fn new(consola: &consola::Consola) -> MenuProfesores {
-        MenuProfesores { consola }
+impl MenuProfesores {
+    pub fn new() -> MenuProfesores {
+        MenuProfesores {}
     }
-    fn _abrir_menu(&mut self) {
-        let mut profesores = repo::load_profesores();
+    fn _abrir_menu(&mut self, control: &Control) {
+        let mut profesores = control.repository.load_profesores();
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            match self.mostrar_iteracion_menu(&items_menu, &mut profesores) {
+            match self.mostrar_iteracion_menu(&items_menu, &mut profesores, control) {
                 Some(SalirMenu) => {
                     break;
                 }
@@ -51,38 +48,39 @@ impl MenuProfesores<'_> {
         &self,
         items_menu: &ItemMenus,
         profesores: &mut Profesores,
+        control: &Control,
     ) -> Option<SalirMenu> {
-        self.mostrar_texto_menu(items_menu);
+        self.mostrar_texto_menu(items_menu, control);
 
-        let entrada_usuario = self.consola.get_input();
+        let entrada_usuario = control.consola.get_input();
         let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
-            Opcion::MostrarLista => self.mostrar_lista_profes(profesores),
-            Opcion::AnadirProfe => self.abrir_menu_anadir_profe(profesores),
+            Opcion::MostrarLista => self.mostrar_lista_profes(profesores, control),
+            Opcion::AnadirProfe => self.abrir_menu_anadir_profe(profesores, control),
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
     }
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
-        self.consola.clear_screen();
-        self.consola.mostrar_titulo(textos::MENU_PROFESORES);
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &Control) {
+        control.consola.clear_screen();
+        control.consola.mostrar_titulo(textos::MENU_PROFESORES);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.consola.mostrar(&texto_opciones);
+        control.consola.mostrar(&texto_opciones);
     }
-    fn mostrar_lista_profes(&self, profesores: &Profesores) {
-        self.consola.clear_screen();
-        self.consola.mostrar_titulo(textos::LISTA_PROFESORES);
+    fn mostrar_lista_profes(&self, profesores: &Profesores, control: &Control) {
+        control.consola.clear_screen();
+        control.consola.mostrar_titulo(textos::LISTA_PROFESORES);
         for profe in profesores {
-            self.consola.mostrar(&profe.crear_linea_tabla());
+            control.consola.mostrar(&profe.crear_linea_tabla());
         }
-        self.consola
+        control
+            .consola
             .mostrar("\nPulsa ENTER para volver al menú de profesores");
-        self.consola.get_input();
+        control.consola.get_input();
     }
 
-    fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores) {
-        let mut menu =
-            menu_anadir_profe::MenuAnadirProfesor::new(self.consola, profesores);
-        menu.abrir_menu();
+    fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores, control: &Control) {
+        let mut menu = menu_anadir_profe::MenuAnadirProfesor::new(profesores);
+        menu.abrir_menu(control);
     }
 }

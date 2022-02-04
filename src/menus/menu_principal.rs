@@ -3,8 +3,7 @@ use super::menu_profes;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
-use crate::consola;
-use crate::repo;
+use crate::components::Control;
 use crate::textos;
 
 #[derive(Clone)]
@@ -22,15 +21,15 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-pub struct MenuPrincipal<'a> {
-    pub consola: &'a consola::Consola,
+pub struct MenuPrincipal {
+    // pub control: Control,
 }
 
-impl Menu for MenuPrincipal<'_> {
-    fn abrir_menu(&mut self) {
+impl Menu for MenuPrincipal {
+    fn abrir_menu(&mut self, control: &Control) {
         let items_menu: ItemMenus = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            match self.mostrar_iteracion_menu(&items_menu) {
+            match self.mostrar_iteracion_menu(&items_menu, control) {
                 Some(SalirMenu) => {
                     break;
                 }
@@ -40,33 +39,37 @@ impl Menu for MenuPrincipal<'_> {
     }
 }
 
-impl MenuPrincipal<'_> {
-    fn mostrar_iteracion_menu(&self, items_menu: &ItemMenus) -> Option<SalirMenu> {
-        self.mostrar_texto_menu(items_menu);
-        let eleccion = self.consola.get_input();
+impl MenuPrincipal {
+    fn mostrar_iteracion_menu(
+        &self,
+        items_menu: &ItemMenus,
+        control: &Control,
+    ) -> Option<SalirMenu> {
+        self.mostrar_texto_menu(items_menu, control);
+        let eleccion = control.consola.get_input();
         let opcion = menus::extraer_opcion(eleccion, &items_menu)?;
         match opcion {
-            Opcion::Asignaturas => self.abrir_menu_asignaturas(),
-            Opcion::Profesores => self.abrir_menu_profes(),
+            Opcion::Asignaturas => self.abrir_menu_asignaturas(control),
+            Opcion::Profesores => self.abrir_menu_profes(control),
             Opcion::Salir => return Some(SalirMenu),
         }
         return None;
     }
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
-        self.consola.clear_screen();
-        self.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &Control) {
+        control.consola.clear_screen();
+        control.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.consola.mostrar(&texto_opciones);
+        control.consola.mostrar(&texto_opciones);
     }
 
-    fn abrir_menu_profes(&self) {
-        let mut menu = menu_profes::MenuProfesores::new(self.consola);
-        menu.abrir_menu();
+    fn abrir_menu_profes(&self, control: &Control) {
+        let mut menu = menu_profes::MenuProfesores::new();
+        menu.abrir_menu(control);
     }
 
-    fn abrir_menu_asignaturas(&self) {
-        let asignaturas = repo::get_asignaturas();
-        let mut menu = menu_asignaturas::MenuAsignaturas::new(self.consola, asignaturas);
-        menu.abrir_menu();
+    fn abrir_menu_asignaturas(&self, control: &Control) {
+        let asignaturas = control.repository.get_asignaturas();
+        let mut menu = menu_asignaturas::MenuAsignaturas::new(asignaturas);
+        menu.abrir_menu(control);
     }
 }

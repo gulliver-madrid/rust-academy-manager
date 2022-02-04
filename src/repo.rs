@@ -12,33 +12,37 @@ use crate::dominio::teachers::Profesores;
 use crate::serializable::{SerializableSubject, SerializableTeacher};
 use crate::serialization;
 
-
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 const SUBJECTS_PATH: &str = "subjects.json";
 
-pub fn save_profesores(profesores: Profesores) {
-    let data_to_serialize =
-        serialization::convert_teachers_to_serializable(profesores.clone());
-    let json = to_json(&data_to_serialize);
-    self::write_in_file(&get_teachers_path(), json);
-}
-pub fn save_asignaturas(asignaturas: Asignaturas) {
-    let data_to_serialize =
-        serialization::convert_subjects_to_serializable(asignaturas.clone());
-    let json = to_json(&data_to_serialize);
-    self::write_in_file(&get_subjects_path(), json);
-}
+pub struct Repository {}
 
-pub fn load_profesores() -> Profesores {
-    let serialized = read_json_profesores();
-    let profesores = serialization::convert_serialized_to_teachers(serialized);
-    profesores
-}
-pub fn get_asignaturas() -> Asignaturas {
-    let serialized = read_json_asignaturas();
-    let asignaturas = serialization::convert_serialized_to_subjects(serialized);
-    asignaturas
+impl Repository {
+    pub fn save_profesores(&self, profesores: &Profesores) {
+        let data_to_serialize =
+            serialization::convert_teachers_to_serializable(profesores.clone());
+        let json = to_json(&data_to_serialize);
+        self::write_in_file(&get_teachers_path(), json);
+    }
+    pub fn save_asignaturas(&self, asignaturas: &Asignaturas) {
+        let data_to_serialize =
+            serialization::convert_subjects_to_serializable(asignaturas.clone());
+        let json = to_json(&data_to_serialize);
+        self::write_in_file(&get_subjects_path(), json);
+    }
+
+    pub fn load_profesores(&self) -> Profesores {
+        let serialized = read_json_profesores();
+        let profesores = serialization::convert_serialized_to_teachers(serialized);
+        profesores
+    }
+
+    pub fn get_asignaturas(&self) -> Asignaturas {
+        let serialized = read_json_asignaturas();
+        let asignaturas = serialization::convert_serialized_to_subjects(serialized);
+        asignaturas
+    }
 }
 
 fn get_teachers_path() -> PathBuf {
