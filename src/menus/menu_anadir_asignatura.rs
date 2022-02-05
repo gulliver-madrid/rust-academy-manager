@@ -37,7 +37,7 @@ impl MenuAnadirAsignatura<'_> {
     }
 
     fn _anadir_nueva_asignatura(&mut self, nombre: String, id: u32, control: &Control) {
-        let nueva = Asignatura { nombre, id };
+        let nueva = Asignatura { nombre, id, profesores_asignados: Vec::new() };
         self.asignaturas.push(nueva);
         control.repository.save_asignaturas(&self.asignaturas);
     }
