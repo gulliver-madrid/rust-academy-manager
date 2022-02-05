@@ -1,6 +1,6 @@
-use crate::{components::Control, consola::Consola, textos, errors::SimpleResult};
-
-use super::Menu;
+use crate::{
+    components::Control, consola::Consola, errors::SimpleResult, menus::Menu, textos,
+};
 
 pub struct MenuEliminarProfesor {}
 

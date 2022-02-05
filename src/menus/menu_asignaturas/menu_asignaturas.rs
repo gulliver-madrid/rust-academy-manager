@@ -1,12 +1,12 @@
-use super::menu_asignar_profesor::MenuAsignarProfesor;
+use shared::Menu;
+
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
-use super::shared as menus;
-use super::shared::Menu;
-use super::shared::{ItemMenu, SalirMenu};
 
 use crate::components::{Component, Control};
 use crate::dominio::asignatura::Asignaturas;
 
+use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
+use crate::menus::shared::{self, ItemMenu, SalirMenu};
 use crate::textos;
 use crate::views::View;
 
@@ -23,7 +23,7 @@ enum Opcion {
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 5] = [
+const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
     (Opcion::MostrarLista, "Ver la lista de asignaturas"),
     (Opcion::AnadirAsignatura, "Añadir una asignatura"),
     (Opcion::EliminarAsignatura, "Eliminar una asignatura"),
@@ -55,7 +55,7 @@ impl MenuAsignaturas {
     }
 
     fn _abrir_menu(&mut self, control: &mut Control) {
-        let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
+        let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
                 Some(SalirMenu) => {
@@ -73,11 +73,13 @@ impl MenuAsignaturas {
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu, control);
         let entrada_usuario = control.consola.get_input();
-        let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;
+        let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(control),
             Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(control),
-            Opcion::EliminarAsignatura => self.abrir_menu_eliminar_asignatura(control),
+            Opcion::EliminarAsignatura => {
+                self.abrir_menu_eliminar_asignatura(control)
+            }
             Opcion::AsignarProfesor => {
                 self.abrir_menu_asignar_profesor_a_asignatura(control)
             }
@@ -89,7 +91,7 @@ impl MenuAsignaturas {
     fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &mut Control) {
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
-        let texto_opciones = menus::crear_texto_opciones(&items_menu);
+        let texto_opciones = shared::crear_texto_opciones(&items_menu);
         control.consola.mostrar(&texto_opciones);
     }
 

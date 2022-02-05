@@ -1,10 +1,10 @@
 use crate::{
     components::Control,
     dominio::asignatura::{Asignatura, Asignaturas},
-    helpers, textos,
+    helpers, textos, menus::Menu,
 };
 
-use super::Menu;
+
 
 pub struct MenuAnadirAsignatura<'a> {
     asignaturas: &'a mut Asignaturas,

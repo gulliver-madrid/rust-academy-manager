@@ -1,12 +1,11 @@
 use super::menu_anadir_profesor;
 use super::menu_eliminar_profesor::MenuEliminarProfesor;
-use super::shared as menus;
-use super::shared::ItemMenu;
-use super::shared::Menu;
-use super::shared::SalirMenu;
+
 use crate::components::Control;
 use crate::dominio::teachers::Profesores;
 
+use crate::menus::shared::{ItemMenu, SalirMenu, TextoOpcion};
+use crate::menus::{shared, Menu};
 use crate::textos;
 use crate::views::View;
 
@@ -19,7 +18,7 @@ enum Opcion {
 }
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 4] = [
+const ITEMS_MENU_DATA: [(Opcion, TextoOpcion); 4] = [
     (Opcion::MostrarLista, "Ver la lista de profesores"),
     (Opcion::AnadirProfesor, "Añadir un profesor"),
     (Opcion::EliminarProfesor, "Eliminar un profesor"),
@@ -37,7 +36,7 @@ impl MenuProfesores {
         MenuProfesores {}
     }
     fn _abrir_menu(&mut self, control: &mut Control) {
-        let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
+        let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         control.application.repository.load_profesores();
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
@@ -63,9 +62,11 @@ impl MenuProfesores {
             .unwrap();
 
         let entrada_usuario = control.consola.get_input();
-        let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;
+        let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
-            Opcion::MostrarLista => self.mostrar_lista_profesors(profesores, control),
+            Opcion::MostrarLista => {
+                self.mostrar_lista_profesores(profesores, control)
+            }
             Opcion::AnadirProfesor => self.abrir_menu_anadir_profesor(control),
             Opcion::EliminarProfesor => self.abrir_menu_eliminar_profesor(control),
             Opcion::Volver => return Some(SalirMenu),
@@ -75,10 +76,10 @@ impl MenuProfesores {
     fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &mut Control) {
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::MENU_PROFESORES);
-        let texto_opciones = menus::crear_texto_opciones(&items_menu);
+        let texto_opciones = shared::crear_texto_opciones(&items_menu);
         control.consola.mostrar(&texto_opciones);
     }
-    fn mostrar_lista_profesors(&self, profesores: &Profesores, control: &Control) {
+    fn mostrar_lista_profesores(&self, profesores: &Profesores, control: &Control) {
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::LISTA_PROFESORES);
         for profesor in profesores {
