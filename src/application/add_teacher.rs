@@ -1,20 +1,23 @@
-use crate::{dominio::Profesor, helpers, textos, repository::Repository};
+use crate::{
+    dominio::Profesor, errors::SimpleResult, helpers, repository::Repository, textos,
+};
 
 pub struct AddTeacherUseCase<'a> {
     pub repository: &'a mut Repository,
 }
 
 impl AddTeacherUseCase<'_> {
-    pub fn anadir_nuevo_profesor(&mut self, nombre: String) {
+    pub fn anadir_nuevo_profesor(&mut self, nombre: String) -> SimpleResult {
         let next_id: u32 = self.get_next_id();
         let nuevo_profesor = self.create_new_teacher(nombre, next_id);
         self.add_teacher(nuevo_profesor);
+        Ok(())
     }
 
     fn get_next_id(&self) -> u32 {
         let profesores = &self.repository.modelo.profesores.as_ref().unwrap();
-        let last_profesor =
-            helpers::get_last_element(profesores).expect(textos::errores::NO_PROFESOR);
+        let last_profesor = helpers::get_last_element(profesores)
+            .expect(textos::errores::NO_PROFESOR);
         last_profesor.id + 1
     }
 
