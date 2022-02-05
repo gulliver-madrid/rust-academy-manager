@@ -1,6 +1,6 @@
-use crate::{components::Control, dominio::asignatura::Asignaturas, textos};
+use crate::{components::Control, dominio::asignatura::Asignaturas, textos, menus::Menu};
 
-use super::Menu;
+
 
 pub struct MenuEliminarAsignatura<'a> {
     asignaturas: &'a mut Asignaturas,

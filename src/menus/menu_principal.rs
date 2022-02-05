@@ -1,4 +1,4 @@
-use super::menu_asignaturas;
+use super::menu_asignaturas::MenuAsignaturas;
 use super::menu_profesores;
 use super::shared as menus;
 use super::shared::Menu;
@@ -71,7 +71,7 @@ impl MenuPrincipal {
             .repository
             .persistencia
             .get_asignaturas();
-        let mut menu = menu_asignaturas::MenuAsignaturas::new(asignaturas);
+        let mut menu = MenuAsignaturas::new(asignaturas);
         menu.abrir_menu(control);
     }
 }
