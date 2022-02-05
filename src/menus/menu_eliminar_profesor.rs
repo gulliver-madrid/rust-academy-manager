@@ -16,7 +16,7 @@ impl MenuEliminarProfesor {
         self.mostrar_texto_menu(&consola);
 
         if let Some(nombre) = consola.pide_texto_a_usuario() {
-            let result = control.repository.eliminar_profesor(&nombre);
+            let result = control.application.eliminar_profesor(&nombre);
             let msg = self.get_info_result(result, nombre);
             consola.mostrar(&msg);
             consola.pausa_enter("continuar");

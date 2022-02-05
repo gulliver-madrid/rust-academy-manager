@@ -33,6 +33,7 @@ impl MenuEliminarAsignatura<'_> {
             Some(index) => {
                 self.asignaturas.remove(index);
                 control
+                    .application
                     .repository
                     .persistencia
                     .save_asignaturas(&self.asignaturas);
