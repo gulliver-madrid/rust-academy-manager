@@ -11,7 +11,7 @@ pub struct MenuAsignarProfesor<'a> {
 }
 
 impl MenuAsignarProfesor<'_> {
-    fn _abrir_menu(&mut self, control: &Control) {
+    fn _abrir_menu(&mut self, control: &mut Control) {
         let asignatura: &Asignatura;
         let index: usize;
         match self
@@ -43,7 +43,7 @@ impl MenuAsignarProfesor<'_> {
         }
     }
 
-    fn mostrar_texto_menu(&self, asignatura: &Asignatura, control: &Control) {
+    fn mostrar_texto_menu(&self, asignatura: &Asignatura, control: &mut Control) {
         control
             .consola
             .mostrar(&format!("asignatura: {}", asignatura.nombre));
@@ -52,7 +52,7 @@ impl MenuAsignarProfesor<'_> {
 }
 
 impl Menu for MenuAsignarProfesor<'_> {
-    fn abrir_menu(&mut self, control: &Control) {
+    fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
 }

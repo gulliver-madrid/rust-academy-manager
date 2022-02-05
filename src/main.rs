@@ -23,14 +23,14 @@ fn main() {
     let persistencia = Persistencia {};
     let repository = Repository {
         persistencia,
-        modelo: Modelo {},
+        modelo: Modelo { profesores: None },
     };
     let consola = consola::Consola {};
-    let control = Control {
+    let mut control = Control {
         consola,
         repository,
     };
     let mut menu = MenuPrincipal {};
-    menu.abrir_menu(&control);
+    menu.abrir_menu(&mut control);
     println!("\nPrograma finalizado\n");
 }

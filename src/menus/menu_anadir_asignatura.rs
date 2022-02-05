@@ -15,7 +15,7 @@ impl MenuAnadirAsignatura<'_> {
         MenuAnadirAsignatura { asignaturas }
     }
 
-    fn _abrir_menu(&mut self, control: &Control) {
+    fn _abrir_menu(&mut self, control: &mut Control) {
         let next_id: u32 = self._get_next_id();
         self.mostrar_texto_menu(control);
         match control.consola.pide_texto_a_usuario() {
@@ -27,16 +27,21 @@ impl MenuAnadirAsignatura<'_> {
     }
 
     fn _get_next_id(&self) -> u32 {
-        let last_profe = helpers::get_last_element(&self.asignaturas)
+        let last_profesor = helpers::get_last_element(&self.asignaturas)
             .expect(textos::errores::NO_ASIGNATURA);
-        last_profe.id + 1
+        last_profesor.id + 1
     }
 
-    fn mostrar_texto_menu(&self, control: &Control) {
+    fn mostrar_texto_menu(&self, control: &mut Control) {
         control.consola.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA);
     }
 
-    fn _anadir_nueva_asignatura(&mut self, nombre: String, id: u32, control: &Control) {
+    fn _anadir_nueva_asignatura(
+        &mut self,
+        nombre: String,
+        id: u32,
+        control: &mut Control,
+    ) {
         let nueva = Asignatura {
             nombre,
             id,
@@ -51,7 +56,7 @@ impl MenuAnadirAsignatura<'_> {
 }
 
 impl Menu for MenuAnadirAsignatura<'_> {
-    fn abrir_menu(&mut self, control: &Control) {
+    fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
 }
