@@ -1,19 +1,18 @@
 use crate::errors::SimpleError;
 
-use super::{modelo::Modelo, persistencia::Persistencia, SimpleResult};
+use super::{repository::Repository, SimpleResult};
 
 pub struct RemoveTeacherUseCase<'a> {
-    pub persistencia: &'a mut Persistencia,
-    pub modelo: &'a mut Modelo,
+    pub repository: &'a mut Repository,
 }
 
 impl RemoveTeacherUseCase<'_> {
     pub fn eliminar_profesor(&mut self, nombre: String) -> SimpleResult {
-        let profesores = &mut self.modelo.profesores.as_mut().unwrap();
+        let profesores = &mut self.repository.modelo.profesores.as_mut().unwrap();
         match profesores.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
                 profesores.remove(index);
-                self.persistencia.save_profesores(profesores);
+                self.repository.persistencia.save_profesores(profesores);
                 Ok(())
             }
             None => Err(SimpleError::new(&format!(

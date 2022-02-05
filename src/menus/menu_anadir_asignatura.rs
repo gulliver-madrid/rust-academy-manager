@@ -49,6 +49,7 @@ impl MenuAnadirAsignatura<'_> {
         };
         self.asignaturas.push(nueva);
         control
+            .application
             .repository
             .persistencia
             .save_asignaturas(&self.asignaturas);

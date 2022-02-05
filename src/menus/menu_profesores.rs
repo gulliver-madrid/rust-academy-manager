@@ -38,7 +38,7 @@ impl MenuProfesores {
     }
     fn _abrir_menu(&mut self, control: &mut Control) {
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
-        control.repository.load_profesores();
+        control.application.repository.load_profesores();
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
                 Some(SalirMenu) => {
@@ -54,7 +54,13 @@ impl MenuProfesores {
         control: &mut Control,
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu, control);
-        let profesores = &control.repository.modelo.profesores.as_ref().unwrap();
+        let profesores = &control
+            .application
+            .repository
+            .modelo
+            .profesores
+            .as_ref()
+            .unwrap();
 
         let entrada_usuario = control.consola.get_input();
         let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;

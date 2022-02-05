@@ -34,6 +34,7 @@ impl MenuAsignarProfesor<'_> {
                 let asignatura = &mut self.asignaturas[index];
                 asignatura.profesores_asignados.push(id_profesor);
                 control
+                    .application
                     .repository
                     .persistencia
                     .save_asignaturas(self.asignaturas);

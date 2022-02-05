@@ -1,10 +1,9 @@
-use super::modelo::Modelo;
-use super::persistencia::Persistencia;
 use crate::{dominio::Profesor, helpers, textos};
 
+use super::{repository::Repository};
+
 pub struct AddTeacherUseCase<'a> {
-    pub persistencia: &'a mut Persistencia,
-    pub modelo: &'a mut Modelo,
+    pub repository: &'a mut Repository,
 }
 
 impl AddTeacherUseCase<'_> {
@@ -15,7 +14,7 @@ impl AddTeacherUseCase<'_> {
     }
 
     fn get_next_id(&self) -> u32 {
-        let profesores = &self.modelo.profesores.as_ref().unwrap();
+        let profesores = &self.repository.modelo.profesores.as_ref().unwrap();
         let last_profesor =
             helpers::get_last_element(profesores).expect(textos::errores::NO_PROFESOR);
         last_profesor.id + 1
@@ -30,8 +29,8 @@ impl AddTeacherUseCase<'_> {
     }
 
     fn add_teacher(&mut self, profesor: Profesor) {
-        let profesores = &mut self.modelo.profesores.as_mut().unwrap();
+        let profesores = &mut self.repository.modelo.profesores.as_mut().unwrap();
         profesores.push(profesor);
-        self.persistencia.save_profesores(profesores);
+        self.repository.persistencia.save_profesores(profesores);
     }
 }
