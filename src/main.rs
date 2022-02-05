@@ -7,6 +7,7 @@ mod repository;
 mod tests;
 mod textos;
 mod views;
+mod errors;
 
 use menus::{Menu, MenuPrincipal};
 
