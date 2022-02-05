@@ -33,7 +33,10 @@ impl MenuAsignarProfesor<'_> {
                 let id_profesor = entrada.parse::<u32>().unwrap();
                 let asignatura = &mut self.asignaturas[index];
                 asignatura.profesores_asignados.push(id_profesor);
-                control.persistencia.save_asignaturas(self.asignaturas);
+                control
+                    .repository
+                    .persistencia
+                    .save_asignaturas(self.asignaturas);
                 control.consola.mostrar("Profesor asignado correctamente");
                 control.consola.pausa_enter("continuar");
             }

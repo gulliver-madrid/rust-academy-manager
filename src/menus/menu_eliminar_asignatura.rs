@@ -32,7 +32,10 @@ impl MenuEliminarAsignatura<'_> {
         match self.asignaturas.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
                 self.asignaturas.remove(index);
-                control.persistencia.save_asignaturas(&self.asignaturas);
+                control
+                    .repository
+                    .persistencia
+                    .save_asignaturas(&self.asignaturas);
             }
             None => control.consola.mostrar(&format!(
                 "No hay ninguna asignatura con el nombre {}",

@@ -38,7 +38,10 @@ impl MenuEliminarProfesor<'_> {
         match self.profesores.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
                 self.profesores.remove(index);
-                control.persistencia.save_profesores(&self.profesores);
+                control
+                    .repository
+                    .persistencia
+                    .save_profesores(&self.profesores);
             }
             None => control
                 .consola
