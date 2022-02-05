@@ -1,8 +1,8 @@
-use crate::errors::SimpleError;
+use crate::{errors::SimpleError, repository::Repository};
 
 use super::{
     add_teacher::AddTeacherUseCase, remove_teacher::RemoveTeacherUseCase,
-    repository::Repository,
+
 };
 
 pub struct Application {

@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fmt;
 
+pub type SimpleResult = Result<(), SimpleError>;
+
 #[derive(Debug)]
 pub struct SimpleError {
     details: String
