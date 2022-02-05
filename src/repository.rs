@@ -24,6 +24,21 @@ impl Repository {
         }
     }
     pub fn anadir_nuevo_profesor(&mut self, nombre: String) {
+        let mut usecase = AddTeacherUseCase {
+            persistencia: &mut self.persistencia,
+            modelo: &mut self.modelo,
+        };
+        usecase.anadir_nuevo_profesor(nombre);
+    }
+}
+
+struct AddTeacherUseCase<'a> {
+    persistencia: &'a mut Persistencia,
+    modelo: &'a mut Modelo,
+}
+
+impl AddTeacherUseCase<'_> {
+    fn anadir_nuevo_profesor(&mut self, nombre: String) {
         let next_id: u32 = self._get_next_id();
         let nuevo_profesor = self._crear_nuevo_profesor(nombre, next_id);
         self._anadir_profesor(nuevo_profesor);
