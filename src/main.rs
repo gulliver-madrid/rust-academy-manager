@@ -1,3 +1,4 @@
+mod application;
 mod components;
 mod consola;
 mod dominio;
@@ -12,9 +13,9 @@ mod views;
 use menus::{Menu, MenuPrincipal};
 
 use crate::{
+    application::Application,
     components::Control,
-    repository::persistencia::Persistencia,
-    repository::{modelo::Modelo, Application, Repository},
+    repository::{modelo::Modelo, Persistencia, Repository},
 };
 
 fn main() {

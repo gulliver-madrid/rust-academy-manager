@@ -1,6 +1,7 @@
-use crate::errors::SimpleError;
-
-use super::{repository::Repository, SimpleResult};
+use crate::{
+    errors::{SimpleError, SimpleResult},
+    repository::Repository,
+};
 
 pub struct RemoveTeacherUseCase<'a> {
     pub repository: &'a mut Repository,

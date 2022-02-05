@@ -1,6 +1,4 @@
-use crate::{dominio::Profesor, helpers, textos};
-
-use super::{repository::Repository};
+use crate::{dominio::Profesor, helpers, textos, repository::Repository};
 
 pub struct AddTeacherUseCase<'a> {
     pub repository: &'a mut Repository,

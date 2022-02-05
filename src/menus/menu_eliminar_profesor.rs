@@ -1,4 +1,4 @@
-use crate::{components::Control, consola::Consola, repository::SimpleResult, textos};
+use crate::{components::Control, consola::Consola, textos, errors::SimpleResult};
 
 use super::Menu;
 

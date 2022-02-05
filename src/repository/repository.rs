@@ -1,4 +1,4 @@
-use super::{modelo::Modelo, persistencia::Persistencia};
+use super::{modelo::Modelo, Persistencia};
 
 pub struct Repository {
     pub persistencia: Persistencia,
