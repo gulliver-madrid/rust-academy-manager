@@ -32,7 +32,7 @@ impl MenuAnadirProfesor<'_> {
 
     fn _anadir_profe(&mut self, profesor: Profesor, control: &Control) {
         self.profesores.push(profesor);
-        control.repository.save_profesores(&self.profesores);
+        control.persistencia.save_profesores(&self.profesores);
     }
 
     fn _get_next_id(&self) -> u32 {

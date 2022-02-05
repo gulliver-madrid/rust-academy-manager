@@ -36,7 +36,7 @@ impl MenuProfesores {
         MenuProfesores {}
     }
     fn _abrir_menu(&mut self, control: &Control) {
-        let mut profesores = control.repository.load_profesores();
+        let mut profesores = control.persistencia.load_profesores();
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, &mut profesores, control) {
@@ -89,7 +89,7 @@ impl MenuProfesores {
 
     fn abrir_menu_eliminar_profesor(
         &mut self,
-        profesores:  &mut Profesores,
+        profesores: &mut Profesores,
         control: &Control,
     ) {
         let mut menu = MenuEliminarProfesor::new(profesores);
