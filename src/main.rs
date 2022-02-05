@@ -1,7 +1,7 @@
 mod consola;
 mod dominio;
 mod helpers;
-mod repo;
+mod persistencia;
 mod tests;
 
 mod components;
@@ -14,14 +14,14 @@ mod views;
 
 use menus::{Menu, MenuPrincipal};
 
-use crate::{components::Control, repo::Repository};
+use crate::{components::Control, persistencia::Persistencia};
 
 fn main() {
-    let repository = Repository {};
+    let persistencia = Persistencia {};
     let consola = consola::Consola {};
     let control = Control {
         consola,
-        repository,
+        persistencia,
     };
     let mut menu = MenuPrincipal {};
     menu.abrir_menu(&control);

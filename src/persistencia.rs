@@ -16,9 +16,9 @@ const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 const SUBJECTS_PATH: &str = "subjects.json";
 
-pub struct Repository {}
+pub struct Persistencia {}
 
-impl Repository {
+impl Persistencia {
     pub fn save_profesores(&self, profesores: &Profesores) {
         let data_to_serialize =
             serialization::convert_teachers_to_serializable(profesores.clone());
