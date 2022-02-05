@@ -39,12 +39,12 @@ pub struct MenuAsignaturas {
 }
 
 impl Component for MenuAsignaturas {
-    fn render(&mut self, control: &Control) {
+    fn render(&mut self, control: &mut Control) {
         self.abrir_menu(control);
     }
 }
 impl Menu for MenuAsignaturas {
-    fn abrir_menu(&mut self, control: &Control) {
+    fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
 }
@@ -54,7 +54,7 @@ impl MenuAsignaturas {
         MenuAsignaturas { asignaturas }
     }
 
-    fn _abrir_menu(&mut self, control: &Control) {
+    fn _abrir_menu(&mut self, control: &mut Control) {
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
@@ -69,7 +69,7 @@ impl MenuAsignaturas {
     fn mostrar_iteracion_menu(
         &mut self,
         items_menu: &ItemMenus,
-        control: &Control,
+        control: &mut Control,
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu, control);
         let entrada_usuario = control.consola.get_input();
@@ -86,14 +86,14 @@ impl MenuAsignaturas {
         return None;
     }
 
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &Control) {
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &mut Control) {
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
         control.consola.mostrar(&texto_opciones);
     }
 
-    fn mostrar_lista_asignaturas(&self, control: &Control) {
+    fn mostrar_lista_asignaturas(&self, control: &mut Control) {
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
         let texto_lista_asignaturas = self.crear_lista_asignaturas();
@@ -109,15 +109,15 @@ impl MenuAsignaturas {
             .join("\n")
     }
 
-    fn abrir_menu_anadir_asignatura(&mut self, control: &Control) {
+    fn abrir_menu_anadir_asignatura(&mut self, control: &mut Control) {
         let mut menu = MenuAnadirAsignatura::new(&mut self.asignaturas);
         menu.abrir_menu(control);
     }
-    fn abrir_menu_eliminar_asignatura(&mut self, control: &Control) {
+    fn abrir_menu_eliminar_asignatura(&mut self, control: &mut Control) {
         let mut menu = MenuEliminarAsignatura::new(&mut self.asignaturas);
         menu.abrir_menu(control);
     }
-    fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &Control) {
+    fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &mut Control) {
         control
             .consola
             .mostrar("Elige asignatura a la que quieras asignar profesor");
@@ -134,7 +134,9 @@ impl MenuAsignaturas {
                         menu.abrir_menu(control);
                     }
                     None => {
-                        control.consola.mostrar(&format!("Nombre no válido: {}", texto));
+                        control
+                            .consola
+                            .mostrar(&format!("Nombre no válido: {}", texto));
                         control.consola.pausa_enter("continuar");
                     }
                 }

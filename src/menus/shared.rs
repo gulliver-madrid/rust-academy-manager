@@ -10,7 +10,7 @@ pub type TextoOpcion = &'static str;
 pub struct SalirMenu;
 
 pub trait Menu {
-    fn abrir_menu(&mut self, control: &Control);
+    fn abrir_menu(&mut self, control: &mut Control);
 }
 
 pub fn extraer_opcion<'a, OpcionMenu>(

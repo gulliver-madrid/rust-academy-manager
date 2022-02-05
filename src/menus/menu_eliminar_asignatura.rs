@@ -11,7 +11,7 @@ impl MenuEliminarAsignatura<'_> {
         MenuEliminarAsignatura { asignaturas }
     }
 
-    fn _abrir_menu(&mut self, control: &Control) {
+    fn _abrir_menu(&mut self, control: &mut Control) {
         self.mostrar_texto_menu(control);
         match control.consola.pide_texto_a_usuario() {
             None => (),
@@ -22,13 +22,13 @@ impl MenuEliminarAsignatura<'_> {
         }
     }
 
-    fn mostrar_texto_menu(&self, control: &Control) {
+    fn mostrar_texto_menu(&self, control: &mut Control) {
         control
             .consola
             .mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA_A_ELIMINAR);
     }
 
-    fn _eliminar_asignatura(&mut self, nombre: String, control: &Control) {
+    fn _eliminar_asignatura(&mut self, nombre: String, control: &mut Control) {
         match self.asignaturas.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
                 self.asignaturas.remove(index);
@@ -46,7 +46,7 @@ impl MenuEliminarAsignatura<'_> {
 }
 
 impl Menu for MenuEliminarAsignatura<'_> {
-    fn abrir_menu(&mut self, control: &Control) {
+    fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
 }

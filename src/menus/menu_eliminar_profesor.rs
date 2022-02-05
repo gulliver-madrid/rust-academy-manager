@@ -1,23 +1,17 @@
-use crate::{components::Control, dominio::teachers::Profesores, textos};
+use crate::{components::Control, textos};
 
 use super::Menu;
 
-pub struct MenuEliminarProfesor<'a> {
-    profesores: &'a mut Profesores,
-}
+pub struct MenuEliminarProfesor {}
 
-impl Menu for MenuEliminarProfesor<'_> {
-    fn abrir_menu(&mut self, control: &Control) {
+impl Menu for MenuEliminarProfesor {
+    fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
 }
 
-impl MenuEliminarProfesor<'_> {
-    pub fn new<'a>(profesores: &'a mut Profesores) -> MenuEliminarProfesor<'a> {
-        MenuEliminarProfesor { profesores }
-    }
-
-    fn _abrir_menu(&mut self, control: &Control) {
+impl MenuEliminarProfesor {
+    fn _abrir_menu(&mut self, control: &mut Control) {
         self.mostrar_texto_menu(control);
         match control.consola.pide_texto_a_usuario() {
             None => (),
@@ -28,20 +22,18 @@ impl MenuEliminarProfesor<'_> {
         }
     }
 
-    fn mostrar_texto_menu(&self, control: &Control) {
+    fn mostrar_texto_menu(&self, control: &mut Control) {
         control
             .consola
             .mostrar(textos::INTRODUCE_NOMBRE_PROFESOR_A_ELIMINAR);
     }
 
-    fn eliminar_profesor(&mut self, nombre: String, control: &Control) {
-        match self.profesores.iter().position(|a| a.nombre == nombre) {
+    fn eliminar_profesor(&mut self, nombre: String, control: &mut Control) {
+        let profesores = &mut control.repository.modelo.profesores.as_mut().unwrap();
+        match profesores.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
-                self.profesores.remove(index);
-                control
-                    .repository
-                    .persistencia
-                    .save_profesores(&self.profesores);
+                profesores.remove(index);
+                control.repository.persistencia.save_profesores(profesores);
             }
             None => control
                 .consola
