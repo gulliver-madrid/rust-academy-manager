@@ -1,4 +1,4 @@
-use crate::{components::Control, textos};
+use crate::{components::Control, consola::Consola, repository::SimpleResult, textos};
 
 use super::Menu;
 
@@ -6,38 +6,31 @@ pub struct MenuEliminarProfesor {}
 
 impl Menu for MenuEliminarProfesor {
     fn abrir_menu(&mut self, control: &mut Control) {
-        self._abrir_menu(control);
+        self.open_remove_teacher_menu(control);
     }
 }
 
 impl MenuEliminarProfesor {
-    fn _abrir_menu(&mut self, control: &mut Control) {
-        self.mostrar_texto_menu(control);
-        match control.consola.pide_texto_a_usuario() {
-            None => (),
-            Some(nombre) => {
-                self.eliminar_profesor(nombre, control);
-                control.consola.pausa_enter("continuar");
-            }
-        }
+    fn open_remove_teacher_menu(&mut self, control: &mut Control) {
+        let consola = &control.consola;
+        self.mostrar_texto_menu(&consola);
+
+        if let Some(nombre) = consola.pide_texto_a_usuario() {
+            let result = control.repository.eliminar_profesor(&nombre);
+            let msg = self.get_info_result(result, nombre);
+            consola.mostrar(&msg);
+            consola.pausa_enter("continuar");
+        };
     }
 
-    fn mostrar_texto_menu(&self, control: &mut Control) {
-        control
-            .consola
-            .mostrar(textos::INTRODUCE_NOMBRE_PROFESOR_A_ELIMINAR);
+    fn mostrar_texto_menu(&self, consola: &Consola) {
+        consola.mostrar(textos::INTRODUCE_NOMBRE_PROFESOR_A_ELIMINAR);
     }
 
-    fn eliminar_profesor(&mut self, nombre: String, control: &mut Control) {
-        let profesores = &mut control.repository.modelo.profesores.as_mut().unwrap();
-        match profesores.iter().position(|a| a.nombre == nombre) {
-            Some(index) => {
-                profesores.remove(index);
-                control.repository.persistencia.save_profesores(profesores);
-            }
-            None => control
-                .consola
-                .mostrar(&format!("No hay ninguna profesor con el nombre {}", nombre)),
+    fn get_info_result(&self, result: SimpleResult, nombre: String) -> String {
+        match result {
+            Ok(_) => format!("Se eliminó exitosamente al profesor {}", nombre),
+            Err(e) => e.to_string(),
         }
     }
 }
