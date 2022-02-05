@@ -1,3 +1,4 @@
+use super::menu_asignar_profesor::MenuAsignarProfesor;
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 use super::shared as menus;
 use super::shared::Menu;
@@ -16,15 +17,20 @@ enum Opcion {
     MostrarLista,
     AnadirAsignatura,
     EliminarAsignatura,
+    AsignarProfesor,
     Volver,
 }
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 4] = [
+const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 5] = [
     (Opcion::MostrarLista, "Ver la lista de asignaturas"),
     (Opcion::AnadirAsignatura, "Añadir una asignatura"),
     (Opcion::EliminarAsignatura, "Eliminar una asignatura"),
+    (
+        Opcion::AsignarProfesor,
+        "Asignar un profesor a una asignatura",
+    ),
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
@@ -72,6 +78,9 @@ impl MenuAsignaturas {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(control),
             Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(control),
             Opcion::EliminarAsignatura => self.abrir_menu_eliminar_asignatura(control),
+            Opcion::AsignarProfesor => {
+                self.abrir_menu_asignar_profesor_a_asignatura(control)
+            }
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
@@ -107,5 +116,32 @@ impl MenuAsignaturas {
     fn abrir_menu_eliminar_asignatura(&mut self, control: &Control) {
         let mut menu = MenuEliminarAsignatura::new(&mut self.asignaturas);
         menu.abrir_menu(control);
+    }
+    fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &Control) {
+        control
+            .consola
+            .mostrar("Elige asignatura a la que quieras asignar profesor");
+        let entrada = control.consola.pide_texto_a_usuario();
+        match entrada {
+            Some(texto) => {
+                match self.asignaturas.iter().position(|a| a.nombre == texto) {
+                    Some(index) => {
+                        let id_asignatura = self.asignaturas[index].id;
+                        let mut menu = MenuAsignarProfesor {
+                            asignaturas: &mut self.asignaturas,
+                            id_asignatura,
+                        };
+                        menu.abrir_menu(control);
+                    }
+                    None => {
+                        control.consola.mostrar(&format!("Nombre no válido: {}", texto));
+                        control.consola.pausa_enter("continuar");
+                    }
+                }
+            }
+            None => {
+                return;
+            }
+        }
     }
 }

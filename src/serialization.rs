@@ -30,7 +30,6 @@ pub fn convert_serialized_to_teachers(
     profesores
 }
 
-
 pub fn convert_subjects_to_serializable(
     asignaturas: Vec<Asignatura>,
 ) -> Vec<SerializableSubject> {
@@ -39,18 +38,18 @@ pub fn convert_subjects_to_serializable(
         subjects.push(SerializableSubject {
             name: asignatura.nombre,
             id: asignatura.id,
+            assigned_teachers: asignatura.profesores_asignados
         })
     }
     subjects
 }
-pub fn convert_serialized_to_subjects(
-    subjects: Vec<SerializableSubject>,
-) -> Vec<Asignatura> {
+pub fn convert_serialized_to_subjects(subjects: Vec<SerializableSubject>) -> Vec<Asignatura> {
     let mut asignaturas = Vec::new();
     for subject in subjects {
         asignaturas.push(Asignatura {
             nombre: subject.name,
             id: subject.id,
+            profesores_asignados: subject.assigned_teachers
         })
     }
     asignaturas
