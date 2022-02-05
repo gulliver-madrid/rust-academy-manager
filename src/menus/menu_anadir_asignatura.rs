@@ -43,7 +43,10 @@ impl MenuAnadirAsignatura<'_> {
             profesores_asignados: Vec::new(),
         };
         self.asignaturas.push(nueva);
-        control.persistencia.save_asignaturas(&self.asignaturas);
+        control
+            .repository
+            .persistencia
+            .save_asignaturas(&self.asignaturas);
     }
 }
 

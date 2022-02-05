@@ -36,10 +36,10 @@ impl MenuProfesores {
         MenuProfesores {}
     }
     fn _abrir_menu(&mut self, control: &Control) {
-        let mut profesores = control.persistencia.load_profesores();
+        
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            match self.mostrar_iteracion_menu(&items_menu, &mut profesores, control) {
+            match self.mostrar_iteracion_menu(&items_menu, control) {
                 Some(SalirMenu) => {
                     break;
                 }
@@ -50,10 +50,10 @@ impl MenuProfesores {
     fn mostrar_iteracion_menu(
         &mut self,
         items_menu: &ItemMenus,
-        profesores: &mut Profesores,
         control: &Control,
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu, control);
+        let profesores = &mut control.repository.persistencia.load_profesores();
 
         let entrada_usuario = control.consola.get_input();
         let opcion_elegida = menus::extraer_opcion(entrada_usuario, &items_menu)?;

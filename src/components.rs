@@ -1,8 +1,8 @@
-use crate::{consola::Consola, persistencia::Persistencia};
+use crate::{consola::Consola, repository::Repository};
 
 pub struct Control {
     pub consola: Consola,
-    pub persistencia: Persistencia,
+    pub repository: Repository,
 }
 
 pub trait Component {

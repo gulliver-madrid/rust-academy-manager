@@ -21,9 +21,7 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-pub struct MenuPrincipal {
-    // pub control: Control,
-}
+pub struct MenuPrincipal {}
 
 impl Menu for MenuPrincipal {
     fn abrir_menu(&mut self, control: &Control) {
@@ -68,7 +66,7 @@ impl MenuPrincipal {
     }
 
     fn abrir_menu_asignaturas(&self, control: &Control) {
-        let asignaturas = control.persistencia.get_asignaturas();
+        let asignaturas = control.repository.persistencia.get_asignaturas();
         let mut menu = menu_asignaturas::MenuAsignaturas::new(asignaturas);
         menu.abrir_menu(control);
     }
