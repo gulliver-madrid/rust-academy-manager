@@ -3,10 +3,7 @@ mod consola;
 mod dominio;
 mod helpers;
 mod menus;
-mod persistencia;
 mod repository;
-mod serializable;
-mod serialization;
 mod tests;
 mod textos;
 mod views;
@@ -15,8 +12,8 @@ use menus::{Menu, MenuPrincipal};
 
 use crate::{
     components::Control,
-    persistencia::Persistencia,
-    repository::{Modelo, Repository},
+    repository::persistencia::Persistencia,
+    repository::{modelo::Modelo, Repository},
 };
 
 fn main() {
