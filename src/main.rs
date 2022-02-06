@@ -24,7 +24,7 @@ fn main() {
         persistencia,
         modelo: Modelo { profesores: None, asignaturas:None },
     };
-    let application = Application { repository };
+    let application = Application::new(repository);
     let consola = consola::Consola {};
     let mut control = Control {
         consola,

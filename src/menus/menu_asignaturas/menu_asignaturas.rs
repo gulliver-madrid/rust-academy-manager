@@ -49,7 +49,7 @@ impl Menu for MenuAsignaturas {
 
 impl MenuAsignaturas {
     fn _abrir_menu(&mut self, control: &mut Control) {
-        control.application.repository.load_subjects();
+        control.application.load_subjects();
         let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
@@ -101,13 +101,7 @@ impl MenuAsignaturas {
     }
 
     fn crear_lista_asignaturas(&self, control: &mut Control) -> String {
-        let asignaturas = &control
-            .application
-            .repository
-            .modelo
-            .asignaturas
-            .as_ref()
-            .unwrap();
+        let asignaturas = control.application.get_asignaturas();
         asignaturas
             .iter()
             .map(|asignatura| asignatura.crear_linea_tabla())
