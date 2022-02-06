@@ -1,4 +1,4 @@
-use crate::{components::Control, consola::Consola, dominio::Asignatura};
+use crate::{components::Control};
 
 use super::Menu;
 
@@ -8,49 +8,38 @@ impl MenuAsignarProfesor {
     fn _abrir_menu(&mut self, control: &mut Control) {
         let consola = &control.consola;
         consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
-        let index_asignatura: usize;
         let nombre_asignatura: String;
-        match consola.pide_texto_a_usuario(){
-            Some(entrada) =>nombre_asignatura=entrada,
-            None=>{return;}
-        }
-        let asignaturas = control
-                .application
-                .repository
-                .modelo
-                .asignaturas
-                .as_mut()
-                .unwrap();
-            let busqueda_index = asignaturas.iter().position(|a| a.nombre == nombre_asignatura);
-            match busqueda_index {
-                Some(index) => {
-                    index_asignatura = index;
-                }
-                None => {
-                    consola.mostrar(&format!("Nombre no válido: {}", nombre_asignatura));
-                    consola.pausa_enter("continuar");
-                    return;
-                }
+        match consola.pide_texto_a_usuario() {
+            Some(entrada) => nombre_asignatura = entrada,
+            None => {
+                return;
             }
+        }
+        let index_asignatura: usize;
+        match control
+            .application
+            .get_subject_index_by_name(&nombre_asignatura)
+        {
+            Ok(index) => {
+                index_asignatura = index;
+            }
+            Err(e) => {
+                consola.mostrar(&e.to_string());
+                consola.pausa_enter("continuar");
+                return;
+            }
+        }
 
-        let asignatura = &mut asignaturas[index_asignatura];
-        self.mostrar_texto_menu(asignatura, consola);
         if let Some(entrada) = consola.pide_texto_a_usuario() {
             let id_profesor = entrada.parse::<u32>().unwrap();
-            asignatura.profesores_asignados.push(id_profesor);
-            control
+            let result = control
                 .application
-                .repository
-                .persistencia
-                .save_asignaturas(asignaturas);
-            consola.mostrar("Profesor asignado correctamente");
-            consola.pausa_enter("continuar");
+                .asignar_profesor_a_asignatura(index_asignatura, id_profesor);
+            if result.is_ok() {
+                consola.mostrar("Profesor asignado correctamente");
+                consola.pausa_enter("continuar");
+            }
         }
-    }
-
-    fn mostrar_texto_menu(&self, asignatura: &Asignatura, consola: &Consola) {
-        consola.mostrar(&format!("Asignatura: {}", asignatura.nombre));
-        consola.mostrar("Añade un profesor por su id");
     }
 }
 
