@@ -116,36 +116,12 @@ impl MenuAsignaturas {
     }
 
     fn abrir_menu_anadir_asignatura(&mut self, control: &mut Control) {
-        let mut menu = MenuAnadirAsignatura {};
-        menu.abrir_menu(control);
+        MenuAnadirAsignatura {}.abrir_menu(control);
     }
     fn abrir_menu_eliminar_asignatura(&mut self, control: &mut Control) {
-        let mut menu = MenuEliminarAsignatura {};
-        menu.abrir_menu(control);
+        MenuEliminarAsignatura {}.abrir_menu(control);
     }
     fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &mut Control) {
-        let consola = &control.consola;
-        consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
-
-        if let Some(texto) = consola.pide_texto_a_usuario() {
-            let asignaturas = control
-                .application
-                .repository
-                .modelo
-                .asignaturas
-                .as_mut()
-                .unwrap();
-            let busqueda_index = asignaturas.iter().position(|a| a.nombre == texto);
-            match busqueda_index {
-                Some(index) => {
-                    let mut menu = MenuAsignarProfesor { index_asignatura:index };
-                    menu.abrir_menu(control);
-                }
-                None => {
-                    consola.mostrar(&format!("Nombre no válido: {}", texto));
-                    consola.pausa_enter("continuar");
-                }
-            }
-        }
+        MenuAsignarProfesor {}.abrir_menu(control);
     }
 }

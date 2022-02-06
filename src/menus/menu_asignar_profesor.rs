@@ -2,23 +2,38 @@ use crate::{components::Control, consola::Consola, dominio::Asignatura};
 
 use super::Menu;
 
-pub struct MenuAsignarProfesor {
-    pub index_asignatura: usize,
-}
+pub struct MenuAsignarProfesor {}
 
 impl MenuAsignarProfesor {
     fn _abrir_menu(&mut self, control: &mut Control) {
         let consola = &control.consola;
-        
-        let asignaturas = &mut control
-            .application
-            .repository
-            .modelo
-            .asignaturas
-            .as_mut()
-            .unwrap();
+        consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
+        let index_asignatura: usize;
+        let nombre_asignatura: String;
+        match consola.pide_texto_a_usuario(){
+            Some(entrada) =>nombre_asignatura=entrada,
+            None=>{return;}
+        }
+        let asignaturas = control
+                .application
+                .repository
+                .modelo
+                .asignaturas
+                .as_mut()
+                .unwrap();
+            let busqueda_index = asignaturas.iter().position(|a| a.nombre == nombre_asignatura);
+            match busqueda_index {
+                Some(index) => {
+                    index_asignatura = index;
+                }
+                None => {
+                    consola.mostrar(&format!("Nombre no válido: {}", nombre_asignatura));
+                    consola.pausa_enter("continuar");
+                    return;
+                }
+            }
 
-        let asignatura: &mut Asignatura= &mut asignaturas[self.index_asignatura];
+        let asignatura = &mut asignaturas[index_asignatura];
         self.mostrar_texto_menu(asignatura, consola);
         if let Some(entrada) = consola.pide_texto_a_usuario() {
             let id_profesor = entrada.parse::<u32>().unwrap();
