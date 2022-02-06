@@ -7,10 +7,10 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
-use crate::dominio::asignatura::Asignaturas;
-use crate::dominio::teachers::Profesores;
-use super::serialization;
 use super::serializable::{SerializableSubject, SerializableTeacher};
+use super::serialization;
+use crate::dominio::Asignaturas;
+use crate::dominio::Profesores;
 
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
@@ -38,7 +38,7 @@ impl Persistencia {
         profesores
     }
 
-    pub fn get_asignaturas(&self) -> Asignaturas {
+    pub fn load_subjects(&self) -> Asignaturas {
         let serialized = read_json_asignaturas();
         let asignaturas = serialization::convert_serialized_to_subjects(serialized);
         asignaturas

@@ -1,5 +1,5 @@
 use super::serializable::{SerializableSubject, SerializableTeacher};
-use crate::dominio::{asignatura::Asignatura, teachers::Profesor};
+use crate::dominio::{Asignatura, Profesor};
 
 pub fn convert_teachers_to_serializable(
     profesores: Vec<Profesor>,

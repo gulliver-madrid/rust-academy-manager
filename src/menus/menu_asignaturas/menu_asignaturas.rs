@@ -3,7 +3,7 @@ use shared::Menu;
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 
 use crate::components::{Component, Control};
-use crate::dominio::asignatura::Asignaturas;
+use crate::consola::Consola;
 
 use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
 use crate::menus::shared::{self, ItemMenu, SalirMenu};
@@ -34,9 +34,7 @@ const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
-pub struct MenuAsignaturas {
-    asignaturas: Asignaturas,
-}
+pub struct MenuAsignaturas {}
 
 impl Component for MenuAsignaturas {
     fn render(&mut self, control: &mut Control) {
@@ -50,11 +48,8 @@ impl Menu for MenuAsignaturas {
 }
 
 impl MenuAsignaturas {
-    pub fn new(asignaturas: Asignaturas) -> MenuAsignaturas {
-        MenuAsignaturas { asignaturas }
-    }
-
     fn _abrir_menu(&mut self, control: &mut Control) {
+        control.application.repository.load_subjects();
         let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
@@ -71,8 +66,9 @@ impl MenuAsignaturas {
         items_menu: &ItemMenus,
         control: &mut Control,
     ) -> Option<SalirMenu> {
-        self.mostrar_texto_menu(items_menu, control);
-        let entrada_usuario = control.consola.get_input();
+        let consola = &control.consola;
+        self.mostrar_texto_menu(items_menu, consola);
+        let entrada_usuario = consola.get_input();
         let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(control),
@@ -88,23 +84,31 @@ impl MenuAsignaturas {
         return None;
     }
 
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &mut Control) {
-        control.consola.clear_screen();
-        control.consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, consola: &Consola) {
+        consola.clear_screen();
+        consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
         let texto_opciones = shared::crear_texto_opciones(&items_menu);
-        control.consola.mostrar(&texto_opciones);
+        consola.mostrar(&texto_opciones);
     }
 
     fn mostrar_lista_asignaturas(&self, control: &mut Control) {
-        control.consola.clear_screen();
-        control.consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
-        let texto_lista_asignaturas = self.crear_lista_asignaturas();
-        control.consola.mostrar(texto_lista_asignaturas.as_str());
-        control.consola.pausa_enter("volver al menú de asignaturas");
+        let texto_lista_asignaturas = self.crear_lista_asignaturas(control);
+        let consola = &control.consola;
+        consola.clear_screen();
+        consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
+        consola.mostrar(texto_lista_asignaturas.as_str());
+        consola.pausa_enter("volver al menú de asignaturas");
     }
 
-    fn crear_lista_asignaturas(&self) -> String {
-        self.asignaturas
+    fn crear_lista_asignaturas(&self, control: &mut Control) -> String {
+        let asignaturas = &control
+            .application
+            .repository
+            .modelo
+            .asignaturas
+            .as_ref()
+            .unwrap();
+        asignaturas
             .iter()
             .map(|asignatura| asignatura.crear_linea_tabla())
             .collect::<Vec<String>>()
@@ -112,39 +116,35 @@ impl MenuAsignaturas {
     }
 
     fn abrir_menu_anadir_asignatura(&mut self, control: &mut Control) {
-        let mut menu = MenuAnadirAsignatura::new(&mut self.asignaturas);
+        let mut menu = MenuAnadirAsignatura {};
         menu.abrir_menu(control);
     }
     fn abrir_menu_eliminar_asignatura(&mut self, control: &mut Control) {
-        let mut menu = MenuEliminarAsignatura::new(&mut self.asignaturas);
+        let mut menu = MenuEliminarAsignatura {};
         menu.abrir_menu(control);
     }
     fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &mut Control) {
-        control
-            .consola
-            .mostrar("Elige asignatura a la que quieras asignar profesor");
-        let entrada = control.consola.pide_texto_a_usuario();
-        match entrada {
-            Some(texto) => {
-                match self.asignaturas.iter().position(|a| a.nombre == texto) {
-                    Some(index) => {
-                        let id_asignatura = self.asignaturas[index].id;
-                        let mut menu = MenuAsignarProfesor {
-                            asignaturas: &mut self.asignaturas,
-                            id_asignatura,
-                        };
-                        menu.abrir_menu(control);
-                    }
-                    None => {
-                        control
-                            .consola
-                            .mostrar(&format!("Nombre no válido: {}", texto));
-                        control.consola.pausa_enter("continuar");
-                    }
+        let consola = &control.consola;
+        consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
+
+        if let Some(texto) = consola.pide_texto_a_usuario() {
+            let asignaturas = control
+                .application
+                .repository
+                .modelo
+                .asignaturas
+                .as_mut()
+                .unwrap();
+            let busqueda_index = asignaturas.iter().position(|a| a.nombre == texto);
+            match busqueda_index {
+                Some(index) => {
+                    let mut menu = MenuAsignarProfesor { index_asignatura:index };
+                    menu.abrir_menu(control);
                 }
-            }
-            None => {
-                return;
+                None => {
+                    consola.mostrar(&format!("Nombre no válido: {}", texto));
+                    consola.pausa_enter("continuar");
+                }
             }
         }
     }

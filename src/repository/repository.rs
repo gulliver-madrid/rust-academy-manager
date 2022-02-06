@@ -14,4 +14,13 @@ impl Repository {
             _ => {}
         }
     }
+
+    pub fn load_subjects(&mut self) {
+        match self.modelo.asignaturas {
+            None => {
+                self.modelo.asignaturas = Some(self.persistencia.load_subjects());
+            }
+            _ => {}
+        }
+    }
 }
