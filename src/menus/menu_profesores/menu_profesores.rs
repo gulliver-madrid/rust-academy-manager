@@ -34,7 +34,7 @@ impl MenuProfesores {
         MenuProfesores {}
     }
     fn _abrir_menu(&mut self, control: &mut Control) {
-        control.application.repository.load_profesores();
+        control.application.load_profesores();
         let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
@@ -70,12 +70,7 @@ impl MenuProfesores {
     }
     fn mostrar_lista_profesores(&self, control: &Control) {
         let profesores = control
-            .application
-            .repository
-            .modelo
-            .profesores
-            .as_ref()
-            .unwrap();
+            .application.get_teachers();
         control.consola.clear_screen();
         control.consola.mostrar_titulo(textos::LISTA_PROFESORES);
         for profesor in profesores {
