@@ -1,4 +1,4 @@
-pub mod asignatura;
-pub mod teachers;
+mod asignatura;
+mod teachers;
 pub use asignatura::{Asignatura, Asignaturas};
-pub use teachers::Profesor;
+pub use teachers::{Profesor, Profesores};

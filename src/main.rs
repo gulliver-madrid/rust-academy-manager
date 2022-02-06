@@ -22,7 +22,7 @@ fn main() {
     let persistencia = Persistencia {};
     let repository = Repository {
         persistencia,
-        modelo: Modelo { profesores: None },
+        modelo: Modelo { profesores: None, asignaturas:None },
     };
     let application = Application { repository };
     let consola = consola::Consola {};

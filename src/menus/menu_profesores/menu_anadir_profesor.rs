@@ -1,6 +1,4 @@
-use crate::{components::Control, consola::Consola, textos, menus::Menu};
-
-
+use crate::{components::Control, consola::Consola, menus::Menu, textos};
 
 pub struct MenuAnadirProfesor {}
 

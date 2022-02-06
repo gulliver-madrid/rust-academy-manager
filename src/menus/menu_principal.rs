@@ -66,12 +66,7 @@ impl MenuPrincipal {
     }
 
     fn abrir_menu_asignaturas(&self, control: &mut Control) {
-        let asignaturas = control
-            .application
-            .repository
-            .persistencia
-            .get_asignaturas();
-        let mut menu = MenuAsignaturas::new(asignaturas);
+        let mut menu = MenuAsignaturas {};
         menu.abrir_menu(control);
     }
 }

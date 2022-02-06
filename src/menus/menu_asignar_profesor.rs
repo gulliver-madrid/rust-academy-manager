@@ -1,58 +1,45 @@
-use crate::{
-    components::Control,
-    dominio::asignatura::{Asignatura, Asignaturas},
-};
+use crate::{components::Control, consola::Consola, dominio::Asignatura};
 
 use super::Menu;
 
-pub struct MenuAsignarProfesor<'a> {
-    pub asignaturas: &'a mut Asignaturas,
-    pub id_asignatura: u32,
+pub struct MenuAsignarProfesor {
+    pub index_asignatura: usize,
 }
 
-impl MenuAsignarProfesor<'_> {
+impl MenuAsignarProfesor {
     fn _abrir_menu(&mut self, control: &mut Control) {
-        let asignatura: &Asignatura;
-        let index: usize;
-        match self
+        let consola = &control.consola;
+        
+        let asignaturas = &mut control
+            .application
+            .repository
+            .modelo
             .asignaturas
-            .iter()
-            .position(|a| a.id == self.id_asignatura)
-        {
-            Some(_index) => {
-                index = _index;
-                asignatura = &self.asignaturas[index];
-            }
-            None => panic!(),
-        }
+            .as_mut()
+            .unwrap();
 
-        self.mostrar_texto_menu(asignatura, control);
-        match control.consola.pide_texto_a_usuario() {
-            None => (),
-            Some(entrada) => {
-                let id_profesor = entrada.parse::<u32>().unwrap();
-                let asignatura = &mut self.asignaturas[index];
-                asignatura.profesores_asignados.push(id_profesor);
-                control
-                    .application
-                    .repository
-                    .persistencia
-                    .save_asignaturas(self.asignaturas);
-                control.consola.mostrar("Profesor asignado correctamente");
-                control.consola.pausa_enter("continuar");
-            }
+        let asignatura: &mut Asignatura= &mut asignaturas[self.index_asignatura];
+        self.mostrar_texto_menu(asignatura, consola);
+        if let Some(entrada) = consola.pide_texto_a_usuario() {
+            let id_profesor = entrada.parse::<u32>().unwrap();
+            asignatura.profesores_asignados.push(id_profesor);
+            control
+                .application
+                .repository
+                .persistencia
+                .save_asignaturas(asignaturas);
+            consola.mostrar("Profesor asignado correctamente");
+            consola.pausa_enter("continuar");
         }
     }
 
-    fn mostrar_texto_menu(&self, asignatura: &Asignatura, control: &mut Control) {
-        control
-            .consola
-            .mostrar(&format!("asignatura: {}", asignatura.nombre));
-        control.consola.mostrar("Añade un profesor por su id");
+    fn mostrar_texto_menu(&self, asignatura: &Asignatura, consola: &Consola) {
+        consola.mostrar(&format!("Asignatura: {}", asignatura.nombre));
+        consola.mostrar("Añade un profesor por su id");
     }
 }
 
-impl Menu for MenuAsignarProfesor<'_> {
+impl Menu for MenuAsignarProfesor {
     fn abrir_menu(&mut self, control: &mut Control) {
         self._abrir_menu(control);
     }
