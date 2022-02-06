@@ -5,7 +5,7 @@ use crate::{
 
 use super::{
     add_subject::AddSubjectUseCase, add_teacher::AddTeacherUseCase,
-    remove_subject::RemoveSubjectUseCase, remove_teacher::RemoveTeacherUseCase,
+    remove_subject::RemoveSubjectUseCase, remove_teacher::RemoveTeacherUseCase, assign_teacher_to_subject::AssignTeacherToSubjectUseCase, get_subject_index_by_name::GetSubjectIndexByNameUseCase,
 };
 
 pub struct Application {
@@ -42,17 +42,10 @@ impl Application {
         &mut self,
         nombre_asignatura: &str,
     ) -> Result<usize, SimpleError> {
-        let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
-        let busqueda_index = asignaturas
-            .iter()
-            .position(|a| a.nombre == nombre_asignatura);
-        match busqueda_index {
-            Some(index) => Ok(index),
-            None => Err(SimpleError::new(&format!(
-                "Nombre no válido: {}",
-                nombre_asignatura
-            ))),
+        GetSubjectIndexByNameUseCase {
+            repository: &mut self.repository,
         }
+        .get_subject_index_by_name(nombre_asignatura)
     }
 
     pub fn asignar_profesor_a_asignatura(
@@ -60,12 +53,9 @@ impl Application {
         index_asignatura: usize,
         id_profesor: u32,
     ) -> SimpleResult {
-        let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
-
-        let asignatura = &mut asignaturas[index_asignatura];
-
-        asignatura.profesores_asignados.push(id_profesor);
-        self.repository.persistencia.save_asignaturas(asignaturas);
-        Ok(())
+        AssignTeacherToSubjectUseCase {
+            repository: &mut self.repository,
+        }
+        .asignar_profesor_a_asignatura(index_asignatura, id_profesor)
     }
 }
