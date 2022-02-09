@@ -1,8 +1,4 @@
-use crate::{
-    components::Control,
-    menus::Menu,
-    textos, consola::Consola,
-};
+use crate::{components::Control, consola::Consola, menus::Menu, textos};
 
 pub struct MenuAnadirAsignatura {}
 
@@ -12,11 +8,12 @@ impl MenuAnadirAsignatura {
         self.mostrar_texto_menu(consola);
         if let Some(nombre) = control.consola.pide_texto_a_usuario() {
             let result = control.application.add_new_subject(&nombre);
-            
-            if result.is_ok() {
-                consola.mostrar(&format!("Asignatura {} añadida", nombre));
-                consola.pausa_enter("continuar");
-            }
+            let msg = match result {
+                Ok(_) => format!("Asignatura {} añadida", nombre),
+                Err(e) => e.to_string(),
+            };
+            consola.mostrar(&msg);
+            consola.pausa_enter("continuar");
         }
     }
 
