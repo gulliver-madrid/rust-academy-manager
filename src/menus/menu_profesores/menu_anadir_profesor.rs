@@ -7,11 +7,16 @@ impl MenuAnadirProfesor {
         let consola = &control.consola;
         self.mostrar_texto_menu(&consola);
         if let Some(nombre) = control.consola.pide_texto_a_usuario() {
-            let result = control.application.teachers_app.anadir_nuevo_profesor(&nombre);
-            if result.is_ok() {
-                consola.mostrar(&format!("Profesor con nombre {} añadido", nombre));
-                consola.pausa_enter("continuar");
-            }
+            let result = control
+                .application
+                .teachers_app
+                .anadir_nuevo_profesor(&nombre);
+            let msg = match result {
+                Ok(_) => format!("Profesor con nombre {} añadido", nombre),
+                Err(e) => e.to_string(),
+            };
+            consola.mostrar(&msg);
+            consola.pausa_enter("continuar");
         }
     }
 
