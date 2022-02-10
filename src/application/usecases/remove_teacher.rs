@@ -10,7 +10,7 @@ pub struct RemoveTeacherUseCase<'a> {
 impl RemoveTeacherUseCase<'_> {
     pub fn eliminar_profesor(&mut self, nombre: String) -> SimpleResult {
         self.repository.load_subjects();
-        let profesores = self.repository.get_profesores_as_mut()?;
+        let profesores = self.repository.get_profesores_as_ref()?;
         let id_profesor: u32;
         let index_profesor: usize;
         match profesores.iter().position(|a| a.nombre == nombre) {
