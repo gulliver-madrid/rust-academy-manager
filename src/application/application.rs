@@ -36,14 +36,9 @@ impl Application {
     }
 
     /// Devuelve una copia de la lista de asignaturas.
-    pub fn get_asignaturas(&self) -> Asignaturas {
-        self.repository
-            .borrow()
-            .modelo
-            .asignaturas
-            .as_ref()
-            .unwrap()
-            .clone()
+    pub fn get_asignaturas(&self) -> Result<Asignaturas, SimpleError> {
+        let option = self.repository.borrow().modelo.asignaturas.clone();
+        option.ok_or(SimpleError::new("No se pudieron obtener las asignaturas"))
     }
 
     /// Añade una nuevo asignatura con el nombre especificado.

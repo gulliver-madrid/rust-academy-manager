@@ -5,6 +5,7 @@ use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 use crate::components::{Component, Control};
 use crate::consola::Consola;
 
+use crate::dominio::Asignaturas;
 use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
 use crate::menus::shared::{self, ItemMenu, SalirMenu};
 use crate::textos;
@@ -92,16 +93,22 @@ impl MenuAsignaturas {
     }
 
     fn mostrar_lista_asignaturas(&self, control: &mut Control) {
-        let texto_lista_asignaturas = self.crear_lista_asignaturas(control);
         let consola = &control.consola;
-        consola.clear_screen();
-        consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
-        consola.mostrar(texto_lista_asignaturas.as_str());
+        let asignaturas = control.application.get_asignaturas();
+        match asignaturas {
+            Ok(asignaturas) => {
+                let texto_lista_asignaturas =
+                    self.crear_lista_asignaturas(asignaturas);
+                consola.clear_screen();
+                consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
+                consola.mostrar(texto_lista_asignaturas.as_str());
+            }
+            Err(e) => consola.mostrar(&e.to_string()),
+        }
         consola.pausa_enter("volver al menú de asignaturas");
     }
 
-    fn crear_lista_asignaturas(&self, control: &mut Control) -> String {
-        let asignaturas = control.application.get_asignaturas();
+    fn crear_lista_asignaturas(&self, asignaturas: Asignaturas) -> String {
         asignaturas
             .iter()
             .map(|asignatura| asignatura.crear_linea_tabla())
