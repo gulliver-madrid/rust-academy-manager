@@ -36,10 +36,8 @@ impl Repository {
             _ => {}
         }
     }
-    pub fn get_profesores_as_mut(
-        &mut self,
-    ) -> Result<&mut Vec<Profesor>, SimpleError> {
-        let result = self.modelo.profesores.as_mut();
+    pub fn get_profesores_as_ref(&self) -> Result<&Vec<Profesor>, SimpleError> {
+        let result = self.modelo.profesores.as_ref();
         match result {
             Some(profesores) => Ok(profesores),
             None => Err(SimpleError::new(
