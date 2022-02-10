@@ -6,6 +6,8 @@ use super::shared::{ItemMenu, SalirMenu};
 use crate::components::Control;
 use crate::textos;
 
+const LOOP_LIMIT:u32 = 200;
+
 #[derive(Clone)]
 enum Opcion {
     Profesores,
@@ -26,12 +28,18 @@ pub struct MenuPrincipal {}
 impl Menu for MenuPrincipal {
     fn abrir_menu(&mut self, control: &mut Control) {
         let items_menu: ItemMenus = menus::crear_items_menu(ITEMS_MENU_DATA);
+        let mut counter = 0;
         loop {
             match self.mostrar_iteracion_menu(&items_menu, control) {
                 Some(SalirMenu) => {
                     break;
                 }
-                _ => continue,
+                _ => (),
+            }
+            counter += 1;
+            if counter > LOOP_LIMIT{
+                println!("\nERROR: Se superó el límite de ciclos del menú principal");
+                break;
             }
         }
     }

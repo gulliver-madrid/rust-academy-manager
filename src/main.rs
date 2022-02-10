@@ -12,11 +12,13 @@ mod views;
 
 use menus::{Menu, MenuPrincipal};
 
-use crate::{application::Application, components::Control};
+use crate::{application::Application, components::Control, consola::ActualConsole};
 
 fn main() {
     let application = Application::new();
-    let consola = consola::Consola {};
+    let consola = consola::Consola {
+        inner_console: Box::new(ActualConsole {}),
+    };
     let mut control = Control {
         consola,
         application,
