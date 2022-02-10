@@ -12,6 +12,8 @@ impl MenuAsignarProfesor {
         match consola.pide_texto_a_usuario() {
             Some(entrada) => nombre_asignatura = entrada,
             None => {
+                consola.mostrar("Operación cancelada");
+                consola.pausa_enter("continuar");
                 return;
             }
         }
@@ -29,7 +31,8 @@ impl MenuAsignarProfesor {
                 return;
             }
         }
-
+        consola.mostrar(&format!("Asignatura introducida: {}", nombre_asignatura));
+        consola.mostrar("Introduce el ID del profesor");
         if let Some(entrada) = consola.pide_texto_a_usuario() {
             let id_profesor = entrada.parse::<u32>().unwrap();
             let result = control
@@ -37,8 +40,10 @@ impl MenuAsignarProfesor {
                 .asignar_profesor_a_asignatura(index_asignatura, id_profesor);
             if result.is_ok() {
                 consola.mostrar("Profesor asignado correctamente");
-                consola.pausa_enter("continuar");
+            } else {
+                consola.mostrar("No se pudo realizar la operación");
             }
+            consola.pausa_enter("continuar");
         }
     }
 }

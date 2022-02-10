@@ -1,6 +1,5 @@
 use crate::{
-    components::Control, consola::Consola, 
-    errors::SimpleResult, menus::Menu, textos,
+    components::Control, consola::Consola, errors::SimpleResult, menus::Menu, textos,
 };
 
 pub struct MenuEliminarAsignatura {}
