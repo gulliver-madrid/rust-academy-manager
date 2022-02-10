@@ -1,4 +1,4 @@
-use crate::{consola::Consola, application::Application};
+use crate::{consola::{Consola}, application::Application};
 
 pub struct Control {
     pub consola: Consola,

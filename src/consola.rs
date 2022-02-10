@@ -3,20 +3,43 @@ use std::io;
 
 const USAR_BORRADO: bool = true;
 
-pub struct Consola;
 
-impl Consola {
-    pub fn clear_screen(&self) {
+
+pub trait InnerConsole {
+    fn clear_screen(&self);
+    fn get_input(&self) -> String;
+    fn mostrar(&self, texto: &str);
+}
+
+pub struct ActualConsole {}
+
+impl InnerConsole for ActualConsole {
+    fn clear_screen(&self) {
         if USAR_BORRADO {
             clearscreen::clear().unwrap();
         }
     }
-    pub fn get_input(&self) -> String {
+    fn get_input(&self) -> String {
         let mut input = String::new();
         io::stdin()
             .read_line(&mut input)
             .expect("Error: no se pudo leer la entrada del usuario");
         String::from(input.trim())
+    }
+    fn mostrar(&self, texto: &str) {
+        println!("{}", texto);
+    }
+}
+pub struct Consola {
+    pub inner_console: Box<dyn InnerConsole>,
+}
+
+impl Consola {
+    pub fn clear_screen(&self) {
+        self.inner_console.clear_screen();
+    }
+    pub fn get_input(&self) -> String {
+        self.inner_console.get_input()
     }
 
     pub fn pide_texto_a_usuario(&self) -> Option<String> {
@@ -27,7 +50,7 @@ impl Consola {
     }
 
     pub fn mostrar(&self, texto: &str) {
-        println!("{}", texto);
+        self.inner_console.mostrar(texto);
     }
 
     pub fn mostrar_titulo(&self, texto: &str) {
@@ -42,7 +65,7 @@ impl Consola {
         self.mostrar(&s);
     }
 
-    pub fn pausa_enter(&self, texto: &str){
+    pub fn pausa_enter(&self, texto: &str) {
         self.mostrar(&format!("Pulsa ENTER para {}", texto));
         self.get_input();
     }
