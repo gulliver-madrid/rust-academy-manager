@@ -34,19 +34,11 @@ impl RemoveTeacherUseCase<'_> {
 
     fn remove_from_subjects_assignments(&mut self, id_profesor: u32) {
         let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
-        for asignatura in asignaturas {
-            match asignatura
+        for asignatura in &mut asignaturas.into_iter() {
+            asignatura
                 .profesores_asignados
-                .iter()
-                .position(|id| *id == id_profesor)
-            {
-                Some(index) => {
-                    asignatura.profesores_asignados.remove(index);
-                }
-                _ => (),
-            }
+                .retain(|id| *id != id_profesor);
         }
-        let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
         self.repository.persistencia.save_asignaturas(asignaturas);
     }
 }
