@@ -1,5 +1,9 @@
 use crate::{
-    dominio::Profesor, errors::{SimpleResult, SimpleError}, helpers, repository::Repository, textos,
+    dominio::Profesor,
+    errors::{SimpleError, SimpleResult},
+    helpers,
+    repository::Repository,
+    textos,
 };
 
 pub struct AddTeacherUseCase<'a> {
@@ -9,8 +13,8 @@ pub struct AddTeacherUseCase<'a> {
 impl AddTeacherUseCase<'_> {
     pub fn anadir_nuevo_profesor(&mut self, nombre: String) -> SimpleResult {
         let teachers = self.repository.modelo.profesores.as_ref().unwrap();
-        for teacher in teachers{
-            if teacher.nombre == nombre{
+        for teacher in teachers {
+            if teacher.nombre == nombre {
                 return Err(SimpleError::new(&format!(
                     "Ya existe un profesor con el nombre {}",
                     nombre

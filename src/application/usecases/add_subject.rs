@@ -1,5 +1,8 @@
 use crate::{
-    dominio::{Asignatura, Asignaturas}, errors::{SimpleResult, SimpleError}, helpers, repository::Repository,
+    dominio::{Asignatura, Asignaturas},
+    errors::{SimpleError, SimpleResult},
+    helpers,
+    repository::Repository,
     textos,
 };
 
@@ -17,9 +20,13 @@ impl AddSubjectUseCase<'_> {
         Ok(())
     }
 
-    fn validar_nombre_libre(& self, subjects: &Asignaturas, nombre: &str) -> SimpleResult{
-        for subject in subjects{
-            if subject.nombre == nombre{
+    fn validar_nombre_libre(
+        &self,
+        subjects: &Asignaturas,
+        nombre: &str,
+    ) -> SimpleResult {
+        for subject in subjects {
+            if subject.nombre == nombre {
                 return Err(SimpleError::new(&format!(
                     "Ya existe una asignatura llamada {}",
                     nombre

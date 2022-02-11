@@ -1,10 +1,10 @@
-use crate::{repository::Repository, errors::SimpleResult};
+use crate::{errors::SimpleResult, repository::Repository};
 
 pub struct AssignTeacherToSubjectUseCase<'a> {
     pub repository: &'a mut Repository,
 }
 
-impl AssignTeacherToSubjectUseCase<'_>{
+impl AssignTeacherToSubjectUseCase<'_> {
     pub fn asignar_profesor_a_asignatura(
         &mut self,
         index_asignatura: usize,

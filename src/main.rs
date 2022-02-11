@@ -12,10 +12,11 @@ mod views;
 
 use menus::{Menu, MenuPrincipal};
 
-use crate::{application::Application, components::Control, consola::ActualConsole};
+use crate::{application::Application, components::Control, consola::ActualConsole, repository::{Persistencia}};
 
 fn main() {
-    let application = Application::new();
+    let persistencia = Persistencia {};
+    let application = Application::new(Box::new(persistencia));
     let consola = consola::Consola {
         inner_console: Box::new(ActualConsole {}),
     };

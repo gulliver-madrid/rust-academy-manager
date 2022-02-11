@@ -1,9 +1,8 @@
 use crate::{dominio::Profesor, errors::SimpleError};
 
-use super::{modelo::Modelo, Persistencia};
+use super::{modelo::Modelo, PersistenciaTrait};
 
-pub fn create_repo() -> Repository {
-    let persistencia = Persistencia {};
+pub fn create_repo(persistencia: Box<dyn PersistenciaTrait>) -> Repository {
     let repository = Repository {
         persistencia,
         modelo: Modelo {
@@ -14,7 +13,7 @@ pub fn create_repo() -> Repository {
     repository
 }
 pub struct Repository {
-    pub persistencia: Persistencia,
+    pub persistencia: Box<dyn PersistenciaTrait>,
     pub modelo: Modelo,
 }
 

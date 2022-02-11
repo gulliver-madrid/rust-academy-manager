@@ -7,38 +7,43 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
-use super::serializable::{SerializableSubject, SerializableTeacher};
 use super::serialization;
 use crate::dominio::Asignaturas;
 use crate::dominio::Profesores;
+use super::serializable::{SerializableSubject, SerializableTeacher};
 
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 const SUBJECTS_PATH: &str = "subjects.json";
 
+pub trait PersistenciaTrait {
+    fn save_profesores(&self, profesores: &Profesores);
+    fn save_asignaturas(&self, asignaturas: &Asignaturas);
+    fn load_profesores(&self) -> Profesores;
+    fn load_subjects(&self) -> Asignaturas;
+}
 pub struct Persistencia {}
 
-impl Persistencia {
-    pub fn save_profesores(&self, profesores: &Profesores) {
-        let data_to_serialize =
-            serialization::convert_teachers_to_serializable(profesores.clone());
+impl PersistenciaTrait for Persistencia {
+    fn save_profesores(&self, profesores: &Profesores) {
+        let data_to_serialize = serialization::convert_teachers_to_serializable(profesores.clone());
         let json = to_json(&data_to_serialize);
         self::write_in_file(&get_teachers_path(), json);
     }
-    pub fn save_asignaturas(&self, asignaturas: &Asignaturas) {
+    fn save_asignaturas(&self, asignaturas: &Asignaturas) {
         let data_to_serialize =
             serialization::convert_subjects_to_serializable(asignaturas.clone());
         let json = to_json(&data_to_serialize);
         self::write_in_file(&get_subjects_path(), json);
     }
 
-    pub fn load_profesores(&self) -> Profesores {
+    fn load_profesores(&self) -> Profesores {
         let serialized = read_json_profesores();
         let profesores = serialization::convert_serialized_to_teachers(serialized);
         profesores
     }
 
-    pub fn load_subjects(&self) -> Asignaturas {
+    fn load_subjects(&self) -> Asignaturas {
         let serialized = read_json_asignaturas();
         let asignaturas = serialization::convert_serialized_to_subjects(serialized);
         asignaturas

@@ -13,9 +13,7 @@ impl RemoveSubjectUseCase<'_> {
         match subjects.iter().position(|a| a.nombre == nombre) {
             Some(index) => {
                 subjects.remove(index);
-                self.repository
-                    .persistencia
-                    .save_asignaturas(subjects);
+                self.repository.persistencia.save_asignaturas(subjects);
                 Ok(())
             }
             None => Err(SimpleError::new(&format!(
