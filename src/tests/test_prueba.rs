@@ -1,4 +1,8 @@
-use crate::consola::InnerConsole;
+use crate::{
+    consola::InnerConsole,
+    dominio::{Asignatura, Asignaturas, Profesor, Profesores},
+    repository::PersistenciaTrait,
+};
 
 #[cfg(test)]
 use crate::{
@@ -36,10 +40,23 @@ impl InnerConsole for MockConsole {
     fn mostrar(&self, _texto: &str) {}
 }
 
+pub struct MockPersistencia {}
+impl PersistenciaTrait for MockPersistencia {
+    fn save_profesores(&self, _profesores: &Profesores) {}
+    fn save_asignaturas(&self, _asignaturas: &Asignaturas) {}
+    fn load_profesores(&self) -> Profesores {
+        return Vec::<Profesor>::new();
+    }
+    fn load_subjects(&self) -> Asignaturas {
+        return Vec::<Asignatura>::new();
+    }
+}
+
 #[test]
 fn mocking() {
     println!("Falta implementar el mocking test");
-    let application = Application::new();
+    let persistencia = MockPersistencia {};
+    let application = Application::new(Box::new(persistencia));
     let consola = consola::Consola {
         inner_console: Box::new(MockConsole {}),
     };

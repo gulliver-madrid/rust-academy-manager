@@ -3,7 +3,7 @@ use std::{cell::RefCell, rc::Rc};
 use crate::{
     dominio::Asignaturas,
     errors::{SimpleError, SimpleResult},
-    repository::{create_repo, Repository},
+    repository::{create_repo, Repository,  PersistenciaTrait},
 };
 
 use super::{
@@ -20,8 +20,8 @@ pub struct Application {
 }
 
 impl Application {
-    pub fn new() -> Self {
-        let repository = create_repo();
+    pub fn new(persistencia: Box<dyn PersistenciaTrait>) -> Self {
+        let repository = create_repo(persistencia);
         let repo_ref = Rc::new(RefCell::new(repository));
         let teachers_app = TeachersApp::new(&repo_ref);
         Self {
