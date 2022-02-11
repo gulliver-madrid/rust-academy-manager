@@ -2,8 +2,8 @@ use super::menu_anadir_profesor;
 use super::menu_eliminar_profesor::MenuEliminarProfesor;
 
 use crate::components::Control;
+use crate::menus::shared;
 use crate::menus::shared::{ItemMenu, SalirMenu, TextoOpcion};
-use crate::menus::{shared, Menu};
 use crate::textos;
 use crate::views::View;
 
@@ -23,21 +23,20 @@ const ITEMS_MENU_DATA: [(Opcion, TextoOpcion); 4] = [
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
-pub struct MenuProfesores {}
-impl Menu for MenuProfesores {
-    fn abrir_menu(&mut self, control: &mut Control) {
-        self._abrir_menu(control);
-    }
+pub struct MenuProfesores<'a> {
+    control: &'a mut Control,
 }
-impl MenuProfesores {
-    pub fn new() -> MenuProfesores {
-        MenuProfesores {}
+
+impl<'a> MenuProfesores<'_> {
+    pub fn new(control: &mut Control) -> MenuProfesores {
+        MenuProfesores { control }
     }
-    fn _abrir_menu(&mut self, control: &mut Control) {
-        control.application.teachers_app.load_profesores();
+
+    pub fn abrir_menu(&mut self) {
+        self.control.application.teachers_app.load_profesores();
         let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            match self.mostrar_iteracion_menu(&items_menu, control) {
+            match self.mostrar_iteracion_menu(&items_menu) {
                 Some(SalirMenu) => {
                     break;
                 }
@@ -48,43 +47,48 @@ impl MenuProfesores {
     fn mostrar_iteracion_menu(
         &mut self,
         items_menu: &ItemMenus,
-        control: &mut Control,
     ) -> Option<SalirMenu> {
-        self.mostrar_texto_menu(items_menu, control);
+        self.mostrar_texto_menu(items_menu);
 
-        let entrada_usuario = control.consola.get_input();
+        let entrada_usuario = self.control.consola.get_input();
         let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
-            Opcion::MostrarLista => self.mostrar_lista_profesores(control),
-            Opcion::AnadirProfesor => self.abrir_menu_anadir_profesor(control),
-            Opcion::EliminarProfesor => self.abrir_menu_eliminar_profesor(control),
+            Opcion::MostrarLista => self.mostrar_lista_profesores(),
+            Opcion::AnadirProfesor => self.abrir_menu_anadir_profesor(),
+            Opcion::EliminarProfesor => self.abrir_menu_eliminar_profesor(),
             Opcion::Volver => return Some(SalirMenu),
         }
         return None;
     }
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, control: &mut Control) {
-        control.consola.clear_screen();
-        control.consola.mostrar_titulo(textos::MENU_PROFESORES);
+    fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
+        let consola = &self.control.consola;
+        consola.clear_screen();
+        consola.mostrar_titulo(textos::MENU_PROFESORES);
         let texto_opciones = shared::crear_texto_opciones(&items_menu);
-        control.consola.mostrar(&texto_opciones);
+        consola.mostrar(&texto_opciones);
     }
-    fn mostrar_lista_profesores(&self, control: &Control) {
-        let profesores = control.application.teachers_app.get_teachers();
-        control.consola.clear_screen();
-        control.consola.mostrar_titulo(textos::LISTA_PROFESORES);
+    fn mostrar_lista_profesores(&self) {
+        let profesores = self.control.application.teachers_app.get_teachers();
+        let consola = &self.control.consola;
+        consola.clear_screen();
+        consola.mostrar_titulo(textos::LISTA_PROFESORES);
         for profesor in profesores {
-            control.consola.mostrar(&profesor.crear_linea_tabla());
+            consola.mostrar(&profesor.crear_linea_tabla());
         }
-        control.consola.pausa_enter("volver al menú de profesores");
+        consola.pausa_enter("volver al menú de profesores");
     }
 
-    fn abrir_menu_anadir_profesor(&self, control: &mut Control) {
-        let mut menu = menu_anadir_profesor::MenuAnadirProfesor {};
-        menu.abrir_menu(control);
+    fn abrir_menu_anadir_profesor(&mut self) {
+        let mut menu = menu_anadir_profesor::MenuAnadirProfesor {
+            control: self.control,
+        };
+        menu.abrir_menu();
     }
 
-    fn abrir_menu_eliminar_profesor(&mut self, control: &mut Control) {
-        let mut menu = MenuEliminarProfesor {};
-        menu.abrir_menu(control);
+    fn abrir_menu_eliminar_profesor(&mut self) {
+        let mut menu = MenuEliminarProfesor {
+            control: self.control,
+        };
+        menu.abrir_menu();
     }
 }

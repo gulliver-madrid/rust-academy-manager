@@ -1,22 +1,20 @@
-use crate::{
-    components::Control, consola::Consola, errors::SimpleResult, menus::Menu, textos,
-};
+use crate::{components::Control, consola::Consola, errors::SimpleResult, textos};
 
-pub struct MenuEliminarProfesor {}
-
-impl Menu for MenuEliminarProfesor {
-    fn abrir_menu(&mut self, control: &mut Control) {
-        self.open_remove_teacher_menu(control);
-    }
+pub struct MenuEliminarProfesor<'a> {
+    pub control: &'a mut Control,
 }
 
-impl MenuEliminarProfesor {
-    fn open_remove_teacher_menu(&mut self, control: &mut Control) {
-        let consola = &control.consola;
+impl MenuEliminarProfesor<'_> {
+    pub fn abrir_menu(&mut self) {
+        let consola = &self.control.consola;
         self.mostrar_texto_menu(&consola);
 
         if let Some(nombre) = consola.pide_texto_a_usuario() {
-            let result = control.application.teachers_app.eliminar_profesor(&nombre);
+            let result = self
+                .control
+                .application
+                .teachers_app
+                .eliminar_profesor(&nombre);
             let msg = self.get_info_result(result, nombre);
             consola.mostrar(&msg);
             consola.pausa_enter("continuar");

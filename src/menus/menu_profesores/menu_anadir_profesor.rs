@@ -1,13 +1,17 @@
-use crate::{components::Control, consola::Consola, menus::Menu, textos};
+use crate::{components::Control, consola::Consola, textos};
 
-pub struct MenuAnadirProfesor {}
+pub struct MenuAnadirProfesor<'a> {
+    pub control: &'a mut Control,
+}
 
-impl MenuAnadirProfesor {
-    fn _abrir_menu(&mut self, control: &mut Control) {
-        let consola = &control.consola;
+impl MenuAnadirProfesor<'_> {
+
+    pub fn abrir_menu(&mut self) {
+        let consola = &self.control.consola;
         self.mostrar_texto_menu(&consola);
-        if let Some(nombre) = control.consola.pide_texto_a_usuario() {
-            let result = control
+        if let Some(nombre) = consola.pide_texto_a_usuario() {
+            let result = self
+                .control
                 .application
                 .teachers_app
                 .anadir_nuevo_profesor(&nombre);
@@ -22,11 +26,5 @@ impl MenuAnadirProfesor {
 
     fn mostrar_texto_menu(&self, consola: &Consola) {
         consola.mostrar(textos::INTRODUCE_NOMBRE_PROFESOR);
-    }
-}
-
-impl Menu for MenuAnadirProfesor {
-    fn abrir_menu(&mut self, control: &mut Control) {
-        self._abrir_menu(control);
     }
 }
