@@ -1,3 +1,4 @@
+use super::counter::Counter;
 use super::menu_asignaturas::MenuAsignaturas;
 use super::menu_profesores::MenuProfesores;
 use super::shared as menus;
@@ -40,34 +41,26 @@ impl MenuPrincipal<'_> {
     }
 }
 
-
-
 impl MenuPrincipal<'_> {
     pub fn abrir_menu(&mut self) {
         let items_menu: ItemMenus = menus::crear_items_menu(ITEMS_MENU_DATA);
-        let mut counter = 0;
-        loop {
+
+        for _ in Counter::new(LOOP_LIMIT) {
             match self.mostrar_iteracion_menu(&items_menu) {
                 Some(SalirMenu) => {
-                    break;
+                    return;
                 }
                 _ => (),
             }
-            counter += 1;
-            if counter > LOOP_LIMIT {
-                println!(
-                    "\nERROR: Se superó el límite de ciclos del menú principal"
-                );
-                self.raised_loop_limit = true;
-                break;
-            }
         }
+        self.raised_loop_limit = true;
+        println!("\nERROR: Se superó el límite de ciclos del menú principal");
     }
     fn mostrar_iteracion_menu(
         &mut self,
         items_menu: &ItemMenus,
     ) -> Option<SalirMenu> {
-        self.mostrar_texto_menu(items_menu, );
+        self.mostrar_texto_menu(items_menu);
         let eleccion = self.control.consola.get_input();
         let opcion = menus::extraer_opcion(eleccion, &items_menu)?;
         match opcion {
