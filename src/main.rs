@@ -10,7 +10,7 @@ mod tests;
 mod textos;
 mod views;
 
-use menus::{Menu, MenuPrincipal};
+use menus::{ MenuPrincipal};
 
 use crate::{
     application::Application, components::Control, consola::ActualConsole,
@@ -27,7 +27,7 @@ fn main() {
         consola,
         application,
     };
-    let mut menu = MenuPrincipal::new();
-    menu.abrir_menu(&mut control);
+    let mut menu = MenuPrincipal::new(&mut control);
+    menu.abrir_menu();
     println!("\nPrograma finalizado\n");
 }

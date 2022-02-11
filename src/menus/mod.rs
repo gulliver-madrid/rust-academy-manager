@@ -5,4 +5,3 @@ mod menu_profesores;
 mod shared;
 
 pub use menu_principal::{MenuPrincipal, ITEMS_MENU_DATA};
-pub use shared::Menu;

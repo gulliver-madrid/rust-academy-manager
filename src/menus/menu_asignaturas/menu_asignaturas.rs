@@ -1,8 +1,6 @@
-use shared::Menu;
-
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 
-use crate::components::{Component, Control};
+use crate::components::Control;
 use crate::consola::Consola;
 
 use crate::dominio::Asignaturas;
@@ -35,25 +33,19 @@ const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
     (Opcion::Volver, "Volver al menú principal"),
 ];
 
-pub struct MenuAsignaturas {}
-
-impl Component for MenuAsignaturas {
-    fn render(&mut self, control: &mut Control) {
-        self.abrir_menu(control);
-    }
-}
-impl Menu for MenuAsignaturas {
-    fn abrir_menu(&mut self, control: &mut Control) {
-        self._abrir_menu(control);
-    }
+pub struct MenuAsignaturas<'a> {
+    pub control: &'a mut Control,
 }
 
-impl MenuAsignaturas {
-    fn _abrir_menu(&mut self, control: &mut Control) {
-        control.application.load_subjects();
+impl MenuAsignaturas<'_> {
+    pub fn new(control: &mut Control) -> MenuAsignaturas {
+        MenuAsignaturas { control }
+    }
+    pub fn abrir_menu(&mut self) {
+        self.control.application.load_subjects();
         let items_menu = shared::crear_items_menu(ITEMS_MENU_DATA);
         loop {
-            match self.mostrar_iteracion_menu(&items_menu, control) {
+            match self.mostrar_iteracion_menu(&items_menu) {
                 Some(SalirMenu) => {
                     break;
                 }
@@ -65,20 +57,17 @@ impl MenuAsignaturas {
     fn mostrar_iteracion_menu(
         &mut self,
         items_menu: &ItemMenus,
-        control: &mut Control,
     ) -> Option<SalirMenu> {
-        let consola = &control.consola;
+        let consola = &self.control.consola;
         self.mostrar_texto_menu(items_menu, consola);
         let entrada_usuario = consola.get_input();
         let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
         match opcion_elegida {
-            Opcion::MostrarLista => self.mostrar_lista_asignaturas(control),
-            Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(control),
-            Opcion::EliminarAsignatura => {
-                self.abrir_menu_eliminar_asignatura(control)
-            }
+            Opcion::MostrarLista => self.mostrar_lista_asignaturas(),
+            Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(),
+            Opcion::EliminarAsignatura => self.abrir_menu_eliminar_asignatura(),
             Opcion::AsignarProfesor => {
-                self.abrir_menu_asignar_profesor_a_asignatura(control)
+                self.abrir_menu_asignar_profesor_a_asignatura()
             }
             Opcion::Volver => return Some(SalirMenu),
         }
@@ -92,9 +81,9 @@ impl MenuAsignaturas {
         consola.mostrar(&texto_opciones);
     }
 
-    fn mostrar_lista_asignaturas(&self, control: &mut Control) {
-        let consola = &control.consola;
-        let asignaturas = control.application.get_asignaturas();
+    fn mostrar_lista_asignaturas(&self) {
+        let consola = &self.control.consola;
+        let asignaturas = self.control.application.get_asignaturas();
         match asignaturas {
             Ok(asignaturas) => {
                 let texto_lista_asignaturas =
@@ -116,13 +105,22 @@ impl MenuAsignaturas {
             .join("\n")
     }
 
-    fn abrir_menu_anadir_asignatura(&mut self, control: &mut Control) {
-        MenuAnadirAsignatura {}.abrir_menu(control);
+    fn abrir_menu_anadir_asignatura(&mut self) {
+        MenuAnadirAsignatura {
+            control: self.control,
+        }
+        .abrir_menu();
     }
-    fn abrir_menu_eliminar_asignatura(&mut self, control: &mut Control) {
-        MenuEliminarAsignatura {}.abrir_menu(control);
+    fn abrir_menu_eliminar_asignatura(&mut self) {
+        MenuEliminarAsignatura {
+            control: self.control,
+        }
+        .abrir_menu();
     }
-    fn abrir_menu_asignar_profesor_a_asignatura(&mut self, control: &mut Control) {
-        MenuAsignarProfesor {}.abrir_menu(control);
+    fn abrir_menu_asignar_profesor_a_asignatura(&mut self) {
+        MenuAsignarProfesor {
+            control: self.control,
+        }
+        .abrir_menu();
     }
 }

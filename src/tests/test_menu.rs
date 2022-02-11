@@ -8,8 +8,8 @@ use crate::{
     consola,
     consola::InnerConsole,
     dominio::{Asignatura, Asignaturas, Profesor, Profesores},
+    menus::MenuPrincipal,
     menus::ITEMS_MENU_DATA,
-    menus::{Menu, MenuPrincipal},
     repository::PersistenciaTrait,
 };
 
@@ -72,7 +72,7 @@ fn salir_desde_menu_principal() {
         consola,
         application,
     };
-    let mut menu = MenuPrincipal::new();
-    menu.abrir_menu(&mut control);
+    let mut menu = MenuPrincipal::new(&mut control);
+    menu.abrir_menu();
     assert_eq!(menu.raised_loop_limit(), false);
 }

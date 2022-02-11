@@ -1,12 +1,12 @@
 use crate::{components::Control};
 
-use super::Menu;
+pub struct MenuAsignarProfesor<'a> {
+    pub control: &'a mut Control,
+}
 
-pub struct MenuAsignarProfesor {}
-
-impl MenuAsignarProfesor {
-    fn _abrir_menu(&mut self, control: &mut Control) {
-        let consola = &control.consola;
+impl MenuAsignarProfesor<'_> {
+    pub fn abrir_menu(&mut self) {
+        let consola = &self.control.consola;
         consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
         let nombre_asignatura: String;
         match consola.pide_texto_a_usuario() {
@@ -18,7 +18,8 @@ impl MenuAsignarProfesor {
             }
         }
         let index_asignatura: usize;
-        match control
+        match self
+            .control
             .application
             .get_subject_index_by_name(&nombre_asignatura)
         {
@@ -35,7 +36,8 @@ impl MenuAsignarProfesor {
         consola.mostrar("Introduce el ID del profesor");
         if let Some(entrada) = consola.pide_texto_a_usuario() {
             let id_profesor = entrada.parse::<u32>().unwrap();
-            let result = control
+            let result = self
+                .control
                 .application
                 .asignar_profesor_a_asignatura(index_asignatura, id_profesor);
             if result.is_ok() {
@@ -45,11 +47,5 @@ impl MenuAsignarProfesor {
             }
             consola.pausa_enter("continuar");
         }
-    }
-}
-
-impl Menu for MenuAsignarProfesor {
-    fn abrir_menu(&mut self, control: &mut Control) {
-        self._abrir_menu(control);
     }
 }
