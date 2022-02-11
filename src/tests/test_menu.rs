@@ -1,41 +1,26 @@
 use crate::{
     consola::InnerConsole,
     dominio::{Asignatura, Asignaturas, Profesor, Profesores},
+    menus::ITEMS_MENU_DATA,
     repository::PersistenciaTrait,
 };
 
-#[cfg(test)]
+#[cfg(test)] // El compilador solo lo detecta en modo test
 use crate::{
     application::Application,
     components::Control,
-    consola::{self},
+    consola,
     menus::{Menu, MenuPrincipal},
 };
-
-#[cfg(test)] // El compilador solo lo detecta en modo test
-fn add(x: i8, y: i8) -> i8 {
-    x + y
-}
-
-#[test]
-fn add_works() {
-    println!("Ejecutando el primer test");
-    assert_eq!(add(1, 2), 3);
-    assert_eq!(add(10, 12), 22);
-    assert_eq!(add(5, -2), 3);
-}
-#[test]
-fn add_works_too() {
-    println!("Ejecutando el segundo test");
-    assert_eq!(add(2, 2), 4);
-}
 
 pub struct MockConsole {}
 
 impl InnerConsole for MockConsole {
     fn clear_screen(&self) {}
     fn get_input(&self) -> String {
-        String::from("4") // El número necesario para salir del menu
+        let num_opciones = ITEMS_MENU_DATA.len();
+        let ultima_opcion = num_opciones.to_string();
+        ultima_opcion
     }
     fn mostrar(&self, _texto: &str) {}
 }
@@ -53,8 +38,7 @@ impl PersistenciaTrait for MockPersistencia {
 }
 
 #[test]
-fn mocking() {
-    println!("Falta implementar el mocking test");
+fn salir_desde_menu_principal() {
     let persistencia = MockPersistencia {};
     let application = Application::new(Box::new(persistencia));
     let consola = consola::Consola {
@@ -64,8 +48,7 @@ fn mocking() {
         consola,
         application,
     };
-    let mut menu = MenuPrincipal {};
+    let mut menu = MenuPrincipal::new();
     menu.abrir_menu(&mut control);
-    assert_eq!(add(2, 2), 4);
-    assert_eq!(add(2, 2), 4);
+    assert_eq!(menu.raised_loop_limit(), false);
 }

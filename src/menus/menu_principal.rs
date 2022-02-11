@@ -6,16 +6,16 @@ use super::shared::{ItemMenu, SalirMenu};
 use crate::components::Control;
 use crate::textos;
 
-const LOOP_LIMIT:u32 = 200;
+const LOOP_LIMIT: u32 = 200;
 
 #[derive(Clone)]
-enum Opcion {
+pub enum Opcion {
     Profesores,
     Asignaturas,
     Salir,
 }
 
-const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
+pub const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
     (Opcion::Profesores, "Profesores"),
     (Opcion::Asignaturas, "Asignaturas"),
     (Opcion::Salir, "Salir"),
@@ -23,7 +23,21 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
 
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-pub struct MenuPrincipal {}
+pub struct MenuPrincipal {
+    raised_loop_limit: bool,
+}
+
+impl MenuPrincipal {
+    pub fn new() -> Self {
+        Self {
+            raised_loop_limit: false,
+        }
+    }
+    #[cfg(test)]
+    pub fn raised_loop_limit(&self) -> bool {
+        self.raised_loop_limit
+    }
+}
 
 impl Menu for MenuPrincipal {
     fn abrir_menu(&mut self, control: &mut Control) {
@@ -37,8 +51,11 @@ impl Menu for MenuPrincipal {
                 _ => (),
             }
             counter += 1;
-            if counter > LOOP_LIMIT{
-                println!("\nERROR: Se superó el límite de ciclos del menú principal");
+            if counter > LOOP_LIMIT {
+                println!(
+                    "\nERROR: Se superó el límite de ciclos del menú principal"
+                );
+                self.raised_loop_limit = true;
                 break;
             }
         }

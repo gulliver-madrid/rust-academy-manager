@@ -12,7 +12,10 @@ mod views;
 
 use menus::{Menu, MenuPrincipal};
 
-use crate::{application::Application, components::Control, consola::ActualConsole, repository::{Persistencia}};
+use crate::{
+    application::Application, components::Control, consola::ActualConsole,
+    repository::Persistencia,
+};
 
 fn main() {
     let persistencia = Persistencia {};
@@ -24,7 +27,7 @@ fn main() {
         consola,
         application,
     };
-    let mut menu = MenuPrincipal {};
+    let mut menu = MenuPrincipal::new();
     menu.abrir_menu(&mut control);
     println!("\nPrograma finalizado\n");
 }
