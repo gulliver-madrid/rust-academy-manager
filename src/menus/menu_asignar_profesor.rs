@@ -48,5 +48,4 @@ impl MenuAsignarProfesor<'_> {
             ui.pausa_enter("continuar");
         }
     }
-
 }

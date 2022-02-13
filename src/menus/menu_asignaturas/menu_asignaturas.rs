@@ -1,7 +1,7 @@
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 
 use crate::components::Control;
-use crate::ui::UserInterface;
+
 
 use crate::dominio::Asignaturas;
 use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
@@ -58,10 +58,8 @@ impl MenuAsignaturas<'_> {
         &mut self,
         items_menu: &ItemsMenu,
     ) -> Option<SalirMenu> {
-        let ui = &self.control.ui;
-        self.mostrar_texto_menu(items_menu, ui);
-
-        let opcion_elegida = ui.get_user_choice(&items_menu)?;
+        self.mostrar_texto_menu(items_menu);
+        let opcion_elegida = self.control.ui.get_user_choice(&items_menu)?;
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(),
             Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(),
@@ -74,10 +72,11 @@ impl MenuAsignaturas<'_> {
         return None;
     }
 
-    fn mostrar_texto_menu(&self, items_menu: &ItemsMenu, ui: &UserInterface) {
+    fn mostrar_texto_menu(&self, items_menu: &ItemsMenu) {
+        let ui = &self.control.ui;
         ui.clear_screen();
         ui.mostrar_titulo(textos::MENU_ASIGNATURAS);
-        let texto_opciones = shared::crear_texto_opciones(&items_menu);
+        let texto_opciones = shared::crear_texto_opciones(items_menu);
         ui.mostrar(&texto_opciones);
     }
 
