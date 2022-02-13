@@ -9,8 +9,7 @@ use crate::{
     menus::MenuPrincipal,
     menus::ITEMS_MENU_DATA,
     repository::PersistenciaTrait,
-    ui,
-    ui::InnerConsole,
+    ui::{InnerConsole, UserInterface},
 };
 
 #[cfg(test)]
@@ -71,13 +70,10 @@ fn salir_desde_menu_principal() {
         .provided_inputs
         .borrow_mut()
         .push(provided_input);
-    let ui = ui::UserInterface {
+    let ui = UserInterface {
         inner_console: Box::new(mock_console),
     };
-    let mut control = Control {
-        ui: ui,
-        application,
-    };
+    let mut control = Control { ui, application };
     let mut menu = MenuPrincipal::new(&mut control);
     menu.abrir_menu();
     assert_eq!(menu.raised_loop_limit(), false);
