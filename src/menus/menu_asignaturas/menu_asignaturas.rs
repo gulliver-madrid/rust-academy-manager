@@ -1,7 +1,7 @@
 use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 
 use crate::components::Control;
-use crate::consola::Consola;
+use crate::ui::UserInterface;
 
 use crate::dominio::Asignaturas;
 use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
@@ -20,7 +20,7 @@ enum Opcion {
     Volver,
 }
 
-type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
+type ItemsMenu<'a> = Vec<ItemMenu<'a, Opcion>>;
 
 const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
     (Opcion::MostrarLista, "Ver la lista de asignaturas"),
@@ -56,12 +56,12 @@ impl MenuAsignaturas<'_> {
 
     fn mostrar_iteracion_menu(
         &mut self,
-        items_menu: &ItemMenus,
+        items_menu: &ItemsMenu,
     ) -> Option<SalirMenu> {
-        let consola = &self.control.consola;
-        self.mostrar_texto_menu(items_menu, consola);
-        let entrada_usuario = consola.get_input();
-        let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
+        let ui = &self.control.ui;
+        self.mostrar_texto_menu(items_menu, ui);
+
+        let opcion_elegida = ui.get_user_choice(&items_menu)?;
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_asignaturas(),
             Opcion::AnadirAsignatura => self.abrir_menu_anadir_asignatura(),
@@ -74,27 +74,27 @@ impl MenuAsignaturas<'_> {
         return None;
     }
 
-    fn mostrar_texto_menu(&self, items_menu: &ItemMenus, consola: &Consola) {
-        consola.clear_screen();
-        consola.mostrar_titulo(textos::MENU_ASIGNATURAS);
+    fn mostrar_texto_menu(&self, items_menu: &ItemsMenu, ui: &UserInterface) {
+        ui.clear_screen();
+        ui.mostrar_titulo(textos::MENU_ASIGNATURAS);
         let texto_opciones = shared::crear_texto_opciones(&items_menu);
-        consola.mostrar(&texto_opciones);
+        ui.mostrar(&texto_opciones);
     }
 
     fn mostrar_lista_asignaturas(&self) {
-        let consola = &self.control.consola;
+        let ui = &self.control.ui;
         let asignaturas = self.control.application.get_asignaturas();
         match asignaturas {
             Ok(asignaturas) => {
                 let texto_lista_asignaturas =
                     self.crear_lista_asignaturas(asignaturas);
-                consola.clear_screen();
-                consola.mostrar_titulo(textos::LISTA_ASIGNATURAS);
-                consola.mostrar(texto_lista_asignaturas.as_str());
+                ui.clear_screen();
+                ui.mostrar_titulo(textos::LISTA_ASIGNATURAS);
+                ui.mostrar(texto_lista_asignaturas.as_str());
             }
-            Err(e) => consola.mostrar(&e.to_string()),
+            Err(e) => ui.mostrar(&e.to_string()),
         }
-        consola.pausa_enter("volver al menú de asignaturas");
+        ui.pausa_enter("volver al menú de asignaturas");
     }
 
     fn crear_lista_asignaturas(&self, asignaturas: Asignaturas) -> String {

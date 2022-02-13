@@ -1,7 +1,7 @@
-use crate::{consola::{Consola}, application::Application};
+use crate::{ui::{UserInterface}, application::Application};
 
 pub struct Control {
-    pub consola: Consola,
+    pub ui: UserInterface,
     pub application: Application,
 }
 
@@ -9,5 +9,5 @@ pub struct Control {
 
 #[allow(unused)]
 pub fn warn_not_implemented(control: &mut Control) {
-    control.consola.mostrar("ERROR: No implementado")
+    control.ui.mostrar("ERROR: No implementado")
 }

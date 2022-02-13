@@ -1,9 +1,9 @@
 use crate::helpers;
 use std::io;
 
+use crate::menus::shared::ItemMenu;
+
 const USAR_BORRADO: bool = true;
-
-
 
 pub trait InnerConsole {
     fn clear_screen(&self);
@@ -30,14 +30,24 @@ impl InnerConsole for ActualConsole {
         println!("{}", texto);
     }
 }
-pub struct Consola {
+pub struct UserInterface {
     pub inner_console: Box<dyn InnerConsole>,
 }
 
-impl Consola {
+impl UserInterface {
+    pub fn get_user_choice<'a, T>(
+        &self,
+        items_menu: &'a Vec<ItemMenu<T>>,
+    ) -> Option<&'a T> {
+        // T es una enum que representa una opcion de menu
+        let eleccion = self.get_input();
+        crate::menus::shared::extraer_opcion(eleccion, &items_menu)
+    }
+
     pub fn clear_screen(&self) {
         self.inner_console.clear_screen();
     }
+
     pub fn get_input(&self) -> String {
         self.inner_console.get_input()
     }
