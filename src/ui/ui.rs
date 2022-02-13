@@ -1,35 +1,9 @@
 use crate::helpers;
-use std::io;
 
 use crate::menus::shared::ItemMenu;
 
-const USAR_BORRADO: bool = true;
+use super::inner_console::InnerConsole;
 
-pub trait InnerConsole {
-    fn clear_screen(&self);
-    fn get_input(&self) -> String;
-    fn mostrar(&self, texto: &str);
-}
-
-pub struct ActualConsole {}
-
-impl InnerConsole for ActualConsole {
-    fn clear_screen(&self) {
-        if USAR_BORRADO {
-            clearscreen::clear().unwrap();
-        }
-    }
-    fn get_input(&self) -> String {
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Error: no se pudo leer la entrada del usuario");
-        String::from(input.trim())
-    }
-    fn mostrar(&self, texto: &str) {
-        println!("{}", texto);
-    }
-}
 pub struct UserInterface {
     pub inner_console: Box<dyn InnerConsole>,
 }
@@ -64,6 +38,16 @@ impl UserInterface {
     }
 
     pub fn mostrar_titulo(&self, texto: &str) {
+        self.mostrar(&self.convertir_a_titulo(texto));
+    }
+
+    pub fn pausa_enter(&self, texto: &str) {
+        self.mostrar(&format!("Pulsa ENTER para {}", texto));
+        self.get_input();
+    }
+
+    /// Anade una linea de subrayado al texto especificado
+    fn convertir_a_titulo(&self, texto: &str) -> String {
         let chars = texto.chars();
         let n = chars.count();
         let mut s = String::new();
@@ -72,11 +56,6 @@ impl UserInterface {
         s.push('\n');
         let mut s = helpers::add_repeated_char(s, '-', n);
         s.push('\n');
-        self.mostrar(&s);
-    }
-
-    pub fn pausa_enter(&self, texto: &str) {
-        self.mostrar(&format!("Pulsa ENTER para {}", texto));
-        self.get_input();
+        s
     }
 }
