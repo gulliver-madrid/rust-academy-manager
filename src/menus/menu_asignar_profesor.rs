@@ -6,14 +6,14 @@ pub struct MenuAsignarProfesor<'a> {
 
 impl MenuAsignarProfesor<'_> {
     pub fn abrir_menu(&mut self) {
-        let consola = &self.control.consola;
-        consola.mostrar("Elige la asignatura a la que quieras asignar profesor");
+        let ui = &self.control.ui;
+        ui.mostrar("Elige la asignatura a la que quieras asignar profesor");
         let nombre_asignatura: String;
-        match consola.pide_texto_a_usuario() {
+        match ui.pide_texto_a_usuario() {
             Some(entrada) => nombre_asignatura = entrada,
             None => {
-                consola.mostrar("Operación cancelada");
-                consola.pausa_enter("continuar");
+                ui.mostrar("Operación cancelada");
+                ui.pausa_enter("continuar");
                 return;
             }
         }
@@ -27,25 +27,26 @@ impl MenuAsignarProfesor<'_> {
                 index_asignatura = index;
             }
             Err(e) => {
-                consola.mostrar(&e.to_string());
-                consola.pausa_enter("continuar");
+                ui.mostrar(&e.to_string());
+                ui.pausa_enter("continuar");
                 return;
             }
         }
-        consola.mostrar(&format!("Asignatura introducida: {}", nombre_asignatura));
-        consola.mostrar("Introduce el ID del profesor");
-        if let Some(entrada) = consola.pide_texto_a_usuario() {
+        ui.mostrar(&format!("Asignatura introducida: {}", nombre_asignatura));
+        ui.mostrar("Introduce el ID del profesor");
+        if let Some(entrada) = ui.pide_texto_a_usuario() {
             let id_profesor = entrada.parse::<u32>().unwrap();
             let result = self
                 .control
                 .application
                 .asignar_profesor_a_asignatura(index_asignatura, id_profesor);
             if result.is_ok() {
-                consola.mostrar("Profesor asignado correctamente");
+                ui.mostrar("Profesor asignado correctamente");
             } else {
-                consola.mostrar("No se pudo realizar la operación");
+                ui.mostrar("No se pudo realizar la operación");
             }
-            consola.pausa_enter("continuar");
+            ui.pausa_enter("continuar");
         }
     }
+
 }

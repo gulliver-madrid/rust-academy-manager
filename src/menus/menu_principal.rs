@@ -61,8 +61,7 @@ impl MenuPrincipal<'_> {
         items_menu: &ItemMenus,
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu);
-        let eleccion = self.control.consola.get_input();
-        let opcion = menus::extraer_opcion(eleccion, &items_menu)?;
+        let opcion = self.control.ui.get_user_choice(&items_menu)?;
         match opcion {
             Opcion::Asignaturas => self.abrir_menu_asignaturas(),
             Opcion::Profesores => self.abrir_menu_profesores(),
@@ -71,10 +70,10 @@ impl MenuPrincipal<'_> {
         return None;
     }
     fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
-        self.control.consola.clear_screen();
-        self.control.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
+        self.control.ui.clear_screen();
+        self.control.ui.mostrar_titulo(textos::MENU_PRINCIPAL);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.control.consola.mostrar(&texto_opciones);
+        self.control.ui.mostrar(&texto_opciones);
     }
 
     fn abrir_menu_profesores(&mut self) {

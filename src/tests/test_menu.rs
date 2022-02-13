@@ -5,12 +5,12 @@ use std::cell::RefCell;
 use crate::{
     application::Application,
     components::Control,
-    consola,
-    consola::InnerConsole,
     dominio::{Asignatura, Asignaturas, Profesor, Profesores},
     menus::MenuPrincipal,
     menus::ITEMS_MENU_DATA,
     repository::PersistenciaTrait,
+    ui,
+    ui::InnerConsole,
 };
 
 #[cfg(test)]
@@ -71,11 +71,11 @@ fn salir_desde_menu_principal() {
         .provided_inputs
         .borrow_mut()
         .push(provided_input);
-    let consola = consola::Consola {
+    let ui = ui::UserInterface {
         inner_console: Box::new(mock_console),
     };
     let mut control = Control {
-        consola,
+        ui: ui,
         application,
     };
     let mut menu = MenuPrincipal::new(&mut control);

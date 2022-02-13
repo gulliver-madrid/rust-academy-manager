@@ -1,4 +1,4 @@
-use crate::{components::Control, consola::Consola, errors::SimpleResult, textos};
+use crate::{components::Control, errors::SimpleResult, textos, ui::UserInterface};
 
 pub struct MenuEliminarAsignatura<'a> {
     pub control: &'a mut Control,
@@ -6,21 +6,21 @@ pub struct MenuEliminarAsignatura<'a> {
 
 impl MenuEliminarAsignatura<'_> {
     pub fn abrir_menu(&mut self) {
-        let consola = &self.control.consola;
-        self.mostrar_texto_menu(consola);
-        match consola.pide_texto_a_usuario() {
+        let ui = &self.control.ui;
+        self.mostrar_texto_menu(ui);
+        match ui.pide_texto_a_usuario() {
             None => (),
             Some(nombre) => {
                 let result = self.control.application.remove_subject(&nombre);
                 let msg = self.get_info_result(result, nombre);
-                consola.mostrar(&msg);
-                consola.pausa_enter("continuar");
+                ui.mostrar(&msg);
+                ui.pausa_enter("continuar");
             }
         }
     }
 
-    fn mostrar_texto_menu(&self, consola: &Consola) {
-        consola.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA_A_ELIMINAR);
+    fn mostrar_texto_menu(&self, ui: &UserInterface) {
+        ui.mostrar(textos::INTRODUCE_NOMBRE_ASIGNATURA_A_ELIMINAR);
     }
 
     fn get_info_result(&self, result: SimpleResult, nombre: String) -> String {

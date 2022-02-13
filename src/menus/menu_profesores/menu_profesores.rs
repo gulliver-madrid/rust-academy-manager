@@ -49,9 +49,7 @@ impl<'a> MenuProfesores<'_> {
         items_menu: &ItemMenus,
     ) -> Option<SalirMenu> {
         self.mostrar_texto_menu(items_menu);
-
-        let entrada_usuario = self.control.consola.get_input();
-        let opcion_elegida = shared::extraer_opcion(entrada_usuario, &items_menu)?;
+        let opcion_elegida = self.control.ui.get_user_choice(&items_menu)?;
         match opcion_elegida {
             Opcion::MostrarLista => self.mostrar_lista_profesores(),
             Opcion::AnadirProfesor => self.abrir_menu_anadir_profesor(),
@@ -61,21 +59,21 @@ impl<'a> MenuProfesores<'_> {
         return None;
     }
     fn mostrar_texto_menu(&self, items_menu: &ItemMenus) {
-        let consola = &self.control.consola;
-        consola.clear_screen();
-        consola.mostrar_titulo(textos::MENU_PROFESORES);
+        let ui = &self.control.ui;
+        ui.clear_screen();
+        ui.mostrar_titulo(textos::MENU_PROFESORES);
         let texto_opciones = shared::crear_texto_opciones(&items_menu);
-        consola.mostrar(&texto_opciones);
+        ui.mostrar(&texto_opciones);
     }
     fn mostrar_lista_profesores(&self) {
         let profesores = self.control.application.teachers_app.get_teachers();
-        let consola = &self.control.consola;
-        consola.clear_screen();
-        consola.mostrar_titulo(textos::LISTA_PROFESORES);
+        let ui = &self.control.ui;
+        ui.clear_screen();
+        ui.mostrar_titulo(textos::LISTA_PROFESORES);
         for profesor in profesores {
-            consola.mostrar(&profesor.crear_linea_tabla());
+            ui.mostrar(&profesor.crear_linea_tabla());
         }
-        consola.pausa_enter("volver al menú de profesores");
+        ui.pausa_enter("volver al menú de profesores");
     }
 
     fn abrir_menu_anadir_profesor(&mut self) {
