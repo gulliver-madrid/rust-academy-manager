@@ -2,7 +2,6 @@ use super::menu_eliminar_asignatura::MenuEliminarAsignatura;
 
 use crate::components::Control;
 
-
 use crate::dominio::Asignaturas;
 use crate::menus::menu_asignar_profesor::MenuAsignarProfesor;
 use crate::menus::shared::{self, ItemMenu, SalirMenu};
@@ -11,8 +10,8 @@ use crate::views::View;
 
 use super::menu_anadir_asignatura::MenuAnadirAsignatura;
 
-#[derive(Clone)]
-enum Opcion {
+#[derive(Debug, Clone, PartialEq)]
+pub enum Opcion {
     MostrarLista,
     AnadirAsignatura,
     EliminarAsignatura,
@@ -22,7 +21,7 @@ enum Opcion {
 
 type ItemsMenu<'a> = Vec<ItemMenu<'a, Opcion>>;
 
-const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
+pub const ITEMS_MENU_DATA: [(Opcion, shared::TextoOpcion); 5] = [
     (Opcion::MostrarLista, "Ver la lista de asignaturas"),
     (Opcion::AnadirAsignatura, "Añadir una asignatura"),
     (Opcion::EliminarAsignatura, "Eliminar una asignatura"),

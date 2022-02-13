@@ -8,7 +8,7 @@ use crate::textos;
 
 const LOOP_LIMIT: u32 = 200;
 
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Opcion {
     Profesores,
     Asignaturas,
