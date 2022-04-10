@@ -1,11 +1,8 @@
 #[cfg(test)]
-use std::{cell::RefCell};
+use std::cell::RefCell;
 
 #[cfg(test)] // El compilador solo lo detecta en modo test
-use crate::{
-    ui::{InnerConsole},
-};
-
+use crate::ui::InnerConsole;
 
 #[cfg(test)]
 pub const SHOW_CONSOLE_OUTPUT: bool = false;
@@ -28,7 +25,7 @@ impl InnerConsole for MockConsole {
     fn get_input(&self) -> String {
         self.provided_inputs.borrow_mut().pop().unwrap()
     }
-    fn mostrar(&self, texto: &str) {
+    fn show(&self, texto: &str) {
         if SHOW_CONSOLE_OUTPUT {
             println!("{}", texto);
         }

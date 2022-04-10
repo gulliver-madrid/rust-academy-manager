@@ -1,0 +1,118 @@
+use super::remove_subject_menu::RemoveSubjectMenu;
+
+use crate::components::Control;
+
+use crate::domain::Subjects;
+use crate::menus::assign_teacher_menu::AssignTeacherMenu;
+use crate::menus::shared::{self, MenuExit, MenuItem};
+use crate::texts;
+use crate::views::View;
+
+use super::add_subject_menu::AddSubjectMenu;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum MenuOption {
+    ShowList,
+    AddSubject,
+    RemoveSubject,
+    AssignTeacher,
+    GoBack,
+}
+
+type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
+
+pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
+    (MenuOption::ShowList, "Ver la lista de asignaturas"),
+    (MenuOption::AddSubject, "Añadir una asignatura"),
+    (MenuOption::RemoveSubject, "Eliminar una asignatura"),
+    (
+        MenuOption::AssignTeacher,
+        "Asignar un profesor a una asignatura",
+    ),
+    (MenuOption::GoBack, "Volver al menú principal"),
+];
+
+pub struct SubjectsMenu<'a> {
+    pub control: &'a mut Control,
+}
+
+impl SubjectsMenu<'_> {
+    pub fn new(control: &mut Control) -> SubjectsMenu {
+        SubjectsMenu { control }
+    }
+    pub fn open_menu(&mut self) {
+        self.control.application.load_subjects();
+        let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
+        loop {
+            match self.show_iteration_menu(&menu_items) {
+                Some(MenuExit) => {
+                    break;
+                }
+                _ => continue,
+            }
+        }
+    }
+
+    fn show_iteration_menu(&mut self, menu_items: &MenuItems) -> Option<MenuExit> {
+        self.show_menu_text(menu_items);
+        let chosen_option = self.control.ui.get_user_choice(&menu_items)?;
+        match chosen_option {
+            MenuOption::ShowList => self.show_subjects_list(),
+            MenuOption::AddSubject => self.open_add_subject_menu(),
+            MenuOption::RemoveSubject => self.open_remove_subject_menu(),
+            MenuOption::AssignTeacher => self.open_assign_teacher_to_subject_menu(),
+            MenuOption::GoBack => return Some(MenuExit),
+        }
+        return None;
+    }
+
+    fn show_menu_text(&self, menu_items: &MenuItems) {
+        let ui = &self.control.ui;
+        ui.clear_screen();
+        ui.show_title(texts::SUBJECTS_MENU);
+        let options_text = shared::create_options_text(menu_items);
+        ui.show(&options_text);
+    }
+
+    fn show_subjects_list(&self) {
+        let ui = &self.control.ui;
+        let subjects = self.control.application.get_subjects();
+        match subjects {
+            Ok(subjects) => {
+                let subjects_list_text = self.create_subjects_list(subjects);
+                ui.clear_screen();
+                ui.show_title(texts::SUBJECTS_LIST);
+                ui.show(subjects_list_text.as_str());
+            }
+            Err(e) => ui.show(&e.to_string()),
+        }
+        ui.pause_enter("volver al menú de asignaturas");
+    }
+
+    fn create_subjects_list(&self, subjects: Subjects) -> String {
+        subjects
+            .iter()
+            .map(|subject| subject.create_table_row())
+            .collect::<Vec<String>>()
+            .join("\n")
+    }
+
+    fn open_add_subject_menu(&mut self) {
+        AddSubjectMenu {
+            control: self.control,
+        }
+        .open_menu();
+    }
+    fn open_remove_subject_menu(&mut self) {
+        RemoveSubjectMenu {
+            control: self.control,
+        }
+        .open_menu();
+    }
+    fn open_assign_teacher_to_subject_menu(&mut self) {
+        AssignTeacherMenu {
+            control: self.control,
+        }
+        .open_menu();
+    }
+}

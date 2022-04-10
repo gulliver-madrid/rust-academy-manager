@@ -1,14 +1,10 @@
+mod assign_teacher_menu;
 mod counter;
-mod menu_asignar_profesor;
-mod menu_asignaturas;
-mod menu_principal;
-mod menu_profesores;
+mod main_menu;
 pub mod shared;
+mod subjects_menu;
+mod teachers_menu;
 
-pub use menu_asignaturas::{
-    OpcionMenuAsignaturas, ITEMS_MENU_DATA_MENU_ASIGNATURAS,
-};
-pub use menu_principal::Opcion as OpcionMenuPrincipal;
-pub use menu_principal::{
-    MenuPrincipal, ITEMS_MENU_DATA as ITEMS_MENU_DATA_MENU_PRINCIPAL,
-};
+pub use main_menu::MenuOption as MainMenuOption;
+pub use main_menu::{MainMenu, MENU_ITEMS_DATA as ITEMS_MENU_DATA__MAIN_MENU};
+pub use subjects_menu::{SubjectsMenuOption, ITEMS_MENU_DATA__SUBJECTS_MENU};

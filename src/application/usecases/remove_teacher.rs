@@ -8,37 +8,37 @@ pub struct RemoveTeacherUseCase<'a> {
 }
 
 impl RemoveTeacherUseCase<'_> {
-    pub fn eliminar_profesor(&mut self, nombre: String) -> SimpleResult {
+    pub fn remove_teacher(&mut self, name: String) -> SimpleResult {
         self.repository.load_subjects();
-        let profesores = self.repository.get_profesores_as_ref()?;
-        let id_profesor: u32;
-        let index_profesor: usize;
-        match profesores.iter().position(|a| a.nombre == nombre) {
+        let teachers = self.repository.get_teachers_as_ref()?;
+        let teacher_id: u32;
+        let teacher_index: usize;
+        match teachers.iter().position(|a| a.name == name) {
             Some(index) => {
-                id_profesor = profesores[index].id;
-                index_profesor = index;
+                teacher_id = teachers[index].id;
+                teacher_index = index;
             }
             None => {
                 return Err(SimpleError::new(&format!(
                     "No hay ningún profesor con el nombre {}",
-                    nombre
+                    name
                 )));
             }
         }
-        self.remove_from_subjects_assignments(id_profesor);
-        let profesores = &mut self.repository.modelo.profesores.as_mut().unwrap();
-        profesores.remove(index_profesor);
-        self.repository.persistencia.save_profesores(profesores);
+        self.remove_from_subjects_assignments(teacher_id);
+        let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
+        teachers.remove(teacher_index);
+        self.repository.persistence.save_teachers(teachers);
         Ok(())
     }
 
-    fn remove_from_subjects_assignments(&mut self, id_profesor: u32) {
-        let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
-        for asignatura in &mut asignaturas.into_iter() {
-            asignatura
-                .profesores_asignados
-                .retain(|id| *id != id_profesor);
+    fn remove_from_subjects_assignments(&mut self, teacher_id: u32) {
+        let subjects = self.repository.model.subjects.as_mut().unwrap();
+        for subject in &mut subjects.into_iter() {
+            subject
+                .assigned_teachers
+                .retain(|id| *id != teacher_id);
         }
-        self.repository.persistencia.save_asignaturas(asignaturas);
+        self.repository.persistence.save_subjects(subjects);
     }
 }

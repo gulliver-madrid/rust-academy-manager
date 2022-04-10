@@ -7,17 +7,16 @@ pub struct GetSubjectIndexByNameUseCase<'a> {
 impl GetSubjectIndexByNameUseCase<'_> {
     pub fn get_subject_index_by_name(
         &mut self,
-        nombre_asignatura: &str,
+        subject_name: &str,
     ) -> Result<usize, SimpleError> {
-        let asignaturas = self.repository.modelo.asignaturas.as_mut().unwrap();
-        let busqueda_index = asignaturas
-            .iter()
-            .position(|a| a.nombre == nombre_asignatura);
+        let asignaturas = self.repository.model.subjects.as_mut().unwrap();
+        let busqueda_index =
+            asignaturas.iter().position(|a| a.name == subject_name);
         match busqueda_index {
             Some(index) => Ok(index),
             None => Err(SimpleError::new(&format!(
                 "Nombre no válido: {}",
-                nombre_asignatura
+                subject_name
             ))),
         }
     }

@@ -1,32 +1,42 @@
-use crate::dominio::Asignatura;
-use crate::dominio::Profesor;
+use crate::domain::Subject;
+use crate::domain::Teacher;
 use crate::helpers::set_number_chars;
 
+const NAME_TAG: &str = "Nombre";
+const ID_TAG: &str = "Id";
+const PHONE_TAG: &str = "Telefono";
+const SUBJECT_TAG: &str = "Asignatura";
+
 pub trait View {
-    fn crear_linea_tabla(&self) -> String;
+    fn create_table_row(&self) -> String;
 }
-impl View for Profesor {
-    fn crear_linea_tabla(&self) -> String {
-        let profesor_str = set_number_chars(&self.nombre, 22);
-        let tlf_str = match self.telefono.as_str() {
+impl View for Teacher {
+    fn create_table_row(&self) -> String {
+        let teacher_str = set_number_chars(&self.name, 22);
+        let phone_str = match self.phone_number.as_str() {
             "" => "desconocido",
             otro => otro,
         };
         format!(
-            "Nombre: {}  Id: {}  Telefono: {}",
-            profesor_str,
+            "{}: {}  {}: {}  {}: {}",
+            NAME_TAG,
+            teacher_str,
+            ID_TAG,
             format!("{:0>3}", self.id),
-            tlf_str
+            PHONE_TAG,
+            phone_str
         )
     }
 }
-impl View for Asignatura {
-    fn crear_linea_tabla(&self) -> String {
-        let asignatura_str = set_number_chars(&self.nombre, 28);
+impl View for Subject {
+    fn create_table_row(&self) -> String {
+        let asignatura_str = set_number_chars(&self.name, 28);
 
         format!(
-            "Asignatura: {}  Id: {}",
+            "{}: {}  {}: {}",
+            SUBJECT_TAG,
             asignatura_str,
+            ID_TAG,
             format!("{:0>3}", self.id)
         )
     }

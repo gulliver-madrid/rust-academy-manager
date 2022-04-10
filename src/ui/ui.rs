@@ -1,6 +1,6 @@
 use crate::helpers;
 
-use crate::menus::shared::ItemMenu;
+use crate::menus::shared::MenuItem;
 
 use super::inner_console::InnerConsole;
 
@@ -11,11 +11,11 @@ pub struct UserInterface {
 impl UserInterface {
     pub fn get_user_choice<'a, T>(
         &self,
-        items_menu: &'a Vec<ItemMenu<T>>,
+        menu_items: &'a Vec<MenuItem<T>>,
     ) -> Option<&'a T> {
         // T es una enum que representa una opcion de menu
         let eleccion = self.get_input();
-        crate::menus::shared::extraer_opcion(eleccion, &items_menu)
+        crate::menus::shared::extract_option(eleccion, &menu_items)
     }
 
     pub fn clear_screen(&self) {
@@ -26,28 +26,28 @@ impl UserInterface {
         self.inner_console.get_input()
     }
 
-    pub fn pide_texto_a_usuario(&self) -> Option<String> {
+    pub fn ask_text_to_user(&self) -> Option<String> {
         match self.get_input().trim() {
             "" => None,
             texto => Some(String::from(texto)),
         }
     }
 
-    pub fn mostrar(&self, texto: &str) {
-        self.inner_console.mostrar(texto);
+    pub fn show(&self, texto: &str) {
+        self.inner_console.show(texto);
     }
 
-    pub fn mostrar_titulo(&self, texto: &str) {
-        self.mostrar(&self.convertir_a_titulo(texto));
+    pub fn show_title(&self, texto: &str) {
+        self.show(&self.convert_to_title(texto));
     }
 
-    pub fn pausa_enter(&self, texto: &str) {
-        self.mostrar(&format!("Pulsa ENTER para {}", texto));
+    pub fn pause_enter(&self, texto: &str) {
+        self.show(&format!("Pulsa ENTER para {}", texto));
         self.get_input();
     }
 
     /// Anade una linea de subrayado al texto especificado
-    fn convertir_a_titulo(&self, texto: &str) -> String {
+    fn convert_to_title(&self, texto: &str) -> String {
         let chars = texto.chars();
         let n = chars.count();
         let mut s = String::new();
