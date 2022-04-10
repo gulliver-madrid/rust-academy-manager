@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{dominio::Profesores, errors::SimpleResult, repository::Repository};
+use crate::{domain::Teachers, errors::SimpleResult, repository::Repository};
 
 use super::usecases::{AddTeacherUseCase, RemoveTeacherUseCase};
 
@@ -18,34 +18,34 @@ impl TeachersApp {
     }
 
     /// Carga los profesores en el Modelo si es necesario.
-    pub fn load_profesores(&mut self) -> () {
-        self.repository.borrow_mut().load_profesores();
+    pub fn load_teachers(&mut self) -> () {
+        self.repository.borrow_mut().load_teachers();
     }
 
     /// Devuelve una copia de la lista de profesores.
-    pub fn get_teachers(&self) -> Profesores {
+    pub fn get_teachers(&self) -> Teachers {
         self.repository
             .borrow()
-            .modelo
-            .profesores
+            .model
+            .teachers
             .as_ref()
             .unwrap()
             .clone()
     }
 
     /// Añade un nuevo profesor con el nombre especificado.
-    pub fn anadir_nuevo_profesor(&mut self, nombre: &str) -> SimpleResult {
+    pub fn add_new_teacher(&mut self, name: &str) -> SimpleResult {
         AddTeacherUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .anadir_nuevo_profesor(nombre.to_string())
+        .add_new_teacher(name.to_string())
     }
 
     /// Elimina un profesor identificado por su nombre.
-    pub fn eliminar_profesor(&mut self, nombre: &str) -> SimpleResult {
+    pub fn remove_teacher(&mut self, name: &str) -> SimpleResult {
         RemoveTeacherUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .eliminar_profesor(nombre.to_string())
+        .remove_teacher(name.to_string())
     }
 }

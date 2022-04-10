@@ -1,9 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
-    dominio::Asignaturas,
+    domain::Subjects,
     errors::{SimpleError, SimpleResult},
-    repository::{create_repo, Repository,  PersistenciaTrait},
+    repository::{create_repo, PersistenceTrait, Repository},
 };
 
 use super::{
@@ -20,7 +20,7 @@ pub struct Application {
 }
 
 impl Application {
-    pub fn new(persistencia: Box<dyn PersistenciaTrait>) -> Self {
+    pub fn new(persistencia: Box<dyn PersistenceTrait>) -> Self {
         let repository = create_repo(persistencia);
         let repo_ref = Rc::new(RefCell::new(repository));
         let teachers_app = TeachersApp::new(&repo_ref);
@@ -36,47 +36,47 @@ impl Application {
     }
 
     /// Devuelve una copia de la lista de asignaturas.
-    pub fn get_asignaturas(&self) -> Result<Asignaturas, SimpleError> {
-        let option = self.repository.borrow().modelo.asignaturas.clone();
+    pub fn get_subjects(&self) -> Result<Subjects, SimpleError> {
+        let option = self.repository.borrow().model.subjects.clone();
         option.ok_or(SimpleError::new("No se pudieron obtener las asignaturas"))
     }
 
     /// Añade una nuevo asignatura con el nombre especificado.
-    pub fn add_new_subject(&mut self, nombre: &str) -> SimpleResult {
+    pub fn add_new_subject(&mut self, name: &str) -> SimpleResult {
         AddSubjectUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .add_new_subject(nombre.to_string())
+        .add_new_subject(name.to_string())
     }
 
     /// Elimina una asignatura identificada por su nombre.
-    pub fn remove_subject(&mut self, nombre: &str) -> SimpleResult {
+    pub fn remove_subject(&mut self, name: &str) -> SimpleResult {
         RemoveSubjectUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .remove_subject(nombre.to_string())
+        .remove_subject(name.to_string())
     }
 
     /// Devuelve el índice de la asignatura con el nombre especificado.
     pub fn get_subject_index_by_name(
         &mut self,
-        nombre_asignatura: &str,
+        subject_name: &str,
     ) -> Result<usize, SimpleError> {
         GetSubjectIndexByNameUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .get_subject_index_by_name(nombre_asignatura)
+        .get_subject_index_by_name(subject_name)
     }
 
     /// Asigna un profesor identificado por su id a la asignatura con el indice especificado.
-    pub fn asignar_profesor_a_asignatura(
+    pub fn assign_teacher_to_subject(
         &mut self,
-        index_asignatura: usize,
-        id_profesor: u32,
+        subject_index: usize,
+        teacher_id: u32,
     ) -> SimpleResult {
         AssignTeacherToSubjectUseCase {
             repository: &mut self.repository.borrow_mut(),
         }
-        .asignar_profesor_a_asignatura(index_asignatura, id_profesor)
+        .assign_teacher_to_subject(subject_index, teacher_id)
     }
 }

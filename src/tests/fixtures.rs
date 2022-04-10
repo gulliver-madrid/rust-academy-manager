@@ -5,35 +5,35 @@ use std::fmt::Debug;
 use crate::{
     application::Application,
     components::Control,
-    dominio::{Asignatura, Asignaturas, Profesor, Profesores},
-    menus::shared::TextoOpcion,
-    repository::PersistenciaTrait,
+    domain::{Subject, Subjects, Teacher, Teachers},
+    menus::shared::OptionText,
+    repository::PersistenceTrait,
     tests::mock_console::MockConsole,
     ui::UserInterface,
 };
 
 #[cfg(test)]
 pub struct MockPersistencia {
-    pub mock_profesores: Vec<Profesor>,
-    pub mock_asignaturas: Vec<Asignatura>,
+    pub mock_profesores: Vec<Teacher>,
+    pub mock_asignaturas: Vec<Subject>,
 }
 
 #[cfg(test)]
-impl PersistenciaTrait for MockPersistencia {
-    fn save_profesores(&self, _profesores: &Profesores) {}
-    fn save_asignaturas(&self, _asignaturas: &Asignaturas) {}
-    fn load_profesores(&self) -> Profesores {
+impl PersistenceTrait for MockPersistencia {
+    fn save_teachers(&self, _profesores: &Teachers) {}
+    fn save_subjects(&self, _asignaturas: &Subjects) {}
+    fn load_teachers(&self) -> Teachers {
         return self.mock_profesores.clone();
     }
-    fn load_subjects(&self) -> Asignaturas {
+    fn load_subjects(&self) -> Subjects {
         return self.mock_asignaturas.clone();
     }
 }
 
 #[cfg(test)]
-pub fn choice_to_string<'a, OpcionMenu: PartialEq + Debug, const N: usize>(
-    opcion: OpcionMenu,
-    items_menu_data: [(OpcionMenu, TextoOpcion); N],
+pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
+    opcion: MenuOption,
+    items_menu_data: [(MenuOption, OptionText); N],
 ) -> Option<String> {
     let mut index = 1;
     for tupla in items_menu_data {
@@ -46,16 +46,16 @@ pub fn choice_to_string<'a, OpcionMenu: PartialEq + Debug, const N: usize>(
 }
 
 #[cfg(test)]
-pub fn crear_application_con_persistencia_vacia() -> Application {
+pub fn create_application_with_void_persistence() -> Application {
     let persistencia = MockPersistencia {
-        mock_profesores: Vec::<Profesor>::new(),
-        mock_asignaturas: Vec::<Asignatura>::new(),
+        mock_profesores: Vec::<Teacher>::new(),
+        mock_asignaturas: Vec::<Subject>::new(),
     };
     Application::new(Box::new(persistencia))
 }
 
 #[cfg(test)]
-pub fn crear_control(
+pub fn create_control(
     mock_console: MockConsole,
     application: Application,
 ) -> Control {

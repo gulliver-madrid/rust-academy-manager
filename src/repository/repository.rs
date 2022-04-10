@@ -1,42 +1,42 @@
-use crate::{dominio::Profesor, errors::SimpleError};
+use crate::{domain::Teacher, errors::SimpleError};
 
-use super::{modelo::Modelo, PersistenciaTrait};
+use super::{model::Model, PersistenceTrait};
 
-pub fn create_repo(persistencia: Box<dyn PersistenciaTrait>) -> Repository {
+pub fn create_repo(persistencia: Box<dyn PersistenceTrait>) -> Repository {
     let repository = Repository {
-        persistencia,
-        modelo: Modelo {
-            profesores: None,
-            asignaturas: None,
+        persistence: persistencia,
+        model: Model {
+            teachers: None,
+            subjects: None,
         },
     };
     repository
 }
 pub struct Repository {
-    pub persistencia: Box<dyn PersistenciaTrait>,
-    pub modelo: Modelo,
+    pub persistence: Box<dyn PersistenceTrait>,
+    pub model: Model,
 }
 
 impl Repository {
-    pub fn load_profesores(&mut self) {
-        match self.modelo.profesores {
+    pub fn load_teachers(&mut self) {
+        match self.model.teachers {
             None => {
-                self.modelo.profesores = Some(self.persistencia.load_profesores());
+                self.model.teachers = Some(self.persistence.load_teachers());
             }
             _ => {}
         }
     }
 
     pub fn load_subjects(&mut self) {
-        match self.modelo.asignaturas {
+        match self.model.subjects {
             None => {
-                self.modelo.asignaturas = Some(self.persistencia.load_subjects());
+                self.model.subjects = Some(self.persistence.load_subjects());
             }
             _ => {}
         }
     }
-    pub fn get_profesores_as_ref(&self) -> Result<&Vec<Profesor>, SimpleError> {
-        let result = self.modelo.profesores.as_ref();
+    pub fn get_teachers_as_ref(&self) -> Result<&Vec<Teacher>, SimpleError> {
+        let result = self.model.teachers.as_ref();
         match result {
             Some(profesores) => Ok(profesores),
             None => Err(SimpleError::new(

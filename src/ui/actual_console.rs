@@ -1,13 +1,13 @@
 use super::inner_console::InnerConsole;
 use std::io;
 
-const USAR_BORRADO: bool = true;
+const USE_SCREEN_CLEARING: bool = true;
 
 pub struct ActualConsole {}
 
 impl InnerConsole for ActualConsole {
     fn clear_screen(&self) {
-        if USAR_BORRADO {
+        if USE_SCREEN_CLEARING {
             clearscreen::clear().unwrap();
         }
     }
@@ -18,7 +18,7 @@ impl InnerConsole for ActualConsole {
             .expect("Error: no se pudo leer la entrada del usuario");
         String::from(input.trim())
     }
-    fn mostrar(&self, texto: &str) {
+    fn show(&self, texto: &str) {
         println!("{}", texto);
     }
 }

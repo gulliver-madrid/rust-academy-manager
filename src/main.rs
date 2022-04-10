@@ -1,24 +1,24 @@
 mod application;
 mod components;
-mod dominio;
+mod domain;
 mod errors;
 mod helpers;
 mod menus;
 mod repository;
 mod tests;
-mod textos;
+mod texts;
 mod ui;
 mod views;
 
-use menus::MenuPrincipal;
+use menus::MainMenu;
 
 use crate::{
-    application::Application, components::Control, repository::Persistencia,
+    application::Application, components::Control, repository::Persistence,
     ui::ActualConsole,
 };
 
 fn main() {
-    let persistencia = Persistencia {};
+    let persistencia = Persistence {};
     let application = Application::new(Box::new(persistencia));
     let ui = ui::UserInterface {
         inner_console: Box::new(ActualConsole {}),
@@ -27,7 +27,7 @@ fn main() {
         ui: ui,
         application,
     };
-    let mut menu = MenuPrincipal::new(&mut control);
-    menu.abrir_menu();
+    let mut menu = MainMenu::new(&mut control);
+    menu.open_menu();
     println!("\nPrograma finalizado\n");
 }

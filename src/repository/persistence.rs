@@ -7,46 +7,47 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
-use super::serialization;
-use crate::dominio::Asignaturas;
-use crate::dominio::Profesores;
 use super::serializable::{SerializableSubject, SerializableTeacher};
+use super::serialization;
+use crate::domain::Subjects;
+use crate::domain::Teachers;
 
 const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 const SUBJECTS_PATH: &str = "subjects.json";
 
-pub trait PersistenciaTrait {
-    fn save_profesores(&self, profesores: &Profesores);
-    fn save_asignaturas(&self, asignaturas: &Asignaturas);
-    fn load_profesores(&self) -> Profesores;
-    fn load_subjects(&self) -> Asignaturas;
+pub trait PersistenceTrait {
+    fn save_teachers(&self, teachers: &Teachers);
+    fn save_subjects(&self, subjects: &Subjects);
+    fn load_teachers(&self) -> Teachers;
+    fn load_subjects(&self) -> Subjects;
 }
-pub struct Persistencia {}
+pub struct Persistence {}
 
-impl PersistenciaTrait for Persistencia {
-    fn save_profesores(&self, profesores: &Profesores) {
-        let data_to_serialize = serialization::convert_teachers_to_serializable(profesores.clone());
+impl PersistenceTrait for Persistence {
+    fn save_teachers(&self, teachers: &Teachers) {
+        let data_to_serialize =
+            serialization::convert_teachers_to_serializable(teachers.clone());
         let json = to_json(&data_to_serialize);
         self::write_in_file(&get_teachers_path(), json);
     }
-    fn save_asignaturas(&self, asignaturas: &Asignaturas) {
+    fn save_subjects(&self, subjects: &Subjects) {
         let data_to_serialize =
-            serialization::convert_subjects_to_serializable(asignaturas.clone());
+            serialization::convert_subjects_to_serializable(subjects.clone());
         let json = to_json(&data_to_serialize);
         self::write_in_file(&get_subjects_path(), json);
     }
 
-    fn load_profesores(&self) -> Profesores {
-        let serialized = read_json_profesores();
-        let profesores = serialization::convert_serialized_to_teachers(serialized);
-        profesores
+    fn load_teachers(&self) -> Teachers {
+        let serialized = read_json_teachers();
+        let teachers = serialization::convert_serialized_to_teachers(serialized);
+        teachers
     }
 
-    fn load_subjects(&self) -> Asignaturas {
-        let serialized = read_json_asignaturas();
-        let asignaturas = serialization::convert_serialized_to_subjects(serialized);
-        asignaturas
+    fn load_subjects(&self) -> Subjects {
+        let serialized = read_json_subjects();
+        let subjects = serialization::convert_serialized_to_subjects(serialized);
+        subjects
     }
 }
 
@@ -77,13 +78,13 @@ fn write_in_file(ruta: &PathBuf, texto: String) {
     writeln!(&mut file, "{}", texto.as_str()).unwrap();
 }
 
-fn read_json_profesores() -> Vec<SerializableTeacher> {
+fn read_json_teachers() -> Vec<SerializableTeacher> {
     let file = File::open(get_teachers_path()).unwrap();
     let reader = BufReader::new(file);
     serde_json::from_reader(reader).unwrap()
 }
 
-pub fn read_json_asignaturas() -> Vec<SerializableSubject> {
+pub fn read_json_subjects() -> Vec<SerializableSubject> {
     let file = File::open(get_subjects_path()).unwrap();
     let reader = BufReader::new(file);
     serde_json::from_reader(reader).unwrap()

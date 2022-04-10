@@ -1,9 +1,9 @@
 use crate::{
-    dominio::Profesor,
+    domain::Teacher,
     errors::{SimpleError, SimpleResult},
     helpers,
     repository::Repository,
-    textos,
+    texts,
 };
 
 pub struct AddTeacherUseCase<'a> {
@@ -11,40 +11,40 @@ pub struct AddTeacherUseCase<'a> {
 }
 
 impl AddTeacherUseCase<'_> {
-    pub fn anadir_nuevo_profesor(&mut self, nombre: String) -> SimpleResult {
-        let teachers = self.repository.modelo.profesores.as_ref().unwrap();
+    pub fn add_new_teacher(&mut self, name: String) -> SimpleResult {
+        let teachers = self.repository.model.teachers.as_ref().unwrap();
         for teacher in teachers {
-            if teacher.nombre == nombre {
+            if teacher.name == name {
                 return Err(SimpleError::new(&format!(
                     "Ya existe un profesor con el nombre {}",
-                    nombre
+                    name
                 )));
             }
         }
         let next_id: u32 = self.get_next_id();
-        let nuevo_profesor = self.create_new_teacher(nombre, next_id);
-        self.add_teacher(nuevo_profesor);
+        let new_teacher = self.create_new_teacher(name, next_id);
+        self.add_teacher(new_teacher);
         Ok(())
     }
 
     fn get_next_id(&self) -> u32 {
-        let profesores = &self.repository.modelo.profesores.as_ref().unwrap();
-        let last_profesor = helpers::get_last_element(profesores)
-            .expect(textos::errores::NO_PROFESOR);
-        last_profesor.id + 1
+        let teachers = &self.repository.model.teachers.as_ref().unwrap();
+        let last_teacher =
+            helpers::get_last_element(teachers).expect(texts::errors::NO_TEACHER);
+        last_teacher.id + 1
     }
 
-    fn create_new_teacher(&self, nombre: String, id: u32) -> Profesor {
-        Profesor {
-            nombre,
+    fn create_new_teacher(&self, name: String, id: u32) -> Teacher {
+        Teacher {
+            name,
             id,
-            telefono: String::new(),
+            phone_number: String::new(),
         }
     }
 
-    fn add_teacher(&mut self, profesor: Profesor) {
-        let profesores = &mut self.repository.modelo.profesores.as_mut().unwrap();
-        profesores.push(profesor);
-        self.repository.persistencia.save_profesores(profesores);
+    fn add_teacher(&mut self, teacher: Teacher) {
+        let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
+        teachers.push(teacher);
+        self.repository.persistence.save_teachers(teachers);
     }
 }
