@@ -20,20 +20,16 @@ pub struct Repository {
 }
 
 impl Repository {
-    pub fn load_teachers(&mut self) {
+    pub fn load_teachers_if_needed(&mut self) {
         match self.model.teachers {
-            None => {
-                self.model.teachers = Some(self.persistence.load_teachers());
-            }
+            None => self.populate_teachers(),
             _ => {}
         }
     }
 
-    pub fn load_subjects(&mut self) {
+    pub fn load_subjects_if_needed(&mut self) {
         match self.model.subjects {
-            None => {
-                self.model.subjects = Some(self.persistence.load_subjects());
-            }
+            None => self.populate_subjects(),
             _ => {}
         }
     }
@@ -45,5 +41,11 @@ impl Repository {
                 &t!("couldnt_access_teachers_list"),
             )),
         }
+    }
+    fn populate_subjects(&mut self) {
+        self.model.subjects = Some(self.persistence.load_subjects());
+    }
+    fn populate_teachers(&mut self) {
+        self.model.teachers = Some(self.persistence.load_teachers());
     }
 }

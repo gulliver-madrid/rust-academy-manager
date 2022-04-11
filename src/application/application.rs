@@ -33,8 +33,8 @@ impl Application {
     }
 
     /// Carga las asignaturas en el Modelo si es necesario.
-    pub fn load_subjects(&mut self) -> () {
-        self.repository.borrow_mut().load_subjects();
+    pub fn load_subjects_if_needed(&mut self) -> () {
+        self.repository.borrow_mut().load_subjects_if_needed();
     }
 
     /// Devuelve una copia de la lista de asignaturas.

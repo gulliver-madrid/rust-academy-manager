@@ -39,7 +39,7 @@ impl SubjectsMenu<'_> {
         SubjectsMenu { control }
     }
     pub fn open_menu(&mut self) {
-        self.control.application.load_subjects();
+        self.control.application.load_subjects_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {

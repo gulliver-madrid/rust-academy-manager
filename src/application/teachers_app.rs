@@ -18,8 +18,8 @@ impl TeachersApp {
     }
 
     /// Carga los profesores en el Modelo si es necesario.
-    pub fn load_teachers(&mut self) -> () {
-        self.repository.borrow_mut().load_teachers();
+    pub fn load_teachers_if_needed(&mut self) -> () {
+        self.repository.borrow_mut().load_teachers_if_needed();
     }
 
     /// Devuelve una copia de la lista de profesores.
