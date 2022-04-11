@@ -4,7 +4,11 @@ use super::shared::{MenuExit, MenuItem};
 use super::subjects_menu::SubjectsMenu;
 use super::teachers_menu::TeachersMenu;
 use crate::components::Control;
-use crate::texts;
+
+
+use rust_i18n::t;
+
+// rust_i18n::i18n!("src/locales");
 
 const LOOP_LIMIT: u32 = 200;
 
@@ -68,7 +72,7 @@ impl MainMenu<'_> {
     }
     fn show_menu_text(&self, menu_items: &MenuItems) {
         self.control.ui.clear_screen();
-        self.control.ui.show_title(texts::MAIN_MENU);
+        self.control.ui.show_title(&t!("main_menu"));
         let texto_opciones = menus::create_options_text(&menu_items);
         self.control.ui.show(&texto_opciones);
     }

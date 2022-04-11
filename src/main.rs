@@ -17,7 +17,12 @@ use crate::{
     ui::ActualConsole,
 };
 
+// use rust_i18n::t;
+
+rust_i18n::i18n!("locales");
+
 fn main() {
+    rust_i18n::set_locale("es");
     let persistencia = Persistence {};
     let application = Application::new(Box::new(persistencia));
     let ui = ui::UserInterface {
