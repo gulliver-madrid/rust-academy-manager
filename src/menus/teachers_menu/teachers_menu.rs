@@ -35,7 +35,7 @@ impl<'a> TeachersMenu<'_> {
     }
 
     pub fn open_menu(&mut self) {
-        self.control.application.teachers_app.load_teachers();
+        self.control.application.teachers_app.load_teachers_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
