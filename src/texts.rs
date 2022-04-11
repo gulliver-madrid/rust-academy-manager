@@ -1,4 +1,4 @@
-pub const MAIN_MENU: &str = "Menú Principal";
+// pub const MAIN_MENU: &str = "Menú Principal";
 pub const SUBJECTS_MENU: &str = "Menú Asignaturas";
 pub const TEACHERS_MENU: &str = "Menú Profesores";
 
