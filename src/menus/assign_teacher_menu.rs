@@ -1,4 +1,6 @@
-use crate::{components::Control, texts};
+use rust_i18n::t;
+
+use crate::{components::Control};
 
 pub struct AssignTeacherMenu<'a> {
     pub control: &'a mut Control,
@@ -13,7 +15,7 @@ impl AssignTeacherMenu<'_> {
             Some(entered_text) => subject_name = entered_text,
             None => {
                 ui.show("Operación cancelada");
-                ui.pause_enter(texts::CONTINUE);
+                ui.pause_enter(&t!("continue"));
                 return;
             }
         }
@@ -28,7 +30,7 @@ impl AssignTeacherMenu<'_> {
             }
             Err(e) => {
                 ui.show(&e.to_string());
-                ui.pause_enter(texts::CONTINUE);
+                ui.pause_enter(&t!("continue"));
                 return;
             }
         }
@@ -45,7 +47,7 @@ impl AssignTeacherMenu<'_> {
             } else {
                 ui.show("No se pudo realizar la operación");
             }
-            ui.pause_enter(texts::CONTINUE);
+            ui.pause_enter(&t!("continue"));
         }
     }
 }

@@ -1,4 +1,5 @@
-use crate::texts;
+use rust_i18n::t;
+
 
 pub struct MenuItem<'a, MenuOption> {
     pub text: &'a str,
@@ -24,7 +25,7 @@ pub fn extract_option<'a, MenuOption>(
 
 pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
     // Crea el texto correspondiente a la lista de MenuItem recibidos
-    String::from(texts::CHOOSE_AN_OPTION.to_owned() + ":\n")
+    String::from(t!("choose_an_option") + ":\n")
         + &menu_items
             .iter()
             .enumerate()

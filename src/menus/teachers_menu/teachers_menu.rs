@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use super::add_teacher_menu;
 use super::remove_teacher_menu::RemoveTeacherMenu;
 
@@ -5,7 +7,6 @@ use crate::components::Control;
 
 use crate::menus::shared;
 use crate::menus::shared::{MenuExit, MenuItem, OptionText};
-use crate::texts;
 use crate::views::View;
 
 #[derive(Clone)]
@@ -59,7 +60,7 @@ impl<'a> TeachersMenu<'_> {
     fn show_menu_text(&self, menu_items: &MenuItems) {
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(texts::TEACHERS_MENU);
+        ui.show_title(&t!("teachers_menu"));
         let options_text = shared::create_options_text(&menu_items);
         ui.show(&options_text);
     }
@@ -67,7 +68,7 @@ impl<'a> TeachersMenu<'_> {
         let teachers = self.control.application.teachers_app.get_teachers();
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(texts::TEACHERS_LIST);
+        ui.show_title(&t!("teachers_list"));
         for teacher in teachers {
             ui.show(&teacher.create_table_row());
         }
