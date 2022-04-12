@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use super::counter::Counter;
 use super::shared as menus;
 use super::shared::{MenuExit, MenuItem};
@@ -5,10 +7,6 @@ use super::subjects_menu::SubjectsMenu;
 use super::teachers_menu::TeachersMenu;
 use crate::components::Control;
 
-
-use rust_i18n::t;
-
-// rust_i18n::i18n!("src/locales");
 
 const LOOP_LIMIT: u32 = 200;
 

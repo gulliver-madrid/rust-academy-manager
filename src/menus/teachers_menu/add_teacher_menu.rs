@@ -1,4 +1,6 @@
-use crate::{components::Control, texts};
+use rust_i18n::t;
+
+use crate::{components::Control};
 
 pub struct AddTeacherMenu<'a> {
     pub control: &'a mut Control,
@@ -19,11 +21,11 @@ impl AddTeacherMenu<'_> {
                 Err(e) => e.to_string(),
             };
             ui.show(&msg);
-            ui.pause_enter(texts::CONTINUE);
+            ui.pause_enter(&t!("continue"));
         }
     }
 
     fn show_menu_text(&self) {
-        self.control.ui.show(texts::INPUT_TEACHER_NAME);
+        self.control.ui.show(&t!("input_teacher_name"));
     }
 }

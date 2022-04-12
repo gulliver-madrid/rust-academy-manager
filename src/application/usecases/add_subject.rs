@@ -1,9 +1,10 @@
+use rust_i18n::t;
+
 use crate::{
     domain::{Subject, Subjects},
     errors::{SimpleError, SimpleResult},
     helpers,
     repository::Repository,
-    texts,
 };
 
 pub struct AddSubjectUseCase<'a> {
@@ -39,7 +40,7 @@ impl AddSubjectUseCase<'_> {
     fn get_next_id(&self) -> u32 {
         let subjects = &self.repository.model.subjects.as_ref().unwrap();
         let last_subject = helpers::get_last_element(subjects)
-            .expect(texts::errors::NO_SUBJECT);
+            .expect(&t!("errors.no_subject"));
         last_subject.id + 1
     }
 

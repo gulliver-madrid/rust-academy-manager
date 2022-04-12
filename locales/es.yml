@@ -1,7 +1,16 @@
-es: 
+es:
+  choose_an_option: Elige una opción
+  continue: continuar
+  enter_name_subject_to_be_deleted: Introduce el nombre de la asignatura a eliminar (dejalo en blanco para volver al menu anterior)
+  enter_name_teacher_to_be_deleted: Introduce el nombre del profesor a eliminar (dejalo en blanco para volver al menu anterior)
+  input_subject_name: Introduce el nombre de la nueva asignatura (dejalo en blanco para volver al menu anterior)
+  input_teacher_name: Introduce el nombre de un nuevo profesor (dejalo en blanco para volver al menu anterior)
   main_menu: Menú Principal
-  # main_menu: Menú Principal
-  # hello: Hello world # A simple key -> value mapping
-  # messages:
-  #   hello: Hello, %{name} # A nested key.sub_key -> value mapping, in this case "messages.hello" maps to "Hello, %{name}"
-  
+  subjects_list: Lista de asignaturas
+  subjects_menu: Menú Asignaturas
+  teachers_list: Lista de profesores
+  teachers_menu: Menú Profesores
+  errors:
+    no_subject: 'Error: no se encontró ninguna asignatura'
+    no_teacher: 'Error: no se encontró ningún profesor'
+

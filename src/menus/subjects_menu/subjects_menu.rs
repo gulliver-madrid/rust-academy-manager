@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use super::remove_subject_menu::RemoveSubjectMenu;
 
 use crate::components::Control;
@@ -5,7 +7,6 @@ use crate::components::Control;
 use crate::domain::Subjects;
 use crate::menus::assign_teacher_menu::AssignTeacherMenu;
 use crate::menus::shared::{self, MenuExit, MenuItem};
-use crate::texts;
 use crate::views::View;
 
 use super::add_subject_menu::AddSubjectMenu;
@@ -69,7 +70,7 @@ impl SubjectsMenu<'_> {
     fn show_menu_text(&self, menu_items: &MenuItems) {
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(texts::SUBJECTS_MENU);
+        ui.show_title(&t!("subjects_menu"));
         let options_text = shared::create_options_text(menu_items);
         ui.show(&options_text);
     }
@@ -81,7 +82,7 @@ impl SubjectsMenu<'_> {
             Ok(subjects) => {
                 let subjects_list_text = self.create_subjects_list(subjects);
                 ui.clear_screen();
-                ui.show_title(texts::SUBJECTS_LIST);
+                ui.show_title(&t!("subjects_list"));
                 ui.show(subjects_list_text.as_str());
             }
             Err(e) => ui.show(&e.to_string()),

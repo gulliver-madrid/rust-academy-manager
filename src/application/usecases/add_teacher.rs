@@ -1,9 +1,10 @@
+use rust_i18n::t;
+
 use crate::{
     domain::Teacher,
     errors::{SimpleError, SimpleResult},
     helpers,
     repository::Repository,
-    texts,
 };
 
 pub struct AddTeacherUseCase<'a> {
@@ -30,7 +31,7 @@ impl AddTeacherUseCase<'_> {
     fn get_next_id(&self) -> u32 {
         let teachers = &self.repository.model.teachers.as_ref().unwrap();
         let last_teacher =
-            helpers::get_last_element(teachers).expect(texts::errors::NO_TEACHER);
+            helpers::get_last_element(teachers).expect(&t!("errors.no_teacher"));
         last_teacher.id + 1
     }
 

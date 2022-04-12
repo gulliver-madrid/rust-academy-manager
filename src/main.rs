@@ -6,7 +6,6 @@ mod helpers;
 mod menus;
 mod repository;
 mod tests;
-mod texts;
 mod ui;
 mod views;
 

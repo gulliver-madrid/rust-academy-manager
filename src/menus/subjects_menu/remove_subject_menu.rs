@@ -1,4 +1,6 @@
-use crate::{components::Control, errors::SimpleResult, texts};
+use rust_i18n::t;
+
+use crate::{components::Control, errors::SimpleResult};
 
 pub struct RemoveSubjectMenu<'a> {
     pub control: &'a mut Control,
@@ -14,7 +16,7 @@ impl RemoveSubjectMenu<'_> {
                 let result = self.control.application.remove_subject(&name);
                 let msg = self.get_info_result(result, &name);
                 ui.show(&msg);
-                ui.pause_enter(texts::CONTINUE);
+                ui.pause_enter(&t!("continue"));
             }
         }
     }
@@ -22,7 +24,7 @@ impl RemoveSubjectMenu<'_> {
     fn show_menu_text(&self) {
         self.control
             .ui
-            .show(texts::ENTER_NAME_SUBJECT_TO_BE_DELETED);
+            .show(&t!("enter_name_subject_to_be_deleted"));
     }
 
     fn get_info_result(&self, result: SimpleResult, name: &str) -> String {
