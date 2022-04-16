@@ -12,7 +12,7 @@ mod views;
 use menus::MainMenu;
 
 use crate::{
-    application::Application, components::Control, repository::Persistence,
+    application::Application, components::Control, repository::JsonPersistence,
     ui::ActualConsole,
 };
 
@@ -22,7 +22,7 @@ rust_i18n::i18n!("locales");
 
 fn main() {
     rust_i18n::set_locale("es");
-    let persistencia = Persistence {};
+    let persistencia = JsonPersistence {};
     let application = Application::new(Box::new(persistencia));
     let ui = ui::UserInterface {
         inner_console: Box::new(ActualConsole {}),
