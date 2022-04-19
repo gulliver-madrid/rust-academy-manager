@@ -1,4 +1,5 @@
 es:
+  cancelled_op: Operación cancelada
   choose_an_option: Elige una opción
   continue: continuar
   enter_name_subject_to_be_deleted: Introduce el nombre de la asignatura a eliminar (dejalo en blanco para volver al menu anterior)
@@ -10,7 +11,57 @@ es:
   subjects_menu: Menú Asignaturas
   teachers_list: Lista de profesores
   teachers_menu: Menú Profesores
+  no_subject_with_name: No hay ninguna asignatura con el nombre 
+  no_teacher_with_name: No hay ningún profesor con el nombre 
+  couldnt_get_subjects: No se pudieron obtener las asignaturas
+  no_valid_name: Nombre no válido
+  press_enter_to: Pulsa ENTER para
+  successfully_removed_subject: Se eliminó exitosamente la asignatura
+  unknown: desconocido
+  back_subjects_menu: volver al menú de asignaturas
+  back_to_teachers_menu: volver al menú de profesores
+  program_finished: Programa finalizado
   errors:
-    no_subject: 'Error: no se encontró ninguna asignatura'
-    no_teacher: 'Error: no se encontró ningún profesor'
-
+    no_subject: "Error: no se encontró ninguna asignatura"
+    no_teacher: "Error: no se encontró ningún profesor"
+    not_implemented: "Error: no implementado"
+    couldnt_read_user_input: "Error: no se pudo leer la entrada del usuario"
+  menu_options:
+    teachers: Profesores
+    subjects: Asignaturas
+    exit: Salir
+  subjects_menu_options:
+    show_list: Ver la lista de asignaturas
+    add_subject: Añadir una asignatura
+    remove_subject: Eliminar una asignatura
+    assign_teacher: Asignar un profesor a una asignatura
+    go_back: Volver al menú principal
+  teachers_menu_options:
+    show_list: Ver la lista de profesores
+    add_teacher: Añadir un profesor
+    remove_teacher: Eliminar un profesor
+    go_back: Volver al menú principal
+  assign_teacher_menu:
+    choose_subject: Elige la asignatura a la que quieras asignar profesor
+    introduced_subject: Asignatura introducida
+    ask_teacher_id: Introduce el ID del profesor
+    ok: Profesor asignado correctamente
+    coudnt_op: No se pudo realizar la operación
+  tags:
+    name: Nombre
+    id: Id
+    phone: Telefono
+    subject: Asignatura
+  couldnt_access_teachers_list: No se pudo acceder al listado de profesores
+  already_exists_subject: Ya existe una asignatura llamada
+  already_exists_teacher: Ya existe un profesor con el nombre
+  add_subject_menu:
+    subject: Asignatura
+    added: añadida
+  add_teacher_success:
+    before: Profesor con nombre
+    after: añadido
+  successfully_removed_teacher: 
+    before: Se eliminó exitosamente al profesor
+    after: ""
+    

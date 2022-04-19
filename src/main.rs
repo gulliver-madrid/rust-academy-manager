@@ -10,18 +10,18 @@ mod ui;
 mod views;
 
 use menus::MainMenu;
+use rust_i18n::t;
 
 use crate::{
     application::Application, components::Control, repository::JsonPersistence,
     ui::ActualConsole,
 };
 
-// use rust_i18n::t;
 
 rust_i18n::i18n!("locales");
 
 fn main() {
-    rust_i18n::set_locale("es");
+    rust_i18n::set_locale("en");
     let persistencia = JsonPersistence {};
     let application = Application::new(Box::new(persistencia));
     let ui = ui::UserInterface {
@@ -33,5 +33,5 @@ fn main() {
     };
     let mut menu = MainMenu::new(&mut control);
     menu.open_menu();
-    println!("\nPrograma finalizado\n");
+    println!("\n{}\n", t!("program_finished"));
 }

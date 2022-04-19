@@ -1,6 +1,6 @@
 use rust_i18n::t;
 
-use crate::{components::Control};
+use crate::components::Control;
 
 pub struct AddSubjectMenu<'a> {
     pub control: &'a mut Control,
@@ -13,7 +13,13 @@ impl AddSubjectMenu<'_> {
         if let Some(name) = ui.ask_text_to_user() {
             let result = self.control.application.add_new_subject(&name);
             let msg = match result {
-                Ok(_) => format!("Asignatura {} añadida", name),
+                Ok(_) => format!(
+                    //
+                    "{} {} {}",
+                    t!("add_subject_menu.subject"),
+                    name,
+                    t!("add_subject_menu.added")
+                ),
                 Err(e) => e.to_string(),
             };
             ui.show(&msg);

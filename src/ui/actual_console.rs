@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use super::inner_console::InnerConsole;
 use std::io;
 
@@ -15,10 +17,10 @@ impl InnerConsole for ActualConsole {
         let mut input = String::new();
         io::stdin()
             .read_line(&mut input)
-            .expect("Error: no se pudo leer la entrada del usuario");
+            .expect(&t!("errors.couldnt_read_user_input"));
         String::from(input.trim())
     }
-    fn show(&self, texto: &str) {
-        println!("{}", texto);
+    fn show(&self, text: &str) {
+        println!("{}", text);
     }
 }

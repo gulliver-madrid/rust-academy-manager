@@ -1,5 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
+use rust_i18n::t;
+
 use crate::{
     domain::Subjects,
     errors::{SimpleError, SimpleResult},
@@ -38,7 +40,7 @@ impl Application {
     /// Devuelve una copia de la lista de asignaturas.
     pub fn get_subjects(&self) -> Result<Subjects, SimpleError> {
         let option = self.repository.borrow().model.subjects.clone();
-        option.ok_or(SimpleError::new("No se pudieron obtener las asignaturas"))
+        option.ok_or(SimpleError::new(&t!("couldnt_get_subjects")))
     }
 
     /// Añade una nuevo asignatura con el nombre especificado.

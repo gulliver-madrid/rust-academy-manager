@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use crate::{
     errors::{SimpleError, SimpleResult},
     repository::Repository,
@@ -17,7 +19,8 @@ impl RemoveSubjectUseCase<'_> {
                 Ok(())
             }
             None => Err(SimpleError::new(&format!(
-                "No hay ninguna asignatura con el nombre {}",
+                "{} {}",
+                t!("no_subject_with_name"),
                 name
             ))),
         }

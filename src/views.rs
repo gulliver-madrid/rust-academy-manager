@@ -1,11 +1,9 @@
 use crate::domain::Subject;
 use crate::domain::Teacher;
 use crate::helpers::set_number_chars;
+use rust_i18n::t;
 
-const NAME_TAG: &str = "Nombre";
-const ID_TAG: &str = "Id";
-const PHONE_TAG: &str = "Telefono";
-const SUBJECT_TAG: &str = "Asignatura";
+
 
 pub trait View {
     fn create_table_row(&self) -> String;
@@ -13,17 +11,18 @@ pub trait View {
 impl View for Teacher {
     fn create_table_row(&self) -> String {
         let teacher_str = set_number_chars(&self.name, 22);
+        let unknown_phone_text = &t!("unknown");
         let phone_str = match self.phone_number.as_str() {
-            "" => "desconocido",
+            "" => unknown_phone_text,
             otro => otro,
         };
         format!(
             "{}: {}  {}: {}  {}: {}",
-            NAME_TAG,
+            t!("tags.name"),
             teacher_str,
-            ID_TAG,
+            t!("tags.id"),
             format!("{:0>3}", self.id),
-            PHONE_TAG,
+            t!("tags.phone"),
             phone_str
         )
     }
@@ -34,9 +33,9 @@ impl View for Subject {
 
         format!(
             "{}: {}  {}: {}",
-            SUBJECT_TAG,
+            t!("tags.subject"),
             asignatura_str,
-            ID_TAG,
+            t!("tags.id"),
             format!("{:0>3}", self.id)
         )
     }

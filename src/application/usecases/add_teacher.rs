@@ -17,7 +17,8 @@ impl AddTeacherUseCase<'_> {
         for teacher in teachers {
             if teacher.name == name {
                 return Err(SimpleError::new(&format!(
-                    "Ya existe un profesor con el nombre {}",
+                    "{} {}",
+                    t!("already_exists_teacher"),
                     name
                 )));
             }

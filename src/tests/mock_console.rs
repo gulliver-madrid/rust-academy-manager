@@ -25,9 +25,9 @@ impl InnerConsole for MockConsole {
     fn get_input(&self) -> String {
         self.provided_inputs.borrow_mut().pop().unwrap()
     }
-    fn show(&self, texto: &str) {
+    fn show(&self, text: &str) {
         if SHOW_CONSOLE_OUTPUT {
-            println!("{}", texto);
+            println!("{}", text);
         }
     }
 }

@@ -40,19 +40,36 @@ def main() -> None:
     # used_keys = get_used_keys(src_path, ".rs", pattern)
     locale_dir = Path.cwd() / locale_path_str
     print(f"src dir: {src_path}")
-    print(f"locale dir: {locale_dir}")
+    print(f"locale dir: {locale_dir}\n")
     if not locale_dir.exists():
         print("Locale directory introduced does not exist")
         sys.exit()
     if all(len(used_keys) == 0 for used_keys in used_keys_by_pattern.values()):
         print("No keys found in src directory")
         sys.exit()
-    paths_to_parsed = get_paths_to_parsed(locale_dir, ".yml")
+    paths_to_parsed = get_paths_to_parsed_yml(locale_dir)
+
+    keys_in_parsed = set()
+    for parsed in paths_to_parsed.values():
+        for translations in parsed.values():
+            for k, v in translations.items():
+                if isinstance(v, str):
+                    keys_in_parsed.add(k)
+                else:
+                    assert isinstance(v, dict)
+                    for k2, v2 in v.items():
+                        assert isinstance(v2, str), v2
+                        keys_in_parsed.add(".".join([k, k2]))
+
     all_keys_found = True
     for pattern in patterns:
         used_keys = used_keys_by_pattern[pattern]
         for key in used_keys:
+            if key in keys_in_parsed:
+                # This key appears in at least one translation file
+                keys_in_parsed.remove(key)
             for path, parsed in paths_to_parsed.items():
+                # print(f"Checking {path}")
                 found = False
                 for translations in parsed.values():
                     if "." in key:
@@ -68,20 +85,26 @@ def main() -> None:
                 if not found:
                     key_source_path = used_keys[key]
                     key_source = os.path.relpath(key_source_path, src_path)
-                    print(f"Key '{key}', from '{key_source}', not found in file '{path.name}'.")
+                    print(f"  Key '{key}', from '{key_source}', not found in file '{path.name}'.")
                     all_keys_found = False
     if all_keys_found:
         print("All keys were found")
+    if keys_in_parsed:
+        print("\nSome keys defined in tranlation files were not used in the program:\n  " + "\n  ".join(keys_in_parsed))
 
 
-def get_paths_to_parsed(base_dir: Path, ext: str) -> dict[Path, Any]:
+def get_paths_to_parsed_yml(base_dir: Path) -> dict[Path, dict[str, Any]]:
     """Builds a dict mapping translations files paths to parsed content"""
-    yml_paths = get_paths_with_extension(base_dir, ext)
+    yml_paths = get_paths_with_extension(base_dir, ".yml")
     files_to_contents = get_path_to_contents(yml_paths)
-    paths_to_parsed = {
-        path: yaml.load(content, yaml.Loader)
-        for path, content in files_to_contents.items()
-    }
+    paths_to_parsed = {}
+    for path, content in files_to_contents.items():
+        try:
+            paths_to_parsed[path] = yaml.load(content, yaml.Loader)
+        except yaml.parser.ParserError as err:
+            info_line = "line " + str(err.problem_mark.line + 1) if err.problem_mark else "unknown"
+            info = f"Error while parsing {path}, {info_line}"
+            raise RuntimeError(info) from err
     return paths_to_parsed
 
 

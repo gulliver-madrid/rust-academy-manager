@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use crate::{errors::SimpleError, repository::Repository};
 
 pub struct GetSubjectIndexByNameUseCase<'a> {
@@ -15,7 +17,8 @@ impl GetSubjectIndexByNameUseCase<'_> {
         match busqueda_index {
             Some(index) => Ok(index),
             None => Err(SimpleError::new(&format!(
-                "Nombre no válido: {}",
+                "{}: {}",
+                t!("no_valid_name"),
                 subject_name
             ))),
         }

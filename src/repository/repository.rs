@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use crate::{domain::Teacher, errors::SimpleError};
 
 use super::{model::Model, PersistenceTrait};
@@ -40,7 +42,7 @@ impl Repository {
         match result {
             Some(profesores) => Ok(profesores),
             None => Err(SimpleError::new(
-                "No se pudo acceder al listado de profesores",
+                &t!("couldnt_access_teachers_list"),
             )),
         }
     }

@@ -12,11 +12,7 @@ impl RemoveTeacherMenu<'_> {
         self.show_menu_text();
 
         if let Some(name) = ui.ask_text_to_user() {
-            let result = self
-                .control
-                .application
-                .teachers_app
-                .remove_teacher(&name);
+            let result = self.control.application.teachers_app.remove_teacher(&name);
             let msg = self.get_info_result(result, name);
             ui.show(&msg);
             ui.pause_enter(&t!("continue"));
@@ -31,7 +27,14 @@ impl RemoveTeacherMenu<'_> {
 
     fn get_info_result(&self, result: SimpleResult, name: String) -> String {
         match result {
-            Ok(_) => format!("Se eliminó exitosamente al profesor {}", name),
+            Ok(_) => {
+                format!(
+                    "{} {} {}",
+                    t!("successfully_removed_teacher.before"),
+                    name,
+                    t!("successfully_removed_teacher.after")
+                )
+            }
             Err(e) => e.to_string(),
         }
     }

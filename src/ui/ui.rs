@@ -1,4 +1,5 @@
 use crate::helpers;
+use rust_i18n::t;
 
 use crate::menus::shared::MenuItem;
 
@@ -29,30 +30,30 @@ impl UserInterface {
     pub fn ask_text_to_user(&self) -> Option<String> {
         match self.get_input().trim() {
             "" => None,
-            texto => Some(String::from(texto)),
+            text => Some(String::from(text)),
         }
     }
 
-    pub fn show(&self, texto: &str) {
-        self.inner_console.show(texto);
+    pub fn show(&self, text: &str) {
+        self.inner_console.show(text);
     }
 
-    pub fn show_title(&self, texto: &str) {
-        self.show(&self.convert_to_title(texto));
+    pub fn show_title(&self, text: &str) {
+        self.show(&self.convert_to_title(text));
     }
 
-    pub fn pause_enter(&self, texto: &str) {
-        self.show(&format!("Pulsa ENTER para {}", texto));
+    pub fn pause_enter(&self, text: &str) {
+        self.show(&format!("{} {}", t!("press_enter_to"), text));
         self.get_input();
     }
 
-    /// Anade una linea de subrayado al texto especificado
-    fn convert_to_title(&self, texto: &str) -> String {
-        let chars = texto.chars();
+    /// Adds a line of dashes below the specified text
+    fn convert_to_title(&self, text: &str) -> String {
+        let chars = text.chars();
         let n = chars.count();
         let mut s = String::new();
         s.push('\n');
-        s.push_str(texto);
+        s.push_str(text);
         s.push('\n');
         let mut s = helpers::add_repeated_char(s, '-', n);
         s.push('\n');

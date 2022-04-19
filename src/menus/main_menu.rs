@@ -18,9 +18,9 @@ pub enum MenuOption {
 }
 
 pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
-    (MenuOption::Teachers, "Profesores"),
-    (MenuOption::Subjects, "Asignaturas"),
-    (MenuOption::Exit, "Salir"),
+    (MenuOption::Teachers, "menu_options.teachers"),
+    (MenuOption::Subjects, "menu_options.subjects"),
+    (MenuOption::Exit, "menu_options.exit"),
 ];
 
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
@@ -72,8 +72,8 @@ impl MainMenu<'_> {
     fn show_menu_text(&self, menu_items: &MenuItems) {
         self.control.ui.clear_screen();
         self.control.ui.show_title(&t!("main_menu"));
-        let texto_opciones = menus::create_options_text(&menu_items);
-        self.control.ui.show(&texto_opciones);
+        let options_text = menus::create_options_text(&menu_items);
+        self.control.ui.show(&options_text);
     }
 
     fn open_teachers_menu(&mut self) {
