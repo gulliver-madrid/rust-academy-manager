@@ -1,3 +1,4 @@
+/// Simple counter with limit that implements Iterator trait
 pub struct Counter {
     count: u32,
     limit: u32,

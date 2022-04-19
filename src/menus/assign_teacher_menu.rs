@@ -2,6 +2,7 @@ use rust_i18n::t;
 
 use crate::{components::Control};
 
+/// Menu for assign a teacher to a subject
 pub struct AssignTeacherMenu<'a> {
     pub control: &'a mut Control,
 }

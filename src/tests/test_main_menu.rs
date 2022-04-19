@@ -21,5 +21,5 @@ fn salir_desde_menu_principal() {
     let mut control = create_control(mock_console, application);
     let mut menu = MainMenu::new(&mut control);
     menu.open_menu();
-    assert_eq!(menu.raised_loop_limit(), false);
+    assert_eq!(menu.loop_limit_exceed(), false);
 }
