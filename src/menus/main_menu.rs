@@ -25,21 +25,22 @@ pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
 
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
+/// Main menu of the academy app
 pub struct MainMenu<'a> {
     pub control: &'a mut Control,
-    raised_loop_limit: bool,
+    loop_limit_exceed: bool,
 }
 
 impl MainMenu<'_> {
     pub fn new(control: &mut Control) -> MainMenu {
         MainMenu {
             control,
-            raised_loop_limit: false,
+            loop_limit_exceed: false,
         }
     }
     #[cfg(test)]
-    pub fn raised_loop_limit(&self) -> bool {
-        self.raised_loop_limit
+    pub fn loop_limit_exceed(&self) -> bool {
+        self.loop_limit_exceed
     }
 }
 
@@ -55,8 +56,8 @@ impl MainMenu<'_> {
                 _ => (),
             }
         }
-        self.raised_loop_limit = true;
-        println!("\nERROR: Se superó el límite de ciclos del menú principal");
+        self.loop_limit_exceed = true;
+        println!("\nERROR: Main menu loop limit was exceed");
     }
     fn show_iteration_menu(&mut self, menu_items: &MenuItems) -> Option<MenuExit> {
         self.show_menu_text(menu_items);
