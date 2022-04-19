@@ -23,14 +23,11 @@ pub enum MenuOption {
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
 pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
-    (MenuOption::ShowList, "Ver la lista de asignaturas"),
-    (MenuOption::AddSubject, "Añadir una asignatura"),
-    (MenuOption::RemoveSubject, "Eliminar una asignatura"),
-    (
-        MenuOption::AssignTeacher,
-        "Asignar un profesor a una asignatura",
-    ),
-    (MenuOption::GoBack, "Volver al menú principal"),
+    (MenuOption::ShowList, "subjects_menu_options.show_list"),
+    (MenuOption::AddSubject, "subjects_menu_options.add_subject"),
+    (MenuOption::RemoveSubject, "subjects_menu_options.remove_subject"),
+    (MenuOption::AssignTeacher, "subjects_menu_options.assign_teacher"),
+    (MenuOption::GoBack, "subjects_menu_options.go_back"),
 ];
 
 pub struct SubjectsMenu<'a> {
@@ -87,7 +84,7 @@ impl SubjectsMenu<'_> {
             }
             Err(e) => ui.show(&e.to_string()),
         }
-        ui.pause_enter("volver al menú de asignaturas");
+        ui.pause_enter(&t!("back_subjects_menu"));
     }
 
     fn create_subjects_list(&self, subjects: Subjects) -> String {

@@ -24,12 +24,12 @@ pub fn extract_option<'a, MenuOption>(
 }
 
 pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
-    // Crea el texto correspondiente a la lista de MenuItem recibidos
+    // Creates the text corresponding to the list of received MenuItem
     String::from(t!("choose_an_option") + ":\n")
         + &menu_items
             .iter()
             .enumerate()
-            .map(|(i, item)| format!("{} - {}", i + 1, item.text))
+            .map(|(i, item)| format!("{} - {}", i + 1, t!(item.text)))
             .collect::<Vec<String>>()
             .join("\n")
 }

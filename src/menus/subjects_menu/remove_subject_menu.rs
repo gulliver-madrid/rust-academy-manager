@@ -29,7 +29,12 @@ impl RemoveSubjectMenu<'_> {
 
     fn get_info_result(&self, result: SimpleResult, name: &str) -> String {
         match result {
-            Ok(_) => format!("Se eliminó exitosamente la asignatura {}", name),
+            Ok(_) => format!(
+                //
+                "{} {}",
+                t!("successfully_removed_subject"),
+                name
+            ),
             Err(e) => e.to_string(),
         }
     }

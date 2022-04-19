@@ -10,12 +10,12 @@ pub struct AssignTeacherMenu<'a> {
 impl AssignTeacherMenu<'_> {
     pub fn open_menu(&mut self) {
         let ui = &self.control.ui;
-        ui.show("Elige la asignatura a la que quieras asignar profesor");
+        ui.show(&t!("assign_teacher_menu.choose_subject"));
         let subject_name: String;
         match ui.ask_text_to_user() {
             Some(entered_text) => subject_name = entered_text,
             None => {
-                ui.show("Operación cancelada");
+                ui.show(&t!("cancelled_op"));
                 ui.pause_enter(&t!("continue"));
                 return;
             }
@@ -35,8 +35,9 @@ impl AssignTeacherMenu<'_> {
                 return;
             }
         }
-        ui.show(&format!("Asignatura introducida: {}", subject_name));
-        ui.show("Introduce el ID del profesor");
+        // Show introduced subject
+        ui.show(&format!("{}: {}", &t!("assign_teacher_menu.introduced_subject"), subject_name));
+        ui.show(&t!("assign_teacher_menu.ask_teacher_id"));
         if let Some(entered_text) = ui.ask_text_to_user() {
             let teacher_id = entered_text.parse::<u32>().unwrap();
             let result = self
@@ -44,9 +45,9 @@ impl AssignTeacherMenu<'_> {
                 .application
                 .assign_teacher_to_subject(subject_index, teacher_id);
             if result.is_ok() {
-                ui.show("Profesor asignado correctamente");
+                ui.show(&t!("assign_teacher_menu.ok"));
             } else {
-                ui.show("No se pudo realizar la operación");
+                ui.show(&t!("assign_teacher_menu.coudnt_op"));
             }
             ui.pause_enter(&t!("continue"));
         }

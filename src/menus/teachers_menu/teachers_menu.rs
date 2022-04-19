@@ -19,10 +19,10 @@ enum MenuOption {
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
 const MENU_ITEMS_DATA: [(MenuOption, OptionText); 4] = [
-    (MenuOption::ShowList, "Ver la lista de profesores"),
-    (MenuOption::AddTeacher, "Añadir un profesor"),
-    (MenuOption::RemoveTeacher, "Eliminar un profesor"),
-    (MenuOption::GoBack, "Volver al menú principal"),
+    (MenuOption::ShowList, "teachers_menu_options.show_list"),
+    (MenuOption::AddTeacher, "teachers_menu_options.add_teacher"),
+    (MenuOption::RemoveTeacher, "teachers_menu_options.remove_teacher"),
+    (MenuOption::GoBack, "teachers_menu_options.go_back"),
 ];
 
 pub struct TeachersMenu<'a> {
@@ -72,7 +72,7 @@ impl<'a> TeachersMenu<'_> {
         for teacher in teachers {
             ui.show(&teacher.create_table_row());
         }
-        ui.pause_enter("volver al menú de profesores");
+        ui.pause_enter(&t!("back_to_teachers_menu"));
     }
 
     fn open_add_teacher_menu(&mut self) {

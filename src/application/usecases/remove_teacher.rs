@@ -1,3 +1,5 @@
+use rust_i18n::t;
+
 use crate::{
     errors::{SimpleError, SimpleResult},
     repository::Repository,
@@ -20,7 +22,8 @@ impl RemoveTeacherUseCase<'_> {
             }
             None => {
                 return Err(SimpleError::new(&format!(
-                    "No hay ningún profesor con el nombre {}",
+                    "{} {}",
+                    t!("no_teacher_with_name"),
                     name
                 )));
             }

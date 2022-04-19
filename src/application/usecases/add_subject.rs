@@ -29,7 +29,8 @@ impl AddSubjectUseCase<'_> {
         for subject in subjects {
             if subject.name == name {
                 return Err(SimpleError::new(&format!(
-                    "Ya existe una asignatura llamada {}",
+                    "{} {}",
+                    t!("already_exists_subject"),
                     name
                 )));
             }
