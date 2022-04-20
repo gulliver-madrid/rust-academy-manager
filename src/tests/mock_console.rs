@@ -1,7 +1,7 @@
 #[cfg(test)]
 use std::cell::RefCell;
 
-#[cfg(test)] // El compilador solo lo detecta en modo test
+#[cfg(test)]
 use crate::ui::InnerConsole;
 
 #[cfg(test)]

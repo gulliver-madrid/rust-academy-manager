@@ -10,21 +10,18 @@ pub type OptionText = &'static str;
 
 pub struct MenuExit;
 
-
+/// Receive a string that should contain a number and from that number we will return the corresponding MenuOption, according to the order of the vector of MenuItem objects
 pub fn extract_option<'a, MenuOption>(
     choice: String,
     menu_items: &'a Vec<MenuItem<MenuOption>>,
 ) -> Option<&'a MenuOption> {
-    // Recibe una string que idealmente contendra un numero
-    // y a partir de ese numero devolveremos la MenuOption
-    // correspondiente, segun el orden del vector de objetos MenuItem
     let option_number: usize = choice.parse().ok()?;
     let &chosen_item = &menu_items.get(option_number - 1)?;
     return Some(&chosen_item.menu_option);
 }
 
+// Creates the text corresponding to the list of received MenuItem
 pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
-    // Creates the text corresponding to the list of received MenuItem
     String::from(t!("choose_an_option") + ":\n")
         + &menu_items
             .iter()
@@ -34,16 +31,16 @@ pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
             .join("\n")
 }
 
-/// Genera un vector de MenuItem a partir de un array de tuplas
+/// Generates a vector of MenuItem from an array of tuples 
 pub fn create_menu_items<'a, MenuOption, const N: usize>(
     items_menu_data: [(MenuOption, OptionText); N],
 ) -> Vec<MenuItem<'a, MenuOption>>
 where
     MenuOption: Clone,
 {
-    // items_menu_data es un array de tuplas (MenuOption, OptionText)
-    // MenuOption es una enum simple
-    // OptionText es una str estatica
+    // items_menu_data is an array of tuples (MenuOption, OptionText)
+    // MenuOption is a simple enum
+    // OptionText is a static str
     items_menu_data
         .iter()
         .map(|(menu_option, text)| MenuItem {

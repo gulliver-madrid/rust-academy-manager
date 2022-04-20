@@ -25,7 +25,7 @@ pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
 
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
-/// Main menu of the academy app
+/// Main menu of the academy-manager app
 pub struct MainMenu<'a> {
     pub control: &'a mut Control,
     loop_limit_exceed: bool,

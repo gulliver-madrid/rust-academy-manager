@@ -11,10 +11,9 @@ impl GetSubjectIndexByNameUseCase<'_> {
         &mut self,
         subject_name: &str,
     ) -> Result<usize, SimpleError> {
-        let asignaturas = self.repository.model.subjects.as_mut().unwrap();
-        let busqueda_index =
-            asignaturas.iter().position(|a| a.name == subject_name);
-        match busqueda_index {
+        let subjects = self.repository.model.subjects.as_mut().unwrap();
+        let index = subjects.iter().position(|a| a.name == subject_name);
+        match index {
             Some(index) => Ok(index),
             None => Err(SimpleError::new(&format!(
                 "{}: {}",

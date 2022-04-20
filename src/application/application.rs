@@ -22,8 +22,8 @@ pub struct Application {
 }
 
 impl Application {
-    pub fn new(persistencia: Box<dyn PersistenceTrait>) -> Self {
-        let repository = create_repo(persistencia);
+    pub fn new(persistence: Box<dyn PersistenceTrait>) -> Self {
+        let repository = create_repo(persistence);
         let repo_ref = Rc::new(RefCell::new(repository));
         let teachers_app = TeachersApp::new(&repo_ref);
         Self {
@@ -32,18 +32,18 @@ impl Application {
         }
     }
 
-    /// Carga las asignaturas en el Modelo si es necesario.
+    /// Load the subjects in the Model if needed
     pub fn load_subjects_if_needed(&mut self) -> () {
         self.repository.borrow_mut().load_subjects_if_needed();
     }
 
-    /// Devuelve una copia de la lista de asignaturas.
+    /// Returns a copy of the subjects list
     pub fn get_subjects(&self) -> Result<Subjects, SimpleError> {
         let option = self.repository.borrow().model.subjects.clone();
         option.ok_or(SimpleError::new(&t!("couldnt_get_subjects")))
     }
 
-    /// Añade una nuevo asignatura con el nombre especificado.
+    /// Add a new subject with the specified name
     pub fn add_new_subject(&mut self, name: &str) -> SimpleResult {
         AddSubjectUseCase {
             repository: &mut self.repository.borrow_mut(),
@@ -51,7 +51,7 @@ impl Application {
         .add_new_subject(name.to_string())
     }
 
-    /// Elimina una asignatura identificada por su nombre.
+    /// Remove the subject with the specified name
     pub fn remove_subject(&mut self, name: &str) -> SimpleResult {
         RemoveSubjectUseCase {
             repository: &mut self.repository.borrow_mut(),
@@ -59,7 +59,7 @@ impl Application {
         .remove_subject(name.to_string())
     }
 
-    /// Devuelve el índice de la asignatura con el nombre especificado.
+    /// Returns the index of the subject with the specified name
     pub fn get_subject_index_by_name(
         &mut self,
         subject_name: &str,
@@ -70,7 +70,7 @@ impl Application {
         .get_subject_index_by_name(subject_name)
     }
 
-    /// Asigna un profesor identificado por su id a la asignatura con el indice especificado.
+    /// Assign a teacher identified by his/her id to the subject with the specified index
     pub fn assign_teacher_to_subject(
         &mut self,
         subject_index: usize,

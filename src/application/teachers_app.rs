@@ -4,7 +4,7 @@ use crate::{domain::Teachers, errors::SimpleResult, repository::Repository};
 
 use super::usecases::{AddTeacherUseCase, RemoveTeacherUseCase};
 
-/// Permite interactuar con los repositorios mediante operaciones predefinidas relacionadas con los profesores.
+/// Allows interact with the repositories through predefined operations related to teachers
 pub struct TeachersApp {
     repository: Rc<RefCell<Repository>>,
 }
@@ -17,12 +17,12 @@ impl TeachersApp {
         }
     }
 
-    /// Carga los profesores en el Modelo si es necesario.
+    /// Load teachers in the Model if needed
     pub fn load_teachers_if_needed(&mut self) -> () {
         self.repository.borrow_mut().load_teachers_if_needed();
     }
 
-    /// Devuelve una copia de la lista de profesores.
+    /// Returns a copy of the teachers list
     pub fn get_teachers(&self) -> Teachers {
         self.repository
             .borrow()
@@ -33,7 +33,7 @@ impl TeachersApp {
             .clone()
     }
 
-    /// Añade un nuevo profesor con el nombre especificado.
+    /// Add a new teacher with the specified name
     pub fn add_new_teacher(&mut self, name: &str) -> SimpleResult {
         AddTeacherUseCase {
             repository: &mut self.repository.borrow_mut(),
@@ -41,7 +41,7 @@ impl TeachersApp {
         .add_new_teacher(name.to_string())
     }
 
-    /// Elimina un profesor identificado por su nombre.
+    /// Remove the teacher with the specified name
     pub fn remove_teacher(&mut self, name: &str) -> SimpleResult {
         RemoveTeacherUseCase {
             repository: &mut self.repository.borrow_mut(),
