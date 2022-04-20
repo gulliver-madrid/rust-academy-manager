@@ -14,9 +14,9 @@ impl UserInterface {
         &self,
         menu_items: &'a Vec<MenuItem<T>>,
     ) -> Option<&'a T> {
-        // T es una enum que representa una opcion de menu
-        let eleccion = self.get_input();
-        crate::menus::shared::extract_option(eleccion, &menu_items)
+        // T is a enum that represents a menu option
+        let choice = self.get_input();
+        crate::menus::shared::extract_option(choice, &menu_items)
     }
 
     pub fn clear_screen(&self) {

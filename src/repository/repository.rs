@@ -4,9 +4,9 @@ use crate::{domain::Teacher, errors::SimpleError};
 
 use super::{model::Model, PersistenceTrait};
 
-pub fn create_repo(persistencia: Box<dyn PersistenceTrait>) -> Repository {
+pub fn create_repo(persistence: Box<dyn PersistenceTrait>) -> Repository {
     let repository = Repository {
-        persistence: persistencia,
+        persistence,
         model: Model {
             teachers: None,
             subjects: None,
@@ -36,10 +36,8 @@ impl Repository {
     pub fn get_teachers_as_ref(&self) -> Result<&Vec<Teacher>, SimpleError> {
         let result = self.model.teachers.as_ref();
         match result {
-            Some(profesores) => Ok(profesores),
-            None => Err(SimpleError::new(
-                &t!("couldnt_access_teachers_list"),
-            )),
+            Some(teachers) => Ok(teachers),
+            None => Err(SimpleError::new(&t!("couldnt_access_teachers_list"))),
         }
     }
     fn populate_subjects(&mut self) {

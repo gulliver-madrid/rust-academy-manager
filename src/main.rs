@@ -17,13 +17,12 @@ use crate::{
     ui::ActualConsole,
 };
 
-
 rust_i18n::i18n!("locales");
 
 fn main() {
     rust_i18n::set_locale("en");
-    let persistencia = JsonPersistence {};
-    let application = Application::new(Box::new(persistencia));
+    let persistence = JsonPersistence {};
+    let application = Application::new(Box::new(persistence));
     let ui = ui::UserInterface {
         inner_console: Box::new(ActualConsole {}),
     };

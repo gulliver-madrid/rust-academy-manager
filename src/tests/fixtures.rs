@@ -13,31 +13,31 @@ use crate::{
 };
 
 #[cfg(test)]
-pub struct MockPersistencia {
-    pub mock_profesores: Vec<Teacher>,
-    pub mock_asignaturas: Vec<Subject>,
+pub struct MockPersistence {
+    pub mock_teachers: Vec<Teacher>,
+    pub mock_subjects: Vec<Subject>,
 }
 
 #[cfg(test)]
-impl PersistenceTrait for MockPersistencia {
-    fn save_teachers(&self, _profesores: &Teachers) {}
-    fn save_subjects(&self, _asignaturas: &Subjects) {}
+impl PersistenceTrait for MockPersistence {
+    fn save_teachers(&self, _teachers: &Teachers) {}
+    fn save_subjects(&self, _subjects: &Subjects) {}
     fn load_teachers(&self) -> Teachers {
-        return self.mock_profesores.clone();
+        return self.mock_teachers.clone();
     }
     fn load_subjects(&self) -> Subjects {
-        return self.mock_asignaturas.clone();
+        return self.mock_subjects.clone();
     }
 }
 
 #[cfg(test)]
 pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
-    opcion: MenuOption,
+    option: MenuOption,
     items_menu_data: [(MenuOption, OptionText); N],
 ) -> Option<String> {
     let mut index = 1;
-    for tupla in items_menu_data {
-        if tupla.0 == opcion {
+    for item in items_menu_data {
+        if item.0 == option {
             return Some(index.to_string());
         }
         index += 1;
@@ -47,11 +47,11 @@ pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
 
 #[cfg(test)]
 pub fn create_application_with_void_persistence() -> Application {
-    let persistencia = MockPersistencia {
-        mock_profesores: Vec::<Teacher>::new(),
-        mock_asignaturas: Vec::<Subject>::new(),
+    let persistence = MockPersistence {
+        mock_teachers: Vec::<Teacher>::new(),
+        mock_subjects: Vec::<Subject>::new(),
     };
-    Application::new(Box::new(persistencia))
+    Application::new(Box::new(persistence))
 }
 
 #[cfg(test)]
