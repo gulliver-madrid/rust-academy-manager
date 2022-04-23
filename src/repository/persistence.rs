@@ -20,34 +20,45 @@ const SUBJECTS_PATH: &str = "subjects.json";
 
 
 
-fn get_project_data_path() -> PathBuf {
-    let mut path = PathBuf::new();
-    path.push(data_dir().unwrap());
-    path.push(DEFAULT_PROJECT_DIR);
-    path
+pub struct JsonPersistence {
+    pub project_dir: String,
 }
-pub struct JsonPersistence {}
 
 impl JsonPersistence {
     fn get_teachers_path(&self) -> PathBuf {
-        let mut path = get_project_data_path();
+        let mut path = self.get_project_data_path();
         path.push(TEACHERS_PATH);
         path
     }
     fn get_subjects_path(&self) -> PathBuf {
-        let mut path = get_project_data_path();
+        let mut path = self.get_project_data_path();
         path.push(SUBJECTS_PATH);
         path
     }
 
-    fn read_json_teachers(&self) -> Vec<SerializableTeacher> {
-        let file = File::open(self.get_teachers_path()).unwrap();
+    fn get_project_data_path(&self) -> PathBuf {
+        let mut path = PathBuf::new();
+        if self.project_dir.is_empty() {
+            path.push(data_dir().unwrap());
+            path.push(DEFAULT_PROJECT_DIR);
+        } else {
+            path.push(&self.project_dir);
+        };
+        path
+    }
+
+    fn read_json_subjects(&self) -> Vec<SerializableSubject> {
+        let path = self.get_subjects_path();
+        let file =
+            File::open(&path).expect(&format!("Path {:?} couldn't be opened", path));
         let reader = BufReader::new(file);
         serde_json::from_reader(reader).unwrap()
     }
 
-    pub fn read_json_subjects(&self) -> Vec<SerializableSubject> {
-        let file = File::open(self.get_subjects_path()).unwrap();
+    fn read_json_teachers(&self) -> Vec<SerializableTeacher> {
+        let path = self.get_teachers_path();
+        let file =
+            File::open(&path).expect(&format!("Path {:?} couldn't be opened", path));
         let reader = BufReader::new(file);
         serde_json::from_reader(reader).unwrap()
     }
