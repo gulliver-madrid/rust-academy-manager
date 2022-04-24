@@ -21,13 +21,20 @@ rust_i18n::i18n!("locales");
 
 use clap::{arg, command};
 
+const ALLOWED_LANGUAGES: [&str; 2] = ["es", "en"];
+
 fn main() {
-    rust_i18n::set_locale("en");
     let matches = command!()
-        .arg(arg!(--data <PATH> "data folder").required(false))
+        .arg(arg!(--data <PATH> "data folder").required(false).short('d'))
+        .arg(arg!(--lang <PATH> "language").required(false).short('l'))
         .get_matches();
+    let language = String::from(matches.value_of("lang").unwrap_or("en"));
+    if !(ALLOWED_LANGUAGES.contains(&language.as_ref())) {
+        println!("Error: Unknown language: {}. Available languages: {}", language, ALLOWED_LANGUAGES.join(", "));
+        return;
+    };
+    rust_i18n::set_locale(&language);
     let data_folder = String::from(matches.value_of("data").unwrap_or(""));
-    println!("Data folder: {}", data_folder);
 
     let persistence = JsonPersistence {
         project_dir: data_folder,
