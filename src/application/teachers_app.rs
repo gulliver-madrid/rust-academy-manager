@@ -9,7 +9,6 @@ pub struct TeachersApp {
     repository: Rc<RefCell<Repository>>,
 }
 
-
 impl TeachersApp {
     pub fn new(repo_ref: &Rc<RefCell<Repository>>) -> Self {
         Self {

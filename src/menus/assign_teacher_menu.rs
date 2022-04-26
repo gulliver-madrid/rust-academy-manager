@@ -1,6 +1,6 @@
 use rust_i18n::t;
 
-use crate::{components::Control};
+use crate::components::Control;
 
 /// Menu for assign a teacher to a subject
 pub struct AssignTeacherMenu<'a> {
@@ -24,6 +24,7 @@ impl AssignTeacherMenu<'_> {
         match self
             .control
             .application
+            .subjects_app
             .get_subject_index_by_name(&subject_name)
         {
             Ok(index) => {
@@ -36,7 +37,11 @@ impl AssignTeacherMenu<'_> {
             }
         }
         // Show introduced subject
-        ui.show(&format!("{}: {}", &t!("assign_teacher_menu.introduced_subject"), subject_name));
+        ui.show(&format!(
+            "{}: {}",
+            &t!("assign_teacher_menu.introduced_subject"),
+            subject_name
+        ));
         ui.show(&t!("assign_teacher_menu.ask_teacher_id"));
         if let Some(entered_text) = ui.ask_text_to_user() {
             let teacher_id = entered_text.parse::<u32>().unwrap();
