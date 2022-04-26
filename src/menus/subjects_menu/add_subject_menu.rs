@@ -11,7 +11,7 @@ impl AddSubjectMenu<'_> {
         let ui = &self.control.ui;
         self.show_menu_text();
         if let Some(name) = ui.ask_text_to_user() {
-            let result = self.control.application.add_new_subject(&name);
+            let result = self.control.application.subjects_app.add_new_subject(&name);
             let msg = match result {
                 Ok(_) => format!(
                     //

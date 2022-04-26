@@ -25,8 +25,14 @@ type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
     (MenuOption::ShowList, "subjects_menu_options.show_list"),
     (MenuOption::AddSubject, "subjects_menu_options.add_subject"),
-    (MenuOption::RemoveSubject, "subjects_menu_options.remove_subject"),
-    (MenuOption::AssignTeacher, "subjects_menu_options.assign_teacher"),
+    (
+        MenuOption::RemoveSubject,
+        "subjects_menu_options.remove_subject",
+    ),
+    (
+        MenuOption::AssignTeacher,
+        "subjects_menu_options.assign_teacher",
+    ),
     (MenuOption::GoBack, "subjects_menu_options.go_back"),
 ];
 
@@ -39,7 +45,10 @@ impl SubjectsMenu<'_> {
         SubjectsMenu { control }
     }
     pub fn open_menu(&mut self) {
-        self.control.application.load_subjects_if_needed();
+        self.control
+            .application
+            .subjects_app
+            .load_subjects_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
@@ -74,7 +83,7 @@ impl SubjectsMenu<'_> {
 
     fn show_subjects_list(&self) {
         let ui = &self.control.ui;
-        let subjects = self.control.application.get_subjects();
+        let subjects = self.control.application.subjects_app.get_subjects();
         match subjects {
             Ok(subjects) => {
                 let subjects_list_text = self.create_subjects_list(subjects);

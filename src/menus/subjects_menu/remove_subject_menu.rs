@@ -13,7 +13,7 @@ impl RemoveSubjectMenu<'_> {
         match ui.ask_text_to_user() {
             None => (),
             Some(name) => {
-                let result = self.control.application.remove_subject(&name);
+                let result = self.control.application.subjects_app.remove_subject(&name);
                 let msg = self.get_info_result(result, &name);
                 ui.show(&msg);
                 ui.pause_enter(&t!("continue"));
