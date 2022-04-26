@@ -1,5 +1,6 @@
 use super::Profesor;
-use super::SerializableTeacher;
+use super::serializable::SerializableTeacher;
+
 pub fn convert_teachers_to_serializable(
     profesores: Vec<Profesor>,
 ) -> Vec<SerializableTeacher> {
