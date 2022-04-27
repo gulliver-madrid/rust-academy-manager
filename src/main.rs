@@ -12,19 +12,10 @@ mod views;
 
 use menus::{Menu, MenuPrincipal};
 
-use crate::{
-    application::Application,
-    components::Control,
-    repository::{modelo::Modelo, Persistencia, Repository},
-};
+use crate::{application::Application, components::Control};
 
 fn main() {
-    let persistencia = Persistencia {};
-    let repository = Repository {
-        persistencia,
-        modelo: Modelo { profesores: None, asignaturas:None },
-    };
-    let application = Application::new(repository);
+    let application = Application::new();
     let consola = consola::Consola {};
     let mut control = Control {
         consola,
