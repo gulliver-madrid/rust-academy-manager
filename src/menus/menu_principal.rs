@@ -3,9 +3,9 @@ use super::menu_profes;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
+use crate::consola;
 use crate::repo;
 use crate::textos;
-use crate::vista;
 
 #[derive(Clone)]
 enum Opcion {
@@ -23,7 +23,7 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
 type ItemMenus<'a> = Vec<ItemMenu<'a, Opcion>>;
 
 pub struct MenuPrincipal<'a> {
-    pub vista: &'a vista::Vista,
+    pub consola: &'a consola::Consola,
 }
 
 impl Menu for MenuPrincipal<'_> {
@@ -39,12 +39,12 @@ impl Menu for MenuPrincipal<'_> {
 
 impl MenuPrincipal<'_> {
     fn mostrar_iteracion_menu(&self, items_menu: &ItemMenus) -> Option<SalirMenu> {
-        self.vista.clear_screen();
-        self.vista.mostrar_titulo(textos::MENU_PRINCIPAL);
+        self.consola.clear_screen();
+        self.consola.mostrar_titulo(textos::MENU_PRINCIPAL);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
-        self.vista.mostrar(&texto_opciones);
+        self.consola.mostrar(&texto_opciones);
 
-        let eleccion = self.vista.get_input();
+        let eleccion = self.consola.get_input();
         let opcion = menus::extraer_opcion(eleccion, &items_menu)?;
         match opcion {
             Opcion::Asignaturas => self.abrir_menu_asignaturas(),
@@ -55,13 +55,13 @@ impl MenuPrincipal<'_> {
     }
 
     fn abrir_menu_profes(&self) {
-        let mut menu = menu_profes::MenuProfesores::new(self.vista);
+        let mut menu = menu_profes::MenuProfesores::new(self.consola);
         menu.abrir_menu();
     }
 
     fn abrir_menu_asignaturas(&self) {
         let asignaturas = repo::get_asignaturas();
-        let mut menu = menu_asignaturas::MenuAsignaturas::new(self.vista, asignaturas);
+        let mut menu = menu_asignaturas::MenuAsignaturas::new(self.consola, asignaturas);
         menu.abrir_menu();
     }
 }
