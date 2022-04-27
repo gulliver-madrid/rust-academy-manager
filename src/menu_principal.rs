@@ -9,6 +9,7 @@ impl MenuPrincipal {
     pub fn abrir_menu(&self) {
         let vista = vista::Vista {};
         loop {
+            vista.clear_screen();
             vista.mostrar(textos::OPCIONES_MENU_PRINCIPAL);
             let nombre = vista.get_input();
             let eleccion = nombre.trim();

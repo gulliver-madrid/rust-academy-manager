@@ -13,6 +13,7 @@ impl MenuAsignaturas {
     pub fn abrir_menu(&self, vista: &vista::Vista) {
         let mut asignaturas = repo::get_asignaturas();
         loop {
+            vista.clear_screen();
             vista.mostrar(textos::OPCIONES_MENU_ASIGNATURAS);
             let eleccion = vista.get_input();
             match eleccion.as_str() {
@@ -31,9 +32,12 @@ impl MenuAsignaturas {
         asignaturas: &Asignaturas,
         vista: &vista::Vista,
     ) {
+        vista.clear_screen();
         for asignatura in asignaturas {
             vista.mostrar(&asignatura.crear_linea_tabla());
         }
+        vista.mostrar("\nPulsa ENTER para volver al menú de asignaturas");
+        vista.get_input();
     }
 
     fn abrir_menu_anadir_asignatura(
