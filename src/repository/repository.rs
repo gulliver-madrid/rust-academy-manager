@@ -2,6 +2,17 @@ use crate::{dominio::Profesor, errors::SimpleError};
 
 use super::{modelo::Modelo, Persistencia};
 
+pub fn create_repo() -> Repository {
+    let persistencia = Persistencia {};
+    let repository = Repository {
+        persistencia,
+        modelo: Modelo {
+            profesores: None,
+            asignaturas: None,
+        },
+    };
+    repository
+}
 pub struct Repository {
     pub persistencia: Persistencia,
     pub modelo: Modelo,
