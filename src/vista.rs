@@ -2,6 +2,9 @@ use std::io;
 pub struct Vista;
 
 impl Vista {
+    pub fn clear_screen(&self) {
+        clearscreen::clear().unwrap();
+    }
     pub fn get_input(&self) -> String {
         let mut input = String::new();
         io::stdin()

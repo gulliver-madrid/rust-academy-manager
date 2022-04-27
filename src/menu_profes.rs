@@ -11,6 +11,7 @@ impl MenuProfesores {
     pub fn abrir_menu(&self, vista: &vista::Vista) {
         let mut profesores = repo::get_profesores();
         loop {
+            vista.clear_screen();
             vista.mostrar(textos::OPCIONES_MENU_PROFESORES);
             let eleccion = vista.get_input();
             match eleccion.as_str() {
@@ -27,9 +28,12 @@ impl MenuProfesores {
         profesores: &Profesores,
         vista: &vista::Vista,
     ) {
+        vista.clear_screen();
         for profe in profesores {
             vista.mostrar(&profe.crear_linea_tabla());
         }
+        vista.mostrar("\nPulsa ENTER para volver al menú de profesores");
+        vista.get_input();
     }
 
     fn abrir_menu_anadir_profe(
