@@ -1,8 +1,8 @@
-use crate::menu_asignaturas;
-use crate::menu_profes;
-use crate::shared_menus as menus;
-use crate::shared_menus::Menu;
-use crate::shared_menus::{ItemMenu, SalirMenu};
+use super::shared as menus;
+use super::shared::Menu;
+use super::shared::{ItemMenu, SalirMenu};
+use super::menu_asignaturas;
+use super::menu_profes;
 use crate::textos;
 use crate::vista;
 
