@@ -2,9 +2,9 @@ use std::io;
 
 use crate::helpers;
 
-pub struct Vista;
+pub struct Consola;
 
-impl Vista {
+impl Consola {
     pub fn clear_screen(&self) {
         clearscreen::clear().unwrap();
     }
