@@ -14,7 +14,7 @@ use menus::{Menu, MenuPrincipal};
 fn main() {
     println!("\nPROFESORES\n");
     let vista = vista::Vista {};
-    let menu = MenuPrincipal { vista: &vista };
+    let mut menu = MenuPrincipal { vista: &vista };
     menu.abrir_menu();
     println!("\nPrograma finalizado\n");
 }

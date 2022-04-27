@@ -24,10 +24,10 @@ const ITEMS_MENU_DATA: [(Opcion, menus::TextoOpcion); 3] = [
 ];
 
 pub struct MenuProfesores<'a> {
-    pub vista: &'a vista::Vista,
+    vista: &'a vista::Vista,
 }
 impl Menu for MenuProfesores<'_> {
-    fn abrir_menu(&self) {
+    fn abrir_menu(&mut self) {
         let mut profesores = repo::load_profesores();
         let items_menu = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
@@ -40,13 +40,16 @@ impl Menu for MenuProfesores<'_> {
     }
 }
 impl MenuProfesores<'_> {
+    pub fn new(vista: &vista::Vista) -> MenuProfesores {
+        MenuProfesores { vista: vista }
+    }
     fn mostrar_iteracion_menu(
         &self,
         items_menu: &ItemMenus,
         profesores: &mut Profesores,
     ) -> Option<SalirMenu> {
         self.vista.clear_screen();
-        self.vista.mostrar(textos::TITULO_MENU_PROFESORES);
+        self.vista.mostrar_titulo(textos::MENU_PROFESORES);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
         self.vista.mostrar(&texto_opciones);
         let entrada_usuario = self.vista.get_input();
@@ -60,8 +63,7 @@ impl MenuProfesores<'_> {
     }
     fn mostrar_lista_profes(&self, profesores: &Profesores) {
         self.vista.clear_screen();
-        self.vista.mostrar("\nLista de profesores");
-        self.vista.mostrar("-------------------\n");
+        self.vista.mostrar_titulo(textos::LISTA_PROFESORES);
         for profe in profesores {
             self.vista.mostrar(&profe.crear_linea_tabla());
         }

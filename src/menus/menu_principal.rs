@@ -1,8 +1,9 @@
+use super::menu_asignaturas;
+use super::menu_profes;
 use super::shared as menus;
 use super::shared::Menu;
 use super::shared::{ItemMenu, SalirMenu};
-use super::menu_asignaturas;
-use super::menu_profes;
+use crate::repo;
 use crate::textos;
 use crate::vista;
 
@@ -26,7 +27,7 @@ pub struct MenuPrincipal<'a> {
 }
 
 impl Menu for MenuPrincipal<'_> {
-    fn abrir_menu(&self) {
+    fn abrir_menu(&mut self) {
         let items_menu: ItemMenus = menus::crear_items_menu(ITEMS_MENU_DATA);
         loop {
             if let Some(_instruccion) = self.mostrar_iteracion_menu(&items_menu) {
@@ -39,7 +40,7 @@ impl Menu for MenuPrincipal<'_> {
 impl MenuPrincipal<'_> {
     fn mostrar_iteracion_menu(&self, items_menu: &ItemMenus) -> Option<SalirMenu> {
         self.vista.clear_screen();
-        self.vista.mostrar(textos::TITULO_MENU_PRINCIPAL);
+        self.vista.mostrar_titulo(textos::MENU_PRINCIPAL);
         let texto_opciones = menus::crear_texto_opciones(&items_menu);
         self.vista.mostrar(&texto_opciones);
 
@@ -54,12 +55,13 @@ impl MenuPrincipal<'_> {
     }
 
     fn abrir_menu_profes(&self) {
-        let menu = menu_profes::MenuProfesores { vista: self.vista };
+        let mut menu = menu_profes::MenuProfesores::new(self.vista);
         menu.abrir_menu();
     }
 
     fn abrir_menu_asignaturas(&self) {
-        let menu = menu_asignaturas::MenuAsignaturas { vista: self.vista };
+        let asignaturas = repo::get_asignaturas();
+        let mut menu = menu_asignaturas::MenuAsignaturas::new(self.vista, asignaturas);
         menu.abrir_menu();
     }
 }
