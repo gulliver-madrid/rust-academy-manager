@@ -33,6 +33,8 @@ impl MenuAsignaturas {
         vista: &vista::Vista,
     ) {
         vista.clear_screen();
+        vista.mostrar("\nLista de asignaturas");
+        vista.mostrar("-------------------\n");
         for asignatura in asignaturas {
             vista.mostrar(&asignatura.crear_linea_tabla());
         }

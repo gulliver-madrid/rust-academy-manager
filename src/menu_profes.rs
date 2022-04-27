@@ -9,7 +9,7 @@ pub struct MenuProfesores;
 
 impl MenuProfesores {
     pub fn abrir_menu(&self, vista: &vista::Vista) {
-        let mut profesores = repo::get_profesores();
+        let mut profesores = repo::load_profesores();
         loop {
             vista.clear_screen();
             vista.mostrar(textos::OPCIONES_MENU_PROFESORES);
@@ -23,12 +23,10 @@ impl MenuProfesores {
         }
     }
 
-    fn mostrar_lista_profes(
-        &self,
-        profesores: &Profesores,
-        vista: &vista::Vista,
-    ) {
+    fn mostrar_lista_profes(&self, profesores: &Profesores, vista: &vista::Vista) {
         vista.clear_screen();
+        vista.mostrar("\nLista de profesores");
+        vista.mostrar("-------------------\n");
         for profe in profesores {
             vista.mostrar(&profe.crear_linea_tabla());
         }
@@ -36,11 +34,7 @@ impl MenuProfesores {
         vista.get_input();
     }
 
-    fn abrir_menu_anadir_profe(
-        &self,
-        profesores: &mut Profesores,
-        vista: &vista::Vista,
-    ) {
+    fn abrir_menu_anadir_profe(&self, profesores: &mut Profesores, vista: &vista::Vista) {
         let new_id: u32;
         {
             let last_profe = helpers::get_last_element(profesores);

@@ -29,7 +29,7 @@ pub fn save_asignaturas(asignaturas: Asignaturas) {
     self::write_in_file(&get_subjects_path(), json);
 }
 
-pub fn get_profesores() -> Profesores {
+pub fn load_profesores() -> Profesores {
     let serialized = read_json_profesores();
     let profesores = serialization::convert_serialized_to_teachers(serialized);
     profesores
