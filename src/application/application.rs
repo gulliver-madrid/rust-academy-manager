@@ -5,10 +5,11 @@ use crate::{
 };
 
 use super::{
-    add_subject::AddSubjectUseCase, add_teacher::AddTeacherUseCase,
-    assign_teacher_to_subject::AssignTeacherToSubjectUseCase,
-    get_subject_index_by_name::GetSubjectIndexByNameUseCase,
-    remove_subject::RemoveSubjectUseCase, remove_teacher::RemoveTeacherUseCase,
+    usecases::{
+        AddSubjectUseCase, AddTeacherUseCase, AssignTeacherToSubjectUseCase,
+        GetSubjectIndexByNameUseCase, RemoveSubjectUseCase,
+        RemoveTeacherUseCase
+    },
 };
 
 pub struct Application {
