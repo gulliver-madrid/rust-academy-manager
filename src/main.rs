@@ -1,19 +1,15 @@
 mod asignatura;
 mod helpers;
-mod menu_asignaturas;
-mod menu_principal;
-mod menu_profes;
+mod menus;
 mod repo;
 mod serializable;
 mod serialization;
-mod shared_menus;
 mod teachers;
 mod textos;
 mod views;
 mod vista;
 
-use menu_principal::MenuPrincipal;
-use shared_menus::Menu;
+use menus::{Menu, MenuPrincipal};
 
 fn main() {
     println!("\nPROFESORES\n");
