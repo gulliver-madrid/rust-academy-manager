@@ -16,11 +16,7 @@ impl AddTeacherUseCase<'_> {
         let teachers = self.repository.model.teachers.as_ref().unwrap();
         for teacher in teachers {
             if teacher.name == name {
-                return Err(SimpleError::new(&format!(
-                    "{} {}",
-                    t!("already_exists_teacher"),
-                    name
-                )));
+                return Err(Self::create_already_exists_teacher_error(&name));
             }
         }
         let next_id: u32 = self.get_next_id();
@@ -48,5 +44,12 @@ impl AddTeacherUseCase<'_> {
         let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
         teachers.push(teacher);
         self.repository.persistence.save_teachers(teachers);
+    }
+    fn create_already_exists_teacher_error(name: &str) -> SimpleError {
+        SimpleError::new(&format!(
+            "{} {}",
+            t!("already_exists_teacher"),
+            name
+        ))
     }
 }

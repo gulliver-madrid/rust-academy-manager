@@ -15,11 +15,12 @@ impl GetSubjectIndexByNameUseCase<'_> {
         let index = subjects.iter().position(|a| a.name == subject_name);
         match index {
             Some(index) => Ok(index),
-            None => Err(SimpleError::new(&format!(
-                "{}: {}",
-                t!("no_valid_name"),
-                subject_name
-            ))),
+            None => Err(Self::create_no_valid_name_error(subject_name)),
         }
+    }
+    fn create_no_valid_name_error(subject_name: &str) -> SimpleError {
+        SimpleError::new(
+            &format!("{}: {}", t!("no_valid_name"), subject_name),
+        )
     }
 }
