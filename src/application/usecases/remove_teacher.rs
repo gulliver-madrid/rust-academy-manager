@@ -20,13 +20,7 @@ impl RemoveTeacherUseCase<'_> {
                 teacher_id = teachers[index].id;
                 teacher_index = index;
             }
-            None => {
-                return Err(SimpleError::new(&format!(
-                    "{} {}",
-                    t!("no_teacher_with_name"),
-                    name
-                )));
-            }
+            None => return Err(Self::create_teacher_doesnt_exist_error(&name))
         }
         self.remove_from_subjects_assignments(teacher_id);
         let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
@@ -38,10 +32,13 @@ impl RemoveTeacherUseCase<'_> {
     fn remove_from_subjects_assignments(&mut self, teacher_id: u32) {
         let subjects = self.repository.model.subjects.as_mut().unwrap();
         for subject in &mut subjects.into_iter() {
-            subject
-                .assigned_teachers
-                .retain(|id| *id != teacher_id);
+            subject.assigned_teachers.retain(|id| *id != teacher_id);
         }
         self.repository.persistence.save_subjects(subjects);
+    }
+    fn create_teacher_doesnt_exist_error(name: &str) -> SimpleError {
+        SimpleError::new(
+            &format!("{}: {}", t!("no_teacher_with_name"), name)
+        )
     }
 }
