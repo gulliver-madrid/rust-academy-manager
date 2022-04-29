@@ -8,6 +8,8 @@ import re
 import os
 import sys
 
+from .patterns import pattern_2
+
 PathsToLines = dict[Path, list[str]]
 KeysToPath = dict[str, Path]
 
@@ -24,15 +26,7 @@ def main() -> None:
             ([^"]+)         # the translation key as a captured group
             "\)             # ")
     """, re.VERBOSE), 
-
-        # example: MenuOption::Teachers, "menu_options.teacher")
-        re.compile(r"""
-            MenuOption::
-            [A-Z][a-zA-Z0-9_]*       # Some pascal identifier
-            ,\s*"           # , "
-            ([^"]+)         # the translation key as a captured group
-            "             # "
-    """, re.VERBOSE), 
+        pattern_2, 
     ]
     src_path_str, locale_path_str = sys.argv[1:]
     src_path = Path.cwd() / src_path_str
@@ -130,8 +124,12 @@ def get_used_keys(base_dir: Path, ext: str, pattern: re.Pattern[str]) -> KeysToP
 def extract_used_keys(pattern: re.Pattern[str], paths_to_lines: PathsToLines) -> KeysToPath:
     keys_used = {}
     for path, lines in paths_to_lines.items():
-        for line in lines:
-            if m := pattern.search(line):
+        # Using groups of n lines to detect multiline patterns
+        n = 4
+        number_of_lines = len(lines)
+        for i in range(number_of_lines - n):
+            group = "\n".join(lines[i: i + 4])
+            if m := pattern.search(group):
                 groups = m.groups()
                 assert len(groups) == 1, groups
                 keys_used[groups[0]] = path
