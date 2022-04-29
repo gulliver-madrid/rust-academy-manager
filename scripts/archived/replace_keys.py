@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import yaml
 
-from validate import get_paths_with_extension #type: ignore
+from ..validate import get_paths_with_extension 
 
 ENABLED = False
 translations = r"locales\es.yml"
