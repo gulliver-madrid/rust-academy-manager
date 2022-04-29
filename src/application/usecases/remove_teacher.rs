@@ -3,6 +3,7 @@ use rust_i18n::t;
 use crate::{
     errors::{SimpleError, SimpleResult},
     repository::Repository,
+    simple_error,
 };
 
 pub struct RemoveTeacherUseCase<'a> {
@@ -20,7 +21,7 @@ impl RemoveTeacherUseCase<'_> {
                 teacher_id = teachers[index].id;
                 teacher_index = index;
             }
-            None => return Err(Self::create_teacher_doesnt_exist_error(&name))
+            None => return Self::create_teacher_doesnt_exist_error(&name),
         }
         self.remove_from_subjects_assignments(teacher_id);
         let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
@@ -36,9 +37,7 @@ impl RemoveTeacherUseCase<'_> {
         }
         self.repository.persistence.save_subjects(subjects);
     }
-    fn create_teacher_doesnt_exist_error(name: &str) -> SimpleError {
-        SimpleError::new(
-            &format!("{}: {}", t!("no_teacher_with_name"), name)
-        )
+    fn create_teacher_doesnt_exist_error(name: &str) -> SimpleResult {
+        simple_error!("{}: {}", t!("no_teacher_with_name"), name)
     }
 }

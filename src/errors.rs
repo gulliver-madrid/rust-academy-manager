@@ -27,3 +27,18 @@ impl Error for SimpleError {
         &self.details
     }
 }
+
+/// If receive multiple args, first should be a format string
+/// that will be used to format the other args
+/// If receive an only arg, it should be a String
+#[macro_export]
+macro_rules! simple_error {
+    ($e:expr) => {
+        Err(SimpleError::new($e))
+    };
+    ($($e:expr),+) => {
+        simple_error!(&format!(
+            $($e),+
+        ))
+    };
+}

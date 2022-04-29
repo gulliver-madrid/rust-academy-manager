@@ -4,7 +4,7 @@ use crate::{
     domain::{Subject, Subjects},
     errors::{SimpleError, SimpleResult},
     helpers,
-    repository::Repository,
+    repository::Repository, simple_error,
 };
 
 pub struct AddSubjectUseCase<'a> {
@@ -28,11 +28,11 @@ impl AddSubjectUseCase<'_> {
     ) -> SimpleResult {
         for subject in subjects {
             if subject.name == name {
-                return Err(SimpleError::new(&format!(
+                return simple_error!(
                     "{} {}",
                     t!("already_exists_subject"),
                     name
-                )));
+                );
             }
         }
         Ok(())
