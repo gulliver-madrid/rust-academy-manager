@@ -4,7 +4,8 @@ use crate::{
     domain::{Subject, Subjects},
     errors::{SimpleError, SimpleResult},
     helpers,
-    repository::Repository, simple_error,
+    repository::Repository,
+    simple_error,
 };
 
 pub struct AddSubjectUseCase<'a> {
@@ -21,27 +22,17 @@ impl AddSubjectUseCase<'_> {
         Ok(())
     }
 
-    fn validate_name_is_free(
-        &self,
-        subjects: &Subjects,
-        name: &str,
-    ) -> SimpleResult {
-        for subject in subjects {
-            if subject.name == name {
-                return simple_error!(
-                    "{} {}",
-                    t!("already_exists_subject"),
-                    name
-                );
-            }
+    fn validate_name_is_free(&self, subjects: &Subjects, name: &str) -> SimpleResult {
+        match subjects.iter().find(|subject| subject.name == name) {
+            Some(_) => Self::create_already_exists_subject_error(name),
+            None => Ok(()),
         }
-        Ok(())
     }
 
     fn get_next_id(&self) -> u32 {
         let subjects = &self.repository.model.subjects.as_ref().unwrap();
-        let last_subject = helpers::get_last_element(subjects)
-            .expect(&t!("errors.no_subject"));
+        let last_subject =
+            helpers::get_last_element(subjects).expect(&t!("errors.no_subject"));
         last_subject.id + 1
     }
 
@@ -57,5 +48,8 @@ impl AddSubjectUseCase<'_> {
         let subjects = &mut self.repository.model.subjects.as_mut().unwrap();
         subjects.push(subject);
         self.repository.persistence.save_subjects(subjects);
+    }
+    fn create_already_exists_subject_error(name: &str) -> SimpleResult {
+        simple_error!("{} {}", t!("errors.already_exists_subject"), name)
     }
 }

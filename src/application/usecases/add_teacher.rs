@@ -1,11 +1,11 @@
 use rust_i18n::t;
 
 use crate::{
-    simple_error,
     domain::{Teacher, Teachers},
-    errors::{ SimpleResult, SimpleError},
+    errors::{SimpleError, SimpleResult},
     helpers,
     repository::Repository,
+    simple_error,
 };
 
 pub struct AddTeacherUseCase<'a> {
@@ -15,36 +15,33 @@ pub struct AddTeacherUseCase<'a> {
 impl AddTeacherUseCase<'_> {
     pub fn add_new_teacher(&mut self, name: String) -> SimpleResult {
         let teachers = self.repository.model.teachers.as_ref().unwrap();
-        self.validate_teacher_doesnt_exist(teachers, &name)?;
-        let new_teacher = self.create_new_teacher(name);
+        Self::validate_teacher_doesnt_exist(teachers, &name)?;
+        let id = Self::get_next_id(teachers);
+        let new_teacher = Self::create_new_teacher(name, id);
         self.add_teacher(new_teacher);
         Ok(())
     }
 
-    fn validate_teacher_doesnt_exist(&self, teachers: &Teachers, name: &str) -> SimpleResult {
-        for teacher in teachers {
-            if teacher.name == *name {
-                return Self::create_already_exists_teacher_error(name);
-            }
-        };
-        Ok(())
+    fn validate_teacher_doesnt_exist(teachers: &Teachers, name: &str) -> SimpleResult {
+        match teachers.iter().find(|teacher| teacher.name == name) {
+            Some(_) => Self::create_already_exists_teacher_error(name),
+            None => Ok(()),
+        }
     }
-    
-    fn create_new_teacher(&self, name: String) -> Teacher {
+
+    fn create_new_teacher(name: String, id: u32) -> Teacher {
         Teacher {
             name,
-            id: self.get_next_id(),
+            id,
             phone_number: String::new(),
         }
     }
 
-    fn get_next_id(&self) -> u32 {
-        let teachers = &self.repository.model.teachers.as_ref().unwrap();
+    fn get_next_id(teachers: &Teachers) -> u32 {
         let last_teacher =
             helpers::get_last_element(teachers).expect(&t!("errors.no_teacher"));
         last_teacher.id + 1
     }
-
 
     fn add_teacher(&mut self, teacher: Teacher) {
         let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
@@ -53,12 +50,6 @@ impl AddTeacherUseCase<'_> {
     }
 
     fn create_already_exists_teacher_error(name: &str) -> SimpleResult {
-        simple_error!(
-            "{} {}",
-            t!("errors.already_exists_teacher"),
-            name
-        )
+        simple_error!("{} {}", t!("errors.already_exists_teacher"), name)
     }
 }
-
-
