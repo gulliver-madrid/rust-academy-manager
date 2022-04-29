@@ -26,6 +26,7 @@ es:
     no_teacher: "Error: no se encontró ningún profesor"
     not_implemented: "Error: no implementado"
     couldnt_read_user_input: "Error: no se pudo leer la entrada del usuario"
+    already_exists_teacher: Ya existe un profesor con el nombre
   menu_options:
     teachers: Profesores
     subjects: Asignaturas
@@ -54,7 +55,6 @@ es:
     subject: Asignatura
   couldnt_access_teachers_list: No se pudo acceder al listado de profesores
   already_exists_subject: Ya existe una asignatura llamada
-  already_exists_teacher: Ya existe un profesor con el nombre
   add_subject_menu:
     subject: Asignatura
     added: añadida

@@ -26,6 +26,7 @@ en:
     no_teacher: "Error: no teachers found"
     not_implemented: "Error: not implemented"
     couldnt_read_user_input: "Error: couldn't read user input"
+    already_exists_teacher: Already exists a teacher with the name
   menu_options:
     teachers: Teachers
     subjects: Subjects
@@ -54,7 +55,6 @@ en:
     subject: Subject
   couldnt_access_teachers_list: Couldn't access teachers list
   already_exists_subject: Already exists a subject called
-  already_exists_teacher: Already exists a teacher with the name
   add_subject_menu:
     subject: Subject
     added: added
