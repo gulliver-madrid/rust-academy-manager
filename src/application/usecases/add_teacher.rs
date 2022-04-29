@@ -1,8 +1,9 @@
 use rust_i18n::t;
 
 use crate::{
+    simple_error,
     domain::{Teacher, Teachers},
-    errors::{SimpleError, SimpleResult},
+    errors::{ SimpleResult, SimpleError},
     helpers,
     repository::Repository,
 };
@@ -52,11 +53,11 @@ impl AddTeacherUseCase<'_> {
     }
 
     fn create_already_exists_teacher_error(name: &str) -> SimpleResult {
-        Err(SimpleError::new(&format!(
+        simple_error!(
             "{} {}",
             t!("errors.already_exists_teacher"),
             name
-        )))
+        )
     }
 }
 

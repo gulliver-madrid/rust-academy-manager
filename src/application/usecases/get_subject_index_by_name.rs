@@ -1,6 +1,6 @@
 use rust_i18n::t;
 
-use crate::{errors::SimpleError, repository::Repository};
+use crate::{errors::SimpleError, repository::Repository, simple_error};
 
 pub struct GetSubjectIndexByNameUseCase<'a> {
     pub repository: &'a mut Repository,
@@ -15,12 +15,10 @@ impl GetSubjectIndexByNameUseCase<'_> {
         let index = subjects.iter().position(|a| a.name == subject_name);
         match index {
             Some(index) => Ok(index),
-            None => Err(Self::create_no_valid_name_error(subject_name)),
+            None => Self::create_no_valid_name_error(subject_name),
         }
     }
-    fn create_no_valid_name_error(subject_name: &str) -> SimpleError {
-        SimpleError::new(
-            &format!("{}: {}", t!("no_valid_name"), subject_name),
-        )
+    fn create_no_valid_name_error(subject_name: &str) -> Result<usize, SimpleError> {
+        simple_error!("{}: {}", t!("no_valid_name"), subject_name)
     }
 }

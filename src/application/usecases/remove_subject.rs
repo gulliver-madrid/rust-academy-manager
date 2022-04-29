@@ -2,7 +2,7 @@ use rust_i18n::t;
 
 use crate::{
     errors::{SimpleError, SimpleResult},
-    repository::Repository,
+    repository::Repository, simple_error,
 };
 
 pub struct RemoveSubjectUseCase<'a> {
@@ -18,11 +18,11 @@ impl RemoveSubjectUseCase<'_> {
                 self.repository.persistence.save_subjects(subjects);
                 Ok(())
             }
-            None => Err(SimpleError::new(&format!(
+            None => simple_error!(
                 "{} {}",
                 t!("no_subject_with_name"),
                 name
-            ))),
+            ),
         }
     }
 }

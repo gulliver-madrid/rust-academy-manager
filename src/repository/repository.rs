@@ -1,6 +1,6 @@
 use rust_i18n::t;
 
-use crate::{domain::Teacher, errors::SimpleError};
+use crate::{domain::Teacher, errors::SimpleError, simple_error};
 
 use super::{model::Model, PersistenceTrait};
 
@@ -37,7 +37,7 @@ impl Repository {
         let result = self.model.teachers.as_ref();
         match result {
             Some(teachers) => Ok(teachers),
-            None => Err(SimpleError::new(&t!("couldnt_access_teachers_list"))),
+            None => simple_error!(&t!("couldnt_access_teachers_list")),
         }
     }
     fn populate_subjects(&mut self) {
