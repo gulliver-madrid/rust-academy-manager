@@ -8,11 +8,17 @@ import re
 import os
 import sys
 
-from .patterns import pattern_2
+from .patterns import menu_option_pattern
 
 PathsToLines = dict[Path, list[str]]
 KeysToPath = dict[str, Path]
 
+simple_pattern = re.compile(r"""
+            [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
+            t!\("           # t!("
+            ([^"]+)         # the translation key as a captured group
+            "\)             # ")
+    """, re.VERBOSE) 
 
 def main() -> None:
     args = sys.argv[1:]
@@ -20,13 +26,8 @@ def main() -> None:
         print("Should be called with 2 arguments: src folder and locale folder")
         sys.exit()
     patterns = [
-        re.compile(r"""
-            [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
-            t!\("           # t!("
-            ([^"]+)         # the translation key as a captured group
-            "\)             # ")
-    """, re.VERBOSE), 
-        pattern_2, 
+        simple_pattern,
+        menu_option_pattern, 
     ]
     src_path_str, locale_path_str = sys.argv[1:]
     src_path = Path.cwd() / src_path_str
