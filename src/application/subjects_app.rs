@@ -34,11 +34,11 @@ impl SubjectsApp {
 
     /// Returns the index of the subject with the specified name
     pub fn get_subject_index_by_name(
-        &mut self,
+        &self,
         subject_name: &str,
     ) -> Result<usize, SimpleError> {
         GetSubjectIndexByNameUseCase {
-            repository: &mut self.repository.borrow_mut(),
+            repository: &self.repository.borrow(),
         }
         .get_subject_index_by_name(subject_name)
     }

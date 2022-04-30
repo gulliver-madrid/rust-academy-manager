@@ -1,6 +1,6 @@
 use rust_i18n::t;
 
-use crate::components::Control;
+use crate::{components::Control, ui::UserInterface, errors::SimpleError};
 
 /// Menu for assign a teacher to a subject
 pub struct AssignTeacherMenu<'a> {
@@ -12,36 +12,24 @@ impl AssignTeacherMenu<'_> {
         let ui = &self.control.ui;
         ui.show(&t!("assign_teacher_menu.choose_subject"));
         let subject_name: String;
-        match ui.ask_text_to_user() {
-            Some(entered_text) => subject_name = entered_text,
-            None => {
-                ui.show(&t!("cancelled_op"));
-                ui.pause_enter(&t!("continue"));
-                return;
-            }
+        if let Some(entered_text) = ui.ask_text_to_user() {
+            subject_name = entered_text
+        } else {
+            ui.show(&t!("cancelled_op"));
+            ui.pause_enter(&t!("continue"));
+            return;
         }
+
         let subject_index: usize;
-        match self
-            .control
-            .application
-            .subjects_app
-            .get_subject_index_by_name(&subject_name)
-        {
-            Ok(index) => {
-                subject_index = index;
-            }
+        match self.get_subject_index(&subject_name) {
+            Ok(index) => subject_index = index,
             Err(e) => {
                 ui.show(&e.to_string());
                 ui.pause_enter(&t!("continue"));
                 return;
             }
         }
-        // Show introduced subject
-        ui.show(&format!(
-            "{}: {}",
-            &t!("assign_teacher_menu.introduced_subject"),
-            subject_name
-        ));
+        self.show_introduced_subject(ui, &subject_name);
         ui.show(&t!("assign_teacher_menu.ask_teacher_id"));
         if let Some(entered_text) = ui.ask_text_to_user() {
             let teacher_id = entered_text.parse::<u32>().unwrap();
@@ -56,5 +44,19 @@ impl AssignTeacherMenu<'_> {
             }
             ui.pause_enter(&t!("continue"));
         }
+    }
+
+    fn get_subject_index(&self, subject_name: &str) -> Result<usize, SimpleError> {
+        self.control
+            .application
+            .subjects_app
+            .get_subject_index_by_name(subject_name)
+    }
+    fn show_introduced_subject(&self, ui: &UserInterface, subject_name: &str) {
+        ui.show(&format!(
+            "{}: {}",
+            &t!("assign_teacher_menu.introduced_subject"),
+            subject_name
+        ));
     }
 }
