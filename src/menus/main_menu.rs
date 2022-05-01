@@ -7,7 +7,6 @@ use super::subjects_menu::SubjectsMenu;
 use super::teachers_menu::TeachersMenu;
 use crate::components::Control;
 
-
 const LOOP_LIMIT: u32 = 200;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -71,9 +70,9 @@ impl MainMenu<'_> {
     }
     fn show_menu_text(&self, menu_items: &MenuItems) {
         self.control.ui.clear_screen();
-        self.control.ui.show_title(&t!("main_menu"));
+        self.control.ui.show_title(t!("main_menu"));
         let options_text = menus::create_options_text(&menu_items);
-        self.control.ui.show(&options_text);
+        self.control.ui.show(options_text);
     }
 
     fn open_teachers_menu(&mut self) {

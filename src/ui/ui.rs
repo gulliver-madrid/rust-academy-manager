@@ -34,16 +34,16 @@ impl UserInterface {
         }
     }
 
-    pub fn show(&self, text: &str) {
-        self.inner_console.show(text);
+    pub fn show(&self, text: String) {
+        self.inner_console.show(&text);
     }
 
-    pub fn show_title(&self, text: &str) {
-        self.show(&self.convert_to_title(text));
+    pub fn show_title(&self, text: String) {
+        self.show(self.convert_to_title(&text));
     }
 
     pub fn pause_enter(&self, text: &str) {
-        self.show(&format!("{} {}", t!("press_enter_to"), text));
+        self.show(format!("{} {}", t!("press_enter_to"), text));
         self.get_input();
     }
 

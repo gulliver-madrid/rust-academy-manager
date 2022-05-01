@@ -13,7 +13,7 @@ impl RemoveSubjectMenu<'_> {
         if let Some(name) = ui.ask_text_to_user() {
             let result = self.control.application.subjects_app.remove_subject(&name);
             let msg = get_info_result(result, &name);
-            ui.show(&msg);
+            ui.show(msg);
             ui.pause_enter(&t!("continue"));
         }
     }
@@ -21,7 +21,7 @@ impl RemoveSubjectMenu<'_> {
     fn show_menu_text(&self) {
         self.control
             .ui
-            .show(&t!("enter_name_subject_to_be_deleted"));
+            .show(t!("enter_name_subject_to_be_deleted"));
     }
 }
 

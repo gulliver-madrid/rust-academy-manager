@@ -76,9 +76,9 @@ impl SubjectsMenu<'_> {
     fn show_menu_text(&self, menu_items: &MenuItems) {
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(&t!("subjects_menu"));
+        ui.show_title(t!("subjects_menu"));
         let options_text = shared::create_options_text(menu_items);
-        ui.show(&options_text);
+        ui.show(options_text);
     }
 
     fn show_subjects_list(&self) {
@@ -88,10 +88,10 @@ impl SubjectsMenu<'_> {
             Ok(subjects) => {
                 let subjects_list_text = self.create_subjects_list(subjects);
                 ui.clear_screen();
-                ui.show_title(&t!("subjects_list"));
-                ui.show(subjects_list_text.as_str());
+                ui.show_title(t!("subjects_list"));
+                ui.show(subjects_list_text);
             }
-            Err(e) => ui.show(&e.to_string()),
+            Err(e) => ui.show(e.to_string()),
         }
         ui.pause_enter(&t!("back_subjects_menu"));
     }
