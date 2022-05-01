@@ -14,7 +14,6 @@ impl AddSubjectMenu<'_> {
             let result = self.control.application.subjects_app.add_new_subject(&name);
             let msg = match result {
                 Ok(_) => format!(
-                    //
                     "{} {} {}",
                     t!("add_subject_menu.subject"),
                     name,

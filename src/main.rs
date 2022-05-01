@@ -30,7 +30,11 @@ fn main() {
         .get_matches();
     let language = String::from(matches.value_of("lang").unwrap_or("en"));
     if !(ALLOWED_LANGUAGES.contains(&language.as_ref())) {
-        println!("Error: Unknown language: {}. Available languages: {}", language, ALLOWED_LANGUAGES.join(", "));
+        println!(
+            "Error: Unknown language: {}. Available languages: {}",
+            language,
+            ALLOWED_LANGUAGES.join(", ")
+        );
         return;
     };
     rust_i18n::set_locale(&language);
@@ -43,10 +47,7 @@ fn main() {
     let ui = ui::UserInterface {
         inner_console: Box::new(ActualConsole {}),
     };
-    let mut control = Control {
-        ui: ui,
-        application,
-    };
+    let mut control = Control { ui, application };
     let mut menu = MainMenu::new(&mut control);
     menu.open_menu();
     println!("\n{}\n", t!("program_finished"));

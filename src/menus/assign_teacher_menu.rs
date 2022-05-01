@@ -1,6 +1,9 @@
 use rust_i18n::t;
 
-use crate::{components::Control, ui::UserInterface, errors::SimpleError};
+use crate::{
+    components::Control,
+    errors::{SimpleError, SimpleResult},
+};
 
 /// Menu for assign a teacher to a subject
 pub struct AssignTeacherMenu<'a> {
@@ -29,7 +32,8 @@ impl AssignTeacherMenu<'_> {
                 return;
             }
         }
-        self.show_introduced_subject(ui, &subject_name);
+
+        ui.show(&introduced_subject_msg(&subject_name));
         ui.show(&t!("assign_teacher_menu.ask_teacher_id"));
         if let Some(entered_text) = ui.ask_text_to_user() {
             let teacher_id = entered_text.parse::<u32>().unwrap();
@@ -37,11 +41,7 @@ impl AssignTeacherMenu<'_> {
                 .control
                 .application
                 .assign_teacher_to_subject(subject_index, teacher_id);
-            if result.is_ok() {
-                ui.show(&t!("assign_teacher_menu.ok"));
-            } else {
-                ui.show(&t!("assign_teacher_menu.coudnt_op"));
-            }
+            ui.show(&result_msg(result));
             ui.pause_enter(&t!("continue"));
         }
     }
@@ -52,11 +52,20 @@ impl AssignTeacherMenu<'_> {
             .subjects_app
             .get_subject_index_by_name(subject_name)
     }
-    fn show_introduced_subject(&self, ui: &UserInterface, subject_name: &str) {
-        ui.show(&format!(
-            "{}: {}",
-            &t!("assign_teacher_menu.introduced_subject"),
-            subject_name
-        ));
+}
+
+fn introduced_subject_msg(subject_name: &str) -> String {
+    format!(
+        "{}: {}",
+        &t!("assign_teacher_menu.introduced_subject"),
+        subject_name
+    )
+}
+
+fn result_msg(result: SimpleResult) -> String {
+    if result.is_ok() {
+        t!("assign_teacher_menu.ok")
+    } else {
+        t!("assign_teacher_menu.coudnt_op")
     }
 }
