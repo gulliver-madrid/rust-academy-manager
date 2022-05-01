@@ -9,20 +9,13 @@ pub struct RemoveTeacherMenu<'a> {
 impl RemoveTeacherMenu<'_> {
     pub fn open_menu(&mut self) {
         let ui = &self.control.ui;
-        self.show_menu_text();
-
+        ui.show(&menu_text());
         if let Some(name) = ui.ask_text_to_user() {
             let result = self.control.application.teachers_app.remove_teacher(&name);
             let msg = self.get_info_result(result, name);
             ui.show(&msg);
             ui.pause_enter(&t!("continue"));
         };
-    }
-
-    fn show_menu_text(&self) {
-        self.control
-            .ui
-            .show(&t!("enter_name_teacher_to_be_deleted"));
     }
 
     fn get_info_result(&self, result: SimpleResult, name: String) -> String {
@@ -38,4 +31,8 @@ impl RemoveTeacherMenu<'_> {
             Err(e) => e.to_string(),
         }
     }
+}
+
+fn menu_text() -> String {
+    t!("enter_name_teacher_to_be_deleted")
 }
