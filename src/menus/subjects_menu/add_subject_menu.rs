@@ -21,12 +21,12 @@ impl AddSubjectMenu<'_> {
                 ),
                 Err(e) => e.to_string(),
             };
-            ui.show(&msg);
+            ui.show(msg);
             ui.pause_enter(&t!("continue"));
         }
     }
 
     fn show_menu_text(&self) {
-        self.control.ui.show(&t!("input_subject_name"));
+        self.control.ui.show(t!("input_subject_name"));
     }
 }

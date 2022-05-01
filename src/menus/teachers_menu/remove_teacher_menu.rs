@@ -9,11 +9,11 @@ pub struct RemoveTeacherMenu<'a> {
 impl RemoveTeacherMenu<'_> {
     pub fn open_menu(&mut self) {
         let ui = &self.control.ui;
-        ui.show(&menu_text());
+        ui.show(menu_text());
         if let Some(name) = ui.ask_text_to_user() {
             let result = self.control.application.teachers_app.remove_teacher(&name);
             let msg = self.get_info_result(result, name);
-            ui.show(&msg);
+            ui.show(msg);
             ui.pause_enter(&t!("continue"));
         };
     }

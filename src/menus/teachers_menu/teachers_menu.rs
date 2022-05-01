@@ -21,7 +21,10 @@ type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 const MENU_ITEMS_DATA: [(MenuOption, OptionText); 4] = [
     (MenuOption::ShowList, "teachers_menu_options.show_list"),
     (MenuOption::AddTeacher, "teachers_menu_options.add_teacher"),
-    (MenuOption::RemoveTeacher, "teachers_menu_options.remove_teacher"),
+    (
+        MenuOption::RemoveTeacher,
+        "teachers_menu_options.remove_teacher",
+    ),
     (MenuOption::GoBack, "teachers_menu_options.go_back"),
 ];
 
@@ -35,7 +38,10 @@ impl<'a> TeachersMenu<'_> {
     }
 
     pub fn open_menu(&mut self) {
-        self.control.application.teachers_app.load_teachers_if_needed();
+        self.control
+            .application
+            .teachers_app
+            .load_teachers_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
@@ -60,17 +66,17 @@ impl<'a> TeachersMenu<'_> {
     fn show_menu_text(&self, menu_items: &MenuItems) {
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(&t!("teachers_menu"));
+        ui.show_title(t!("teachers_menu"));
         let options_text = shared::create_options_text(&menu_items);
-        ui.show(&options_text);
+        ui.show(options_text);
     }
     fn show_teachers_list(&self) {
         let teachers = self.control.application.teachers_app.get_teachers();
         let ui = &self.control.ui;
         ui.clear_screen();
-        ui.show_title(&t!("teachers_list"));
+        ui.show_title(t!("teachers_list"));
         for teacher in teachers {
-            ui.show(&teacher.create_table_row());
+            ui.show(teacher.create_table_row());
         }
         ui.pause_enter(&t!("back_to_teachers_menu"));
     }

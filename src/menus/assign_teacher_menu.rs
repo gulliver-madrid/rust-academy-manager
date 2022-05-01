@@ -13,12 +13,12 @@ pub struct AssignTeacherMenu<'a> {
 impl AssignTeacherMenu<'_> {
     pub fn open_menu(&mut self) {
         let ui = &self.control.ui;
-        ui.show(&t!("assign_teacher_menu.choose_subject"));
+        ui.show(t!("assign_teacher_menu.choose_subject"));
         let subject_name: String;
         if let Some(entered_text) = ui.ask_text_to_user() {
             subject_name = entered_text
         } else {
-            ui.show(&t!("cancelled_op"));
+            ui.show(t!("cancelled_op"));
             ui.pause_enter(&t!("continue"));
             return;
         }
@@ -27,21 +27,21 @@ impl AssignTeacherMenu<'_> {
         match self.get_subject_index(&subject_name) {
             Ok(index) => subject_index = index,
             Err(e) => {
-                ui.show(&e.to_string());
+                ui.show(e.to_string());
                 ui.pause_enter(&t!("continue"));
                 return;
             }
         }
 
-        ui.show(&introduced_subject_msg(&subject_name));
-        ui.show(&t!("assign_teacher_menu.ask_teacher_id"));
+        ui.show(introduced_subject_msg(&subject_name));
+        ui.show(t!("assign_teacher_menu.ask_teacher_id"));
         if let Some(entered_text) = ui.ask_text_to_user() {
             let teacher_id = entered_text.parse::<u32>().unwrap();
             let result = self
                 .control
                 .application
                 .assign_teacher_to_subject(subject_index, teacher_id);
-            ui.show(&result_msg(result));
+            ui.show(result_msg(result));
             ui.pause_enter(&t!("continue"));
         }
     }
