@@ -12,6 +12,10 @@ pub struct AssignTeacherMenu<'a> {
 
 impl AssignTeacherMenu<'_> {
     pub fn open_menu(&mut self) {
+        self.control
+            .application
+            .teachers_app
+            .load_teachers_if_needed();
         let ui = &self.control.ui;
         ui.show(t!("assign_teacher_menu.choose_subject"));
         let subject_name: String;
@@ -34,15 +38,20 @@ impl AssignTeacherMenu<'_> {
         }
 
         ui.show(introduced_subject_msg(&subject_name));
-        ui.show(t!("assign_teacher_menu.ask_teacher_id"));
-        if let Some(entered_text) = ui.ask_text_to_user() {
-            let teacher_id = entered_text.parse::<u32>().unwrap();
-            let result = self
-                .control
-                .application
-                .assign_teacher_to_subject(subject_index, teacher_id);
-            ui.show(result_msg(result));
-            ui.pause_enter(&t!("continue"));
+        loop {
+            ui.show(t!("assign_teacher_menu.ask_teacher_id"));
+            if let Some(entered_text) = ui.ask_text_to_user() {
+                if let Some(teacher_id) = entered_text.parse::<u32>().ok() {
+                    let result = self
+                        .control
+                        .application
+                        .assign_teacher_to_subject(subject_index, teacher_id);
+                    ui.show(result_msg(result));
+                    ui.pause_enter(&t!("continue"));
+                    break;
+                }
+                ui.show(t!("teacher_id_should_be_a_number"))
+            }
         }
     }
 
@@ -63,9 +72,8 @@ fn introduced_subject_msg(subject_name: &str) -> String {
 }
 
 fn result_msg(result: SimpleResult) -> String {
-    if result.is_ok() {
-        t!("assign_teacher_menu.ok")
-    } else {
-        t!("assign_teacher_menu.coudnt_op")
+    match result {
+        Ok(_) => t!("assign_teacher_menu.ok"),
+        Err(e) => format!("{}: {}", t!("assign_teacher_menu.coudnt_op"), e.to_string()),
     }
 }

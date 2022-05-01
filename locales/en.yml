@@ -15,6 +15,7 @@ en:
   no_teacher_with_name: There is no teacher with the name 
   couldnt_get_subjects: Couldn't get the subjects
   no_valid_name: Invalid name
+  no_valid_id: Invalid id
   press_enter_to: Press ENTER to
   successfully_removed_subject: Subject was removed successfully
   unknown: unknown
@@ -62,5 +63,6 @@ en:
     before: Teacher with name
     after: added
   successfully_removed_teacher: 
-    before: "Teacher"
-    after: "was removed successfully"
+    before: Teacher
+    after: was removed successfully
+  teacher_id_should_be_a_number: Teacher id should be a number.

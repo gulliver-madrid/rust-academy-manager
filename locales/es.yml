@@ -15,6 +15,7 @@ es:
   no_teacher_with_name: No hay ningún profesor con el nombre 
   couldnt_get_subjects: No se pudieron obtener las asignaturas
   no_valid_name: Nombre no válido
+  no_valid_id: Id no válido
   press_enter_to: Pulsa ENTER para
   successfully_removed_subject: Se eliminó exitosamente la asignatura
   unknown: desconocido
@@ -64,4 +65,4 @@ es:
   successfully_removed_teacher: 
     before: Se eliminó exitosamente al profesor
     after: ""
-    
+  teacher_id_should_be_a_number: El id del profesor debe ser un número.
