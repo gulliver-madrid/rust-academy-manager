@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from collections import defaultdict
-from typing import Iterator, cast
+import itertools
+from typing import Iterable, Iterator, TypeVar, cast
 from pathlib import Path
 
 
@@ -16,8 +17,9 @@ MULTI_LINE_PATTERNS_MAX_SIZE = 4
 class KeyFinder:
     base_dir: Path
 
-    def get_used_keys(self, patterns: list[Pattern]) -> PatternsToKeysToPaths:
-        return {pattern: self.get_used_keys_by_pattern(pattern.regex) for pattern in patterns}
+    def get_used_keys(self, patterns: list[Pattern]) -> KeysToPaths:
+        by_pattern = [self.get_used_keys_by_pattern(pattern.regex) for pattern in patterns]
+        return chain_values_by_key(by_pattern)
 
     def get_used_keys_by_pattern(self, pattern: RegexPattern) -> KeysToPaths:
         rust_paths = get_paths_with_extension(self.base_dir, RUST_EXTENSION)
@@ -57,3 +59,15 @@ def get_blocks(lines: list[str], block_size: int) -> Iterator[str]:
         block_lines = lines[i: i + block_size]
         block = "\n".join(block_lines)
         yield block
+
+
+K = TypeVar('K')
+V = TypeVar('V')
+D = dict[K, list[V]]
+def chain_values_by_key(dicts: Iterable[D]) -> D:
+    keys = {k for d in dicts for k in d.keys()}
+    return {k: group_by_key(dicts, k) for k in keys}
+
+
+def group_by_key(dicts: Iterable[D], key: K) -> list[V]:
+    return list(itertools.chain.from_iterable(d[key] for d in dicts))

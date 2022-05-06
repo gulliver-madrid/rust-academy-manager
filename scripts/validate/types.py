@@ -10,6 +10,7 @@ SrcPath = NewType('SrcPath', Path)
 
 Paths = list[Path]
 SrcPaths = list[SrcPath]
+YmlPaths = list[YmlPath]
 KeysToPaths = dict[str, SrcPaths]
 KeysToPathsMapping = Mapping[str, SrcPaths]
 RegexPattern = re.Pattern[str]
