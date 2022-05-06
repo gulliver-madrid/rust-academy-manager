@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 import itertools
-from typing import Final, Iterable, Mapping, NewType, TypeVar, Union, cast
+from typing import Any, Final, Iterable, Mapping, NewType, TypeVar, Union, cast
 import yaml
 
 from pathlib import Path
@@ -47,16 +47,16 @@ def main() -> None:
 
     paths_to_parsed = get_paths_to_parsed_yml(locale_dir)
 
-    keys_to_paths_any_pattern = flat_any_pattern(patterns_to_keys_to_src_paths)
+    keys_to_paths = chain_values_by_key(patterns_to_keys_to_src_paths.values())
 
-    keys_in_source = set(keys_to_paths_any_pattern.keys())
+    keys_in_source = set(keys_to_paths.keys())
     all_keys_found = True
     for yml_path, parsed in paths_to_parsed.items():
         assert len(parsed) == 1
         translations = list(parsed.values())[0]
         for key in keys_in_source:
             if not is_defined(key, translations):
-                show_msg_found_keys_not_defined(keys_to_paths_any_pattern, key, yml_path, src_base_path)
+                show_msg_found_keys_not_defined(keys_to_paths, key, yml_path, src_base_path)
                 all_keys_found = False
 
     if all_keys_found:
@@ -71,16 +71,14 @@ def main() -> None:
 
 K = TypeVar('K')
 V = TypeVar('V')
-ListValues = list[V]
-def flat_any_pattern(
-        base: dict[Pattern, dict[K, ListValues]]
-    ) -> Mapping[K, ListValues]:
-    flat = defaultdict(list)
-    for inner_dict in base.values():
-        for key, list_of_values in inner_dict.items():
-            flat[key].extend(list_of_values)
-    return flat
+D = dict[K, list[V]]
+def chain_values_by_key(dicts: Iterable[D]) -> D:
+    keys = {k for d in dicts for k in d.keys()}
+    return {k: group_by_key(dicts, k) for k in keys}
 
+
+def group_by_key(dicts: Iterable[D], key: K) -> list[V]:
+    return list(itertools.chain.from_iterable(d[key] for d in dicts))
 
 
 def is_defined(key: TranslationKey, translations: TranslationMapping) -> bool:
