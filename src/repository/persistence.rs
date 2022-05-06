@@ -5,6 +5,7 @@ use serde::Serialize;
 use std::fs::OpenOptions;
 use std::io::BufReader;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 
 use super::serializable::{SerializableSubject, SerializableTeacher};
@@ -18,13 +19,21 @@ const DEFAULT_PROJECT_DIR: &str = "rust-academy-manager/data";
 const TEACHERS_PATH: &str = "teachers.json";
 const SUBJECTS_PATH: &str = "subjects.json";
 
-
-
 pub struct JsonPersistence {
     pub project_dir: String,
 }
 
 impl JsonPersistence {
+    pub fn data_path_exists(&self) -> bool {
+        let path = self.get_project_data_path();
+        Path::new(&path).is_dir()
+    }
+    pub fn create_data_folder(&self) {
+        let path = self.get_project_data_path();
+        std::fs::create_dir_all(path).unwrap();
+        self.save_teachers(&Vec::new());
+        self.save_subjects(&Vec::new());
+    }
     fn get_teachers_path(&self) -> PathBuf {
         let mut path = self.get_project_data_path();
         path.push(TEACHERS_PATH);
@@ -46,19 +55,19 @@ impl JsonPersistence {
         };
         path
     }
-
+    fn open_file(&self, path: PathBuf) -> File {
+        File::open(&path).unwrap_or_else(|_| panic!("Path {:?} couldn't be opened", path))
+    }
     fn read_json_subjects(&self) -> Vec<SerializableSubject> {
         let path = self.get_subjects_path();
-        let file =
-            File::open(&path).expect(&format!("Path {:?} couldn't be opened", path));
+        let file = self.open_file(path);
         let reader = BufReader::new(file);
         serde_json::from_reader(reader).unwrap()
     }
 
     fn read_json_teachers(&self) -> Vec<SerializableTeacher> {
         let path = self.get_teachers_path();
-        let file =
-            File::open(&path).expect(&format!("Path {:?} couldn't be opened", path));
+        let file = self.open_file(path);
         let reader = BufReader::new(file);
         serde_json::from_reader(reader).unwrap()
     }
@@ -94,14 +103,12 @@ impl PersistenceTrait for JsonPersistence {
 fn write_in_file(ruta: &PathBuf, texto: String) {
     let mut file = OpenOptions::new() //
         .write(true)
+        .create(true)
         .truncate(true)
         .open(ruta)
         .unwrap();
     writeln!(&mut file, "{}", texto.as_str()).unwrap();
 }
-
-
-
 
 fn to_json<T>(item: &T) -> String
 where

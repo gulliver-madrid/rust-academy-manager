@@ -1,4 +1,4 @@
-en: 
+en:
   cancelled_op: Operation cancelled
   choose_an_option: Choose an option
   continue: continue
@@ -11,8 +11,8 @@ en:
   subjects_menu: Subjects Menu
   teachers_list: Teachers list
   teachers_menu: Teachers Menu
-  no_subject_with_name: There is no subject with the name 
-  no_teacher_with_name: There is no teacher with the name 
+  no_subject_with_name: There is no subject with the name
+  no_teacher_with_name: There is no teacher with the name
   couldnt_get_subjects: Couldn't get the subjects
   no_valid_name: Invalid name
   no_valid_id: Invalid id
@@ -23,8 +23,6 @@ en:
   back_to_teachers_menu: go back to teachers menu
   program_finished: Program finished
   errors:
-    no_subject: "Error: no subjects found"
-    no_teacher: "Error: no teachers found"
     not_implemented: "Error: not implemented"
     couldnt_read_user_input: "Error: couldn't read user input"
     already_exists_teacher: Already exists a teacher with the name
@@ -62,7 +60,9 @@ en:
   add_teacher_success:
     before: Teacher with name
     after: added
-  successfully_removed_teacher: 
+  successfully_removed_teacher:
     before: Teacher
     after: was removed successfully
   teacher_id_should_be_a_number: Teacher id should be a number.
+  option_to_create_data_path: The provided data path doesn't exists. Do you want to create it? y/N
+  option_yes_one_char: y

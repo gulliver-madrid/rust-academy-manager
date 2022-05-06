@@ -11,8 +11,8 @@ es:
   subjects_menu: Menú Asignaturas
   teachers_list: Lista de profesores
   teachers_menu: Menú Profesores
-  no_subject_with_name: No hay ninguna asignatura con el nombre 
-  no_teacher_with_name: No hay ningún profesor con el nombre 
+  no_subject_with_name: No hay ninguna asignatura con el nombre
+  no_teacher_with_name: No hay ningún profesor con el nombre
   couldnt_get_subjects: No se pudieron obtener las asignaturas
   no_valid_name: Nombre no válido
   no_valid_id: Id no válido
@@ -23,8 +23,6 @@ es:
   back_to_teachers_menu: volver al menú de profesores
   program_finished: Programa finalizado
   errors:
-    no_subject: "Error: no se encontró ninguna asignatura"
-    no_teacher: "Error: no se encontró ningún profesor"
     not_implemented: "Error: no implementado"
     couldnt_read_user_input: "Error: no se pudo leer la entrada del usuario"
     already_exists_teacher: Ya existe un profesor con el nombre
@@ -62,7 +60,9 @@ es:
   add_teacher_success:
     before: Profesor con nombre
     after: añadido
-  successfully_removed_teacher: 
+  successfully_removed_teacher:
     before: Se eliminó exitosamente al profesor
     after: ""
   teacher_id_should_be_a_number: El id del profesor debe ser un número.
+  option_to_create_data_path: La ruta de datos no existe. ¿Desea crearla? s/N
+  option_yes_one_char: s
