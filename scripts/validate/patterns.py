@@ -1,22 +1,11 @@
 import re
+from .menu_option_pattern import menu_option_pattern
 
-optional_spaces = r"\s*"
-menu_option_variant = r"MenuOption::[A-Z]\w*"
-optional_part_of_key_pattern = r"(?:[.]\w+)"
-key_pattern = fr"[\w]+{optional_part_of_key_pattern}?" 
+simple_pattern = re.compile(r"""
+            [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
+            t!\("           # t!("
+            ([^"]+)         # the translation key as a captured group
+            "\)             # ")
+""", re.VERBOSE)
 
-text_pattern = fr'\({optional_spaces}{menu_option_variant},{optional_spaces}"({key_pattern})"[,)]'
-# example: (MenuOption::Teachers, "menu_options.teacher")
-menu_option_pattern: re.Pattern[str] = re.compile(text_pattern, re.ASCII)
-
-def test_match_menu_option_pattern_1():
-    assert menu_option_pattern.search('(MenuOption::ShowList, "subjects_menu_options.show_list"),')
-
-def test_match_menu_option_pattern_2():
-    assert menu_option_pattern.search('''(
-        MenuOption::AssignTeacher,
-        "subjects_menu_options.assign_teacher",
-    ),''')
-
-def test_no_match_menu_option_pattern():
-    assert not menu_option_pattern.search('("subjects_menu_options.assign_teacher"')
+regex_patterns = [simple_pattern, menu_option_pattern]

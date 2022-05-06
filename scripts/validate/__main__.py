@@ -1,38 +1,28 @@
 # Checks all keys used in the program have their translation in locale files
 
 from collections import defaultdict
-from typing import Final, NewType, Union, cast
+import itertools
+from typing import Final, Iterable, Mapping, NewType, TypeVar, Union, cast
 import yaml
 
 from pathlib import Path
-import re
 import sys
 
 from .helpers import get_path_to_contents, get_paths_with_extension
 from .key_finder import KeyFinder
-from .types import KeysToPaths, Paths, PatternsToKeysToPaths, UsedKeyPattern
-from .patterns import menu_option_pattern
+from .types import KeysToPathsMapping, PatternsToKeysToPaths, SrcPath, SrcPaths, Pattern, YmlPath
+from .patterns import regex_patterns
 
 DEBUG: Final = False
 
-YmlPath = NewType('YmlPath', Path)
+
 LangKey = str  # ex. 'en'
+Translation = str
 TranslationKey = str
-TranslationValue = Union[str, dict[str, str]]  # because there are nested keys
-Parsed = dict[LangKey, dict[str, TranslationValue]]
-
-
-
-
-simple_pattern = re.compile(r"""
-            [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
-            t!\("           # t!("
-            ([^"]+)         # the translation key as a captured group
-            "\)             # ")
-    """, re.VERBOSE)
-
-
-
+SimpleTranslations = dict[TranslationKey, Translation]
+TranslationValue = Union[Translation, SimpleTranslations]  # because there are nested keys
+TranslationMapping = dict[TranslationKey, TranslationValue]
+Parsed = dict[LangKey, dict[TranslationKey, TranslationValue]]
 
 
 def main() -> None:
@@ -40,23 +30,68 @@ def main() -> None:
     if len(args) < 2:
         print("Should be called with 2 arguments: src folder and locale folder")
         sys.exit()
-    patterns = [UsedKeyPattern(regex) for regex in (simple_pattern, menu_option_pattern)]
+    patterns = [Pattern(regex) for regex in regex_patterns]
     src_path_str, locale_path_str = sys.argv[1:]
-    src_path = Path.cwd() / src_path_str
+    src_base_path = Path.cwd() / src_path_str
     locale_dir = Path.cwd() / locale_path_str
-    print(f"src dir: {src_path}")
+    print(f"src dir: {src_base_path}")
     print(f"locale dir: {locale_dir}\n")
     if not locale_dir.exists():
         print("Locale directory introduced does not exist")
         sys.exit()
-    key_finder = KeyFinder(src_path)
-    used_keys_by_pattern = key_finder.get_used_keys(patterns)
-    if all(len(used_keys) == 0 for used_keys in used_keys_by_pattern.values()):
+    key_finder = KeyFinder(src_base_path)
+    patterns_to_keys_to_src_paths = key_finder.get_used_keys(patterns)
+    if all(len(used_keys) == 0 for used_keys in patterns_to_keys_to_src_paths.values()):
         print("No keys found in src directory")
         sys.exit()
 
     paths_to_parsed = get_paths_to_parsed_yml(locale_dir)
 
+    keys_to_paths_any_pattern = flat_any_pattern(patterns_to_keys_to_src_paths)
+
+    keys_in_source = set(keys_to_paths_any_pattern.keys())
+    all_keys_found = True
+    for yml_path, parsed in paths_to_parsed.items():
+        assert len(parsed) == 1
+        translations = list(parsed.values())[0]
+        for key in keys_in_source:
+            if not is_defined(key, translations):
+                show_msg_found_keys_not_defined(keys_to_paths_any_pattern, key, yml_path, src_base_path)
+                all_keys_found = False
+
+    if all_keys_found:
+        print("All keys were found")
+    defined_keys = frozenset(get_defined_keys(paths_to_parsed))
+
+    if missing_in_source_code := defined_keys.difference(keys_in_source):
+        print("\nSome keys defined in translation files were not used in the program:\n  " + "\n  ".join(missing_in_source_code))
+        if DEBUG:
+            input("Press ENTER to debug found keys")
+            debug_found_keys(patterns_to_keys_to_src_paths, src_base_path)
+
+K = TypeVar('K')
+V = TypeVar('V')
+ListValues = list[V]
+def flat_any_pattern(
+        base: dict[Pattern, dict[K, ListValues]]
+    ) -> Mapping[K, ListValues]:
+    flat = defaultdict(list)
+    for inner_dict in base.values():
+        for key, list_of_values in inner_dict.items():
+            flat[key].extend(list_of_values)
+    return flat
+
+
+
+def is_defined(key: TranslationKey, translations: TranslationMapping) -> bool:
+    if "." in key:
+        return double_key_is_defined(key, translations)
+    return key in translations.keys()
+
+
+
+def get_defined_keys(paths_to_parsed: dict[YmlPath, Parsed]) -> set[TranslationKey]:
+    """Return a set with all the defined keys in locale files"""
     keys_in_parsed = set()
     for _lang_path, parsed in paths_to_parsed.items():
         for _lang, translations in parsed.items():
@@ -65,56 +100,39 @@ def main() -> None:
                     keys_in_parsed.add(k)
                 else:
                     assert isinstance(v, dict)
-                    for k2, v2 in v.items():
-                        assert isinstance(v2, str), v2
-                        keys_in_parsed.add(".".join([k, k2]))
+                    key_1 = k
+                    for key_2, translation in v.items():
+                        assert isinstance(translation, str), translation
+                        double_key = ".".join([key_1, key_2])
+                        keys_in_parsed.add(double_key)
+    return keys_in_parsed
 
-    all_keys_found = True
-    for pattern in patterns:
-        used_keys = used_keys_by_pattern[pattern]
-        for key in used_keys.keys():
-            if key in keys_in_parsed:
-                # This key appears in at least one translation file TODO: REVIEW
-                keys_in_parsed.remove(key)
-            for yml_path, parsed in paths_to_parsed.items():
-                # print(f"Checking {path}")
-                found = False
-                for _, translations in parsed.items():
-                    if "." in key:
-                        key_1, key_2 = key.split(".")
-                        if key_1 in translations.keys():
-                            subtranslations = translations[key_1]
-                            assert isinstance(subtranslations, dict)
-                            if key_2 in subtranslations.keys():
-                                found = True
-                                break
-                    elif key in translations.keys():
-                        found = True
-                        break
-                if not found:
-                    show_msg_missing_keys(used_keys, key, yml_path, src_path)
-                    all_keys_found = False
-    if all_keys_found:
-        print("All keys were found")
-    if keys_in_parsed:
-        print("\nSome keys defined in translation files were not used in the program:\n  " + "\n  ".join(keys_in_parsed))
-        if DEBUG:
-            input("Press ENTER to debug found keys")
-            debug_found_keys(used_keys_by_pattern, src_path)
 
-def show_msg_missing_keys(used_keys: KeysToPaths, key: str, yml_path: YmlPath, src_path: Path):
-    key_source_paths = used_keys[key]
+def double_key_is_defined(key: TranslationKey, translations: TranslationMapping) -> bool:
+    """Check a key "part_1.part_2" style. Returns True if it matches"""
+    key_1, key_2 = key.split(".")
+    if key_1 in translations.keys():
+        subtranslations = translations[key_1]
+        if not isinstance(subtranslations, dict):
+            raise ValueError(f"{key_1} should map to nested translations")
+        return key_2 in subtranslations.keys()
+    return False
+
+
+def show_msg_found_keys_not_defined(keys_to_paths: KeysToPathsMapping, key: TranslationKey, yml_path: YmlPath, src_path: Path) -> None:
+    key_source_paths = keys_to_paths[key]
     key_sources = [path.relative_to(src_path) for path in key_source_paths]
-    if len(key_source_paths) == 1:
+    if len(key_sources) == 1:
         print(f"  Key '{key}', from '{key_sources[0]}', not found in file '{yml_path.name}'.")
     else:
         print(f"  Key '{key}', not found in file '{yml_path.name}'.")
         print("It appears in the next src files:")
-        for path in key_source_paths:
+        for path in key_sources:
             print(f"\t{path}")
 
-def debug_found_keys(patterns_to_keys_to_paths: PatternsToKeysToPaths, base_dir: Path):
-    paths_to_keys: dict[Path, list[str]] = defaultdict(list)
+
+def debug_found_keys(patterns_to_keys_to_paths: PatternsToKeysToPaths, base_dir: Path) -> None:
+    paths_to_keys: dict[SrcPath, list[str]] = defaultdict(list)
     for _pattern, keys_to_paths in patterns_to_keys_to_paths.items():
         for key, paths in keys_to_paths.items():
             for path in paths:
@@ -141,15 +159,6 @@ def get_paths_to_parsed_yml(base_dir: Path) -> dict[YmlPath, Parsed]:
         assert isinstance(parsed, dict)
         paths_to_parsed[path] = parsed
     return paths_to_parsed
-
-
-
-
-
-
-
-
-
 
 
 
