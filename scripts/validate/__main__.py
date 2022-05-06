@@ -62,8 +62,7 @@ def main() -> None:
     if not locale_dir.exists():
         print("Locale directory introduced does not exist")
         sys.exit()
-    key_finder = KeyFinder()
-    key_finder.base_dir = src_path
+    key_finder = KeyFinder(src_path)
     used_keys_by_pattern = key_finder.get_used_keys(patterns)
     if all(len(used_keys) == 0 for used_keys in used_keys_by_pattern.values()):
         print("No keys found in src directory")
@@ -165,7 +164,7 @@ def get_path_to_contents(paths: Sequence[GenericPath]) -> dict[GenericPath, str]
             files_to_contents[path] = file.read()
     return files_to_contents
 
-
+@dataclass(frozen=True)
 class KeyFinder:
     base_dir: Path
 
