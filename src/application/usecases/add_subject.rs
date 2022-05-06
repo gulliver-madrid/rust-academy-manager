@@ -44,9 +44,11 @@ fn create_new_subject(name: String, id: u32) -> Subject {
 }
 
 fn get_next_id(subjects: &Subjects) -> u32 {
-    let last_subject =
-        helpers::get_last_element(subjects).expect(&t!("errors.no_subject"));
-    last_subject.id + 1
+    if let Some(last_subject) = helpers::get_last_element(subjects) {
+        last_subject.id + 1
+    } else {
+        1
+    }
 }
 fn create_already_exists_subject_error(name: &str) -> SimpleResult {
     simple_error!("{} {}", t!("errors.already_exists_subject"), name)

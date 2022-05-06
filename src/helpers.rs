@@ -42,7 +42,11 @@ fn get_substring(s: String, n: usize) -> String {
     nueva
 }
 pub fn get_last_element<T>(vector: &Vec<T>) -> Option<&T> {
-    let last_index = vector.len() - 1;
-    let last_element = vector.get(last_index).unwrap().clone();
-    Some(last_element)
+    match vector.len() {
+        0 => None,
+        length => {
+            let last_index = length - 1;
+            vector.get(last_index)
+        }
+    }
 }

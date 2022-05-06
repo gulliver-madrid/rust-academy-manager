@@ -38,9 +38,11 @@ impl AddTeacherUseCase<'_> {
     }
 
     fn get_next_id(teachers: &Teachers) -> u32 {
-        let last_teacher =
-            helpers::get_last_element(teachers).expect(&t!("errors.no_teacher"));
-        last_teacher.id + 1
+        if let Some(last_teacher) = helpers::get_last_element(teachers) {
+            last_teacher.id + 1
+        } else {
+            1
+        }
     }
 
     fn add_teacher(&mut self, teacher: Teacher) {
