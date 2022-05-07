@@ -5,7 +5,7 @@ use std::io;
 
 const USE_SCREEN_CLEARING: bool = true;
 
-pub struct ActualConsole {}
+pub struct ActualConsole;
 
 impl InnerConsole for ActualConsole {
     fn clear_screen(&self) {
