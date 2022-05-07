@@ -1,28 +1,17 @@
 # Checks all keys used in the program have their translation in locale files
 
-from collections import defaultdict
-from dataclasses import dataclass
-from typing import Any, Final, Iterable, Mapping, NewType, TypeVar, Union, cast
-import yaml
-
-from pathlib import Path
 import sys
+from collections import defaultdict
+from typing import Final, Sequence
+from pathlib import Path
 
-from .helpers import get_path_to_contents, get_paths_with_extension
+from .translations import TranslationKey, TranslationsExplorer
 from .key_finder import KeyFinder
-from .types import KeysToPaths, KeysToPathsMapping, PatternsToKeysToPaths, SrcPath, SrcPaths, Pattern, YmlPath, YmlPaths
+from .types import KeysToPaths, SrcPath, SrcPaths, Pattern
 from .patterns import regex_patterns
 
 DEBUG: Final = False
 
-
-LangKey = str  # ex. 'en'
-Translation = str
-TranslationKey = str
-SimpleTranslations = dict[TranslationKey, Translation]
-TranslationValue = Union[Translation, SimpleTranslations]  # because there are nested keys
-TranslationMapping = dict[TranslationKey, TranslationValue]
-Parsed = dict[LangKey, dict[TranslationKey, TranslationValue]]
 
 
 def main() -> None:
@@ -45,29 +34,22 @@ def main() -> None:
         print("No keys found in src directory")
         sys.exit()
 
-    paths_to_parsed = get_paths_to_parsed_yml(locale_dir)
-
-    defined_keys = get_defined_keys(paths_to_parsed)
+    translations_explorer = TranslationsExplorer()
+    defined_keys = translations_explorer.get_defined_keys(locale_dir)
     all_keys_found = True
     for key, paths in keys_to_paths.items():
         if key not in defined_keys.all_keys:
-            print(f"{key} is not defined, but used in {paths}")
+            all_keys_found = False
+            show_msg_found_keys_not_defined(key, paths, src_base_path)
         else:
-            key_missing_langs: list[str] = []
-            for lang in defined_keys.by_lang.keys():
-                if key not in defined_keys.by_lang[lang]:
-                    key_missing_langs.append(lang)
-                    print(f"{key} is not defined, but used in {paths}")
-                    all_keys_found = False
+            key_missing_langs = defined_keys.get_missing_langs_for_key(key)
             if key_missing_langs:
-                show_msg_found_keys_not_defined(key, paths, key_missing_langs, src_base_path)
-
-    keys_in_source = set(keys_to_paths.keys())
+                all_keys_found = False
+                show_msg_found_keys_not_defined(key, paths, src_base_path, key_missing_langs)
     if all_keys_found:
         print("All keys were found")
-    all_defined_keys = frozenset(defined_keys.all_keys)
 
-    if missing_in_source_code := all_defined_keys.difference(keys_in_source):
+    if missing_in_source_code := defined_keys.all_keys.difference(keys_to_paths.keys()):
         print("\nSome keys defined in translation files were not used in the program:\n  " + "\n  ".join(missing_in_source_code))
         if DEBUG:
             input("Press ENTER to debug found keys")
@@ -75,44 +57,28 @@ def main() -> None:
 
 
 
-@dataclass(frozen=True)
-class DefinedKeys:
-    by_lang: dict[str, set[TranslationKey]]
-    all_keys: set[TranslationKey]
-
-def get_defined_keys(paths_to_parsed: dict[YmlPath, Parsed]) -> DefinedKeys:
-    """Return a set with all the defined keys in locale files"""
-    by_lang = {}
-    all_keys = set()
-    for _yml_path, parsed in paths_to_parsed.items():
-        for lang, translations in parsed.items():
-            lang_keys = set()
-            for k, v in translations.items():
-                if isinstance(v, str):
-                    lang_keys.add(k)
-                else:
-                    assert isinstance(v, dict)
-                    key_1 = k
-                    for key_2, translation in v.items():
-                        assert isinstance(translation, str), translation
-                        double_key = ".".join([key_1, key_2])
-                        lang_keys.add(double_key)
-            by_lang[lang] = lang_keys
-            all_keys.update(lang_keys)
-    return DefinedKeys(by_lang, all_keys)
-
-
-
-def show_msg_found_keys_not_defined(key: TranslationKey, paths: SrcPaths, langs: list[str], src_path: Path) -> None:
+def show_msg_found_keys_not_defined(key: TranslationKey, paths: SrcPaths, src_path: Path, langs: Sequence[str] = None) -> None:
     key_sources = [path.relative_to(src_path) for path in paths]
-    langs_str = "language " + langs[0] if len(langs) == 1 else "languages " + ",".join(langs)
-    if len(key_sources) == 1:
-        print(f"""  Key '{key}', from '{key_sources[0]}', not found for '{langs_str}'.""")
+    if not langs:
+        langs_str = "any language"
+    elif len(langs) == 1:
+        langs_str = f"language '{langs[0]}'"
     else:
-        print(f"  Key '{key}', not found for '{langs_str}'.")
-        print("It appears in the next src files:")
-        for path in key_sources:
-            print(f"\t{path}")
+        langs_list = ','.join(langs)
+        langs_str = f"languages '{langs_list}'"
+    if len(key_sources) == 1:
+        src_str = f" from '{key_sources[0]}',"
+    else:
+        src_str = ""
+    print(f"""  Key '{key}',{src_str} not found for {langs_str}.""")
+    if len(key_sources) > 1:
+        show_locations(key_sources)
+
+
+def show_locations(key_sources: Sequence[Path]):
+    print("It appears in the next src files:")
+    for path in key_sources:
+        print(f"\t{path}")
 
 
 def debug_found_keys(keys_to_paths: KeysToPaths, base_dir: Path) -> None:
@@ -125,24 +91,6 @@ def debug_found_keys(keys_to_paths: KeysToPaths, base_dir: Path) -> None:
         print(f"Discovered in {relative_path}:")
         for key in keys:
             print(f"\t{key}")
-
-
-def get_paths_to_parsed_yml(base_dir: Path) -> dict[YmlPath, Parsed]:
-    """Builds a dict mapping translations files paths to parsed content"""
-    yml_paths = cast(list[YmlPath], get_paths_with_extension(base_dir, ".yml"))
-    files_to_contents = get_path_to_contents(yml_paths)
-    paths_to_parsed = {}
-    for path, content in files_to_contents.items():
-        try:
-            parsed = yaml.load(content, yaml.Loader)
-        except yaml.parser.ParserError as err:
-            info_line = "line " + str(err.problem_mark.line + 1) if err.problem_mark else "unknown"
-            info = f"Error while parsing {path}, {info_line}"
-            raise RuntimeError(info) from err
-        assert isinstance(parsed, dict)
-        paths_to_parsed[path] = parsed
-    return paths_to_parsed
-
 
 
 

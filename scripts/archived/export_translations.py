@@ -15,7 +15,6 @@ def main() -> None:
     pattern = re.compile(r'pub const ([\w]+): &str = "([^"]+)";')
     translations: dict[str, str] = {}
     for line in lines:
-        # print(line)
         if m := pattern.search(line):
             groups = m.groups()
             assert len(groups) == 2, groups
