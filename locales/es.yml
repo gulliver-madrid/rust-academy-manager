@@ -27,6 +27,7 @@ es:
         couldnt_read_user_input: "Error: no se pudo leer la entrada del usuario"
         already_exists_teacher: Ya existe un profesor con el nombre
         already_exists_subject: Ya existe una asignatura llamada
+        trying_convert_data_path: Error tratando de convertir la ruta de datos en cadena
     menu_options:
         teachers: Profesores
         subjects: Asignaturas
@@ -64,5 +65,5 @@ es:
         before: Se eliminó exitosamente al profesor
         after: ""
     teacher_id_should_be_a_number: El id del profesor debe ser un número.
-    option_to_create_data_path: La ruta de datos no existe. ¿Desea crearla? s/N
+    option_to_create_data_path: La ruta de datos %{path} no existe. ¿Desea crearla? s/N
     option_yes_one_char: s

@@ -27,6 +27,7 @@ en:
         couldnt_read_user_input: "Error: couldn't read user input"
         already_exists_teacher: Already exists a teacher with the name
         already_exists_subject: Already exists a subject called
+        trying_convert_data_path: Error trying to convert data path to string
     menu_options:
         teachers: Teachers
         subjects: Subjects
@@ -64,5 +65,5 @@ en:
         before: Teacher
         after: was removed successfully
     teacher_id_should_be_a_number: Teacher id should be a number.
-    option_to_create_data_path: The provided data path doesn't exists. Do you want to create it? y/N
+    option_to_create_data_path: The provided data path (%{path}) doesn't exists. Do you want to create it? y/N
     option_yes_one_char: y

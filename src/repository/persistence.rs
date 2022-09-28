@@ -45,7 +45,7 @@ impl JsonPersistence {
         path
     }
 
-    fn get_project_data_path(&self) -> PathBuf {
+    pub fn get_project_data_path(&self) -> PathBuf {
         let mut path = PathBuf::new();
         if self.project_dir.is_empty() {
             path.push(data_dir().unwrap());
@@ -100,14 +100,14 @@ impl PersistenceTrait for JsonPersistence {
     }
 }
 
-fn write_in_file(ruta: &PathBuf, texto: String) {
+fn write_in_file(path: &PathBuf, text: String) {
     let mut file = OpenOptions::new() //
         .write(true)
         .create(true)
         .truncate(true)
-        .open(ruta)
+        .open(path)
         .unwrap();
-    writeln!(&mut file, "{}", texto.as_str()).unwrap();
+    writeln!(&mut file, "{}", text.as_str()).unwrap();
 }
 
 fn to_json<T>(item: &T) -> String

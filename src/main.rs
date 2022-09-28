@@ -18,9 +18,7 @@ use crate::{
     repository::JsonPersistence, ui::ActualConsole,
 };
 
-
 rust_i18n::i18n!("locales");
-
 
 fn main() {
     let matches = config::get_arg_matches();
@@ -51,7 +49,15 @@ fn start_app(control: &mut Control) {
 
 fn option_to_create_data_path(persistence: &JsonPersistence, ui: &UserInterface) -> bool {
     if !persistence.data_path_exists() {
-        ui.show(t!("option_to_create_data_path").to_string());
+        let path = persistence.get_project_data_path();
+        let path = match path.to_str() {
+            Some(path) => format!("'{}'", path),
+            None => {
+                ui.show(t!("errors.trying_convert_data_path"));
+                return false;
+            }
+        };
+        ui.show(t!("option_to_create_data_path", path = &path).to_string());
         let option_yes = t!("option_yes_one_char");
         if ui.get_input().as_str() == option_yes {
             persistence.create_data_folder();
