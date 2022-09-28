@@ -1,68 +1,68 @@
 en:
-  cancelled_op: Operation cancelled
-  choose_an_option: Choose an option
-  continue: continue
-  enter_name_subject_to_be_deleted: Enter the name of the subject to delete (leave it blank to return to the previous menu)
-  enter_name_teacher_to_be_deleted: Enter the name of the teacher to delete (leave it blank to return to the previous menu)
-  input_subject_name: Enter the name of the new subject (leave it blank to return to the previous menu)
-  input_teacher_name: Enter the name of the new teacher (leave it blank to return to the previous menu)
-  main_menu: Main Menu
-  subjects_list: Subjects list
-  subjects_menu: Subjects Menu
-  teachers_list: Teachers list
-  teachers_menu: Teachers Menu
-  no_subject_with_name: There is no subject with the name
-  no_teacher_with_name: There is no teacher with the name
-  couldnt_get_subjects: Couldn't get the subjects
-  no_valid_name: Invalid name
-  no_valid_id: Invalid id
-  press_enter_to: Press ENTER to
-  successfully_removed_subject: Subject was removed successfully
-  unknown: unknown
-  back_subjects_menu: go back to subjects menu
-  back_to_teachers_menu: go back to teachers menu
-  program_finished: Program finished
-  errors:
-    not_implemented: "Error: not implemented"
-    couldnt_read_user_input: "Error: couldn't read user input"
-    already_exists_teacher: Already exists a teacher with the name
-    already_exists_subject: Already exists a subject called
-  menu_options:
-    teachers: Teachers
-    subjects: Subjects
-    exit: Exit
-  subjects_menu_options:
-    show_list: Show the list of subjects
-    add_subject: Add a subject
-    remove_subject: Remove a subject
-    assign_teacher: Assign a teacher to a subject
-    go_back: Go back to main menu
-  teachers_menu_options:
-    show_list: Show the list of teachers
-    add_teacher: Add a teacher
-    remove_teacher: Remove a teacher
-    go_back: Go back to main menu
-  assign_teacher_menu:
-    choose_subject: Choose the subject to which you want to assign a teacher
-    introduced_subject: Introduced subject
-    ask_teacher_id: Enter teacher id
-    ok: Teacher assigned correctly
-    coudnt_op: The operation could not be performed
-  tags:
-    name: Name
-    id: Id
-    phone: Phone number
-    subject: Subject
-  couldnt_access_teachers_list: Couldn't access teachers list
-  add_subject_menu:
-    subject: Subject
-    added: added
-  add_teacher_success:
-    before: Teacher with name
-    after: added
-  successfully_removed_teacher:
-    before: Teacher
-    after: was removed successfully
-  teacher_id_should_be_a_number: Teacher id should be a number.
-  option_to_create_data_path: The provided data path doesn't exists. Do you want to create it? y/N
-  option_yes_one_char: y
+    cancelled_op: Operation cancelled
+    choose_an_option: Choose an option
+    continue: continue
+    enter_name_subject_to_be_deleted: Enter the name of the subject to delete (leave it blank to return to the previous menu)
+    enter_name_teacher_to_be_deleted: Enter the name of the teacher to delete (leave it blank to return to the previous menu)
+    input_subject_name: Enter the name of the new subject (leave it blank to return to the previous menu)
+    input_teacher_name: Enter the name of the new teacher (leave it blank to return to the previous menu)
+    main_menu: Main Menu
+    subjects_list: Subjects list
+    subjects_menu: Subjects Menu
+    teachers_list: Teachers list
+    teachers_menu: Teachers Menu
+    no_subject_with_name: There is no subject with the name
+    no_teacher_with_name: There is no teacher with the name
+    couldnt_get_subjects: Couldn't get the subjects
+    no_valid_name: Invalid name
+    no_valid_id: Invalid id
+    press_enter_to: Press ENTER to
+    successfully_removed_subject: Subject was removed successfully
+    unknown: unknown
+    back_subjects_menu: go back to subjects menu
+    back_to_teachers_menu: go back to teachers menu
+    program_finished: Program finished
+    errors:
+        not_implemented: "Error: not implemented"
+        couldnt_read_user_input: "Error: couldn't read user input"
+        already_exists_teacher: Already exists a teacher with the name
+        already_exists_subject: Already exists a subject called
+    menu_options:
+        teachers: Teachers
+        subjects: Subjects
+        exit: Exit
+    subjects_menu_options:
+        show_list: Show the list of subjects
+        add_subject: Add a subject
+        remove_subject: Remove a subject
+        assign_teacher: Assign a teacher to a subject
+        go_back: Go back to main menu
+    teachers_menu_options:
+        show_list: Show the list of teachers
+        add_teacher: Add a teacher
+        remove_teacher: Remove a teacher
+        go_back: Go back to main menu
+    assign_teacher_menu:
+        choose_subject: Choose the subject to which you want to assign a teacher
+        introduced_subject: Introduced subject
+        ask_teacher_id: Enter teacher id
+        ok: Teacher assigned correctly
+        coudnt_op: The operation could not be performed
+    tags:
+        name: Name
+        id: Id
+        phone: Phone number
+        subject: Subject
+    couldnt_access_teachers_list: Couldn't access teachers list
+    add_subject_menu:
+        subject: Subject
+        added: added
+    add_teacher_success:
+        before: Teacher with name
+        after: added
+    successfully_removed_teacher:
+        before: Teacher
+        after: was removed successfully
+    teacher_id_should_be_a_number: Teacher id should be a number.
+    option_to_create_data_path: The provided data path doesn't exists. Do you want to create it? y/N
+    option_yes_one_char: y
