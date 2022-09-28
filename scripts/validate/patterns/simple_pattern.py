@@ -7,5 +7,3 @@ simple_pattern = re.compile(r"""
             ([^"]+)         # the translation key as a captured group
             "\)             # ")
 """, re.VERBOSE)
-
-regex_patterns = [simple_pattern, menu_option_pattern]
