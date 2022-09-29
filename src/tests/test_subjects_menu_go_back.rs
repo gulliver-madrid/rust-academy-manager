@@ -7,8 +7,7 @@ use crate::{
     menus::ITEMS_MENU_DATA__SUBJECTS_MENU,
     tests::{
         fixtures::{
-            choice_to_string, create_application_with_void_persistence,
-            create_control,
+            choice_to_string, create_application_with_void_persistence, create_control,
         },
         mock_console::MockConsole,
     },
@@ -24,11 +23,8 @@ fn enter_to_subjects_and_exit() {
     ];
 
     let mock_console = MockConsole::new();
-    {
-        let mut provided_inputs = mock_console.provided_inputs.borrow_mut();
-        for input in inputs {
-            provided_inputs.push(input.unwrap());
-        }
+    for input in inputs {
+        mock_console.add_input(input.unwrap());
     }
 
     let mut control = create_control(mock_console, application);

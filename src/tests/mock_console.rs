@@ -5,10 +5,11 @@ use std::cell::RefCell;
 use crate::ui::InnerConsole;
 
 #[cfg(test)]
-pub const SHOW_CONSOLE_OUTPUT: bool = false;
+const SHOW_CONSOLE_OUTPUT: bool = false;
+
 #[cfg(test)]
 pub struct MockConsole {
-    pub provided_inputs: RefCell<Vec<String>>,
+    provided_inputs: RefCell<Vec<String>>,
 }
 
 #[cfg(test)]
@@ -17,6 +18,9 @@ impl MockConsole {
         Self {
             provided_inputs: RefCell::new(Vec::<String>::new()),
         }
+    }
+    pub fn add_input(&self, s: String) {
+        self.provided_inputs.borrow_mut().push(s);
     }
 }
 #[cfg(test)]

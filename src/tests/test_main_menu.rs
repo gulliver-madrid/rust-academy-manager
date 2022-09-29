@@ -14,10 +14,7 @@ fn salir_desde_menu_principal() {
     let provided_input =
         choice_to_string(MainMenuOption::Exit, ITEMS_MENU_DATA__MAIN_MENU).unwrap();
     let mock_console = MockConsole::new();
-    mock_console
-        .provided_inputs
-        .borrow_mut()
-        .push(provided_input);
+    mock_console.add_input(provided_input);
     let mut control = create_control(mock_console, application);
     let mut menu = MainMenu::new(&mut control);
     menu.open_menu();
