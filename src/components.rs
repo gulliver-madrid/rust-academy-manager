@@ -1,6 +1,7 @@
 use rust_i18n::t;
 
-use crate::{application::Application, ui::UserInterface};
+use super::application::Application;
+use crate::ui::UserInterface;
 
 pub struct Control {
     pub ui: UserInterface,

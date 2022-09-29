@@ -10,12 +10,12 @@ mod tests;
 mod ui;
 mod views;
 
+use application::create_application;
 use rust_i18n::t;
 use ui::UserInterface;
 
 use crate::{
-    application::Application, components::Control, menus::MainMenu,
-    repository::JsonPersistence, ui::ActualConsole,
+    components::Control, menus::MainMenu, repository::JsonPersistence, ui::ActualConsole,
 };
 
 rust_i18n::i18n!("locales");
@@ -68,6 +68,6 @@ fn option_to_create_data_path(persistence: &JsonPersistence, ui: &UserInterface)
     true
 }
 fn build_control(persistence: JsonPersistence, ui: UserInterface) -> Control {
-    let application = Application::new(Box::new(persistence));
+    let application = create_application(Box::new(persistence));
     Control { ui, application }
 }

@@ -47,18 +47,17 @@ pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
 
 #[cfg(test)]
 pub fn create_application_with_void_persistence() -> Application {
+    use crate::application::create_application;
+
     let persistence = MockPersistence {
         mock_teachers: Vec::<Teacher>::new(),
         mock_subjects: Vec::<Subject>::new(),
     };
-    Application::new(Box::new(persistence))
+    create_application(Box::new(persistence))
 }
 
 #[cfg(test)]
-pub fn create_control(
-    mock_console: MockConsole,
-    application: Application,
-) -> Control {
+pub fn create_control(mock_console: MockConsole, application: Application) -> Control {
     let ui = UserInterface {
         inner_console: Box::new(mock_console),
     };
