@@ -23,4 +23,5 @@ impl InnerConsole for ActualConsole {
     fn show(&self, text: &str) {
         println!("{}", text);
     }
+    fn close(&self) {}
 }

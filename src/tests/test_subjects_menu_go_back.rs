@@ -24,11 +24,14 @@ fn enter_to_subjects_and_exit() {
 
     let mock_console = MockConsole::new();
     for input in inputs {
-        mock_console.add_input(input.unwrap());
+        let s = input.unwrap();
+        println!("Input: {}", s);
+        mock_console.add_input(s);
     }
 
     let mut control = create_control(mock_console, application);
     let mut menu = MainMenu::new(&mut control);
     menu.open_menu();
     assert_eq!(menu.loop_limit_exceed(), false);
+    control.ui.inner_console.close();
 }
