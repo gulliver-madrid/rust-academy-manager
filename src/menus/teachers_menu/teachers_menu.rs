@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use super::add_teacher_menu;
@@ -28,19 +30,20 @@ const MENU_ITEMS_DATA: [(MenuOption, OptionText); 4] = [
     (MenuOption::GoBack, "teachers_menu_options.go_back"),
 ];
 
-pub struct TeachersMenu<'a> {
-    control: &'a mut Control,
+pub struct TeachersMenu {
+    control: Rc<Control>,
 }
 
-impl<'a> TeachersMenu<'_> {
-    pub fn new(control: &mut Control) -> TeachersMenu {
+impl TeachersMenu {
+    pub fn new(control: Rc<Control>) -> TeachersMenu {
         TeachersMenu { control }
     }
 
-    pub fn open_menu(&mut self) {
+    pub fn open_menu(&self) {
         self.control
             .application
             .teachers_app
+            .borrow()
             .load_teachers_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
@@ -52,7 +55,7 @@ impl<'a> TeachersMenu<'_> {
             }
         }
     }
-    fn show_iteration_menu(&mut self, menu_items: &MenuItems) -> Option<MenuExit> {
+    fn show_iteration_menu(&self, menu_items: &MenuItems) -> Option<MenuExit> {
         self.show_menu_text(menu_items);
         let chosen_option = self.control.ui.get_user_choice(&menu_items)?;
         match chosen_option {
@@ -71,7 +74,12 @@ impl<'a> TeachersMenu<'_> {
         ui.show(options_text);
     }
     fn show_teachers_list(&self) {
-        let teachers = self.control.application.teachers_app.get_teachers();
+        let teachers = self
+            .control
+            .application
+            .teachers_app
+            .borrow()
+            .get_teachers();
         let ui = &self.control.ui;
         ui.clear_screen();
         ui.show_title(t!("teachers_list"));
@@ -81,16 +89,16 @@ impl<'a> TeachersMenu<'_> {
         ui.pause_enter(&t!("back_to_teachers_menu"));
     }
 
-    fn open_add_teacher_menu(&mut self) {
-        let mut menu = add_teacher_menu::AddTeacherMenu {
-            control: self.control,
+    fn open_add_teacher_menu(&self) {
+        let menu = add_teacher_menu::AddTeacherMenu {
+            control: Rc::clone(&self.control),
         };
         menu.open_menu();
     }
 
-    fn open_remove_teacher_menu(&mut self) {
-        let mut menu = RemoveTeacherMenu {
-            control: self.control,
+    fn open_remove_teacher_menu(&self) {
+        let menu = RemoveTeacherMenu {
+            control: Rc::clone(&self.control),
         };
         menu.open_menu();
     }

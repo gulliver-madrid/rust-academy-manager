@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::{
@@ -8,24 +10,22 @@ use crate::{
     simple_error,
 };
 
-pub struct AddSubjectUseCase<'a> {
-    pub repository: &'a mut Repository,
+pub struct AddSubjectUseCase {
+    pub repository: Rc<Repository>,
 }
 
-impl AddSubjectUseCase<'_> {
-    pub fn add_new_subject(&mut self, name: String) -> SimpleResult {
-        let subjects = self.repository.model.subjects.as_ref().unwrap();
-        validate_name_is_free(subjects, &name)?;
-        let next_id: u32 = get_next_id(subjects);
-        let new_subject = create_new_subject(name, next_id);
-        self.add_subject(new_subject);
+impl AddSubjectUseCase {
+    pub fn add_new_subject(&self, name: String) -> SimpleResult {
+        let new_subject: Subject;
+        {
+            let model = self.repository.model.borrow();
+            let subjects = model.subjects.as_ref().unwrap();
+            validate_name_is_free(subjects, &name)?;
+            let next_id: u32 = get_next_id(subjects);
+            new_subject = create_new_subject(name, next_id);
+        }
+        self.repository.add_subject(new_subject);
         Ok(())
-    }
-
-    fn add_subject(&mut self, subject: Subject) {
-        let subjects = &mut self.repository.model.subjects.as_mut().unwrap();
-        subjects.push(subject);
-        self.repository.persistence.save_subjects(subjects);
     }
 }
 

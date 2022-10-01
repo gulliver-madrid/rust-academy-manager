@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use super::counter::Counter;
@@ -25,13 +27,12 @@ pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
 type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
 /// Main menu of the academy-manager app
-pub struct MainMenu<'a> {
-    pub control: &'a mut Control,
+pub struct MainMenu {
+    pub control: Rc<Control>,
     loop_limit_exceed: bool,
 }
-
-impl MainMenu<'_> {
-    pub fn new(control: &mut Control) -> MainMenu {
+impl MainMenu {
+    pub fn new(control: Rc<Control>) -> MainMenu {
         MainMenu {
             control,
             loop_limit_exceed: false,
@@ -43,7 +44,7 @@ impl MainMenu<'_> {
     }
 }
 
-impl MainMenu<'_> {
+impl MainMenu {
     pub fn open_menu(&mut self) {
         let menu_items: MenuItems = menus::create_menu_items(MENU_ITEMS_DATA);
 
@@ -58,7 +59,7 @@ impl MainMenu<'_> {
         self.loop_limit_exceed = true;
         println!("\nERROR: Main menu loop limit was exceed");
     }
-    fn show_iteration_menu(&mut self, menu_items: &MenuItems) -> Option<MenuExit> {
+    fn show_iteration_menu(&self, menu_items: &MenuItems) -> Option<MenuExit> {
         self.show_menu_text(menu_items);
         let opcion = self.control.ui.get_user_choice(&menu_items)?;
         match opcion {
@@ -75,13 +76,13 @@ impl MainMenu<'_> {
         self.control.ui.show(options_text);
     }
 
-    fn open_teachers_menu(&mut self) {
-        let mut menu = TeachersMenu::new(self.control);
+    fn open_teachers_menu(&self) {
+        let menu = TeachersMenu::new(Rc::clone(&self.control));
         menu.open_menu();
     }
 
-    fn open_subjects_menu(&mut self) {
-        let mut menu = SubjectsMenu::new(self.control);
+    fn open_subjects_menu(&self) {
+        let menu = SubjectsMenu::new(Rc::clone(&self.control));
         menu.open_menu();
     }
 }

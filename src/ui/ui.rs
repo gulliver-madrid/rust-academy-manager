@@ -1,22 +1,23 @@
-use crate::helpers;
-use rust_i18n::t;
-
-use crate::menus::shared::MenuItem;
-
-use super::inner_console::InnerConsole;
+use {
+    super::inner_console::InnerConsole,
+    crate::{helpers, menus::shared, menus::shared::MenuItem},
+    rust_i18n::t,
+    std::rc::Rc,
+};
 
 pub struct UserInterface {
-    pub inner_console: Box<dyn InnerConsole>,
+    pub inner_console: Rc<dyn InnerConsole>,
 }
 
 impl UserInterface {
-    pub fn get_user_choice<'a, T>(
+    /// Requests input from the user and returns a MenuOption
+    /// T is a enum that represents a menu option
+    pub fn get_user_choice<'a, MenuOption>(
         &self,
-        menu_items: &'a Vec<MenuItem<T>>,
-    ) -> Option<&'a T> {
-        // T is a enum that represents a menu option
+        menu_items: &'a Vec<MenuItem<MenuOption>>,
+    ) -> Option<&'a MenuOption> {
         let choice = self.get_input();
-        crate::menus::shared::extract_option(choice, &menu_items)
+        shared::extract_option(choice, &menu_items)
     }
 
     pub fn clear_screen(&self) {

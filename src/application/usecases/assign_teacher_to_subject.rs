@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::{
@@ -6,28 +8,33 @@ use crate::{
     simple_error,
 };
 
-pub struct AssignTeacherToSubjectUseCase<'a> {
-    pub repository: &'a mut Repository,
+pub struct AssignTeacherToSubjectUseCase {
+    pub repository: Rc<Repository>,
 }
 
-impl AssignTeacherToSubjectUseCase<'_> {
+impl AssignTeacherToSubjectUseCase {
+    pub fn new(repo_ref: &Rc<Repository>) -> Self {
+        Self {
+            repository: Rc::clone(repo_ref),
+        }
+    }
     pub fn assign_teacher_to_subject(
-        &mut self,
+        &self,
         subject_index: usize,
         teacher_id: u32,
     ) -> SimpleResult {
-        let subjects = self.repository.model.subjects.as_mut().unwrap();
-
-        let subject = subjects
-            .get_mut(subject_index)
-            .expect(&format!("Index error: {}", teacher_id));
-        let teachers = self.repository.model.teachers.as_ref().unwrap();
-        match teachers.iter().find(|teacher| teacher.id == teacher_id) {
-            None => return simple_error!("{} {}", t!("no_valid_id"), teacher_id),
-            _ => (),
+        let model = Rc::clone(&self.repository.model);
+        let subjects_size = model.borrow().get_subjects_size();
+        if subject_index >= subjects_size {
+            panic!("{}", format!("Index error: {}", subject_index))
         }
-        subject.assigned_teachers.push(teacher_id);
-        self.repository.persistence.save_subjects(subjects);
+        if !(self.repository.does_teacher_exist_by_id(teacher_id)) {
+            return simple_error!("{} {}", t!("no_valid_id"), teacher_id);
+        }
+        model
+            .borrow_mut()
+            .assign_teacher_id_to_subject(subject_index, teacher_id);
+        self.repository.save_subjects();
         Ok(())
     }
 }

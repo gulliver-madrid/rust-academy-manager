@@ -10,6 +10,8 @@ mod tests;
 mod ui;
 mod views;
 
+use std::rc::Rc;
+
 use application::create_application;
 use rust_i18n::t;
 use ui::UserInterface;
@@ -32,17 +34,17 @@ fn main() {
         project_dir: data_folder,
     };
     let ui = ui::UserInterface {
-        inner_console: Box::new(ActualConsole),
+        inner_console: Rc::new(ActualConsole),
     };
     let ok = option_to_create_data_path(&persistence, &ui);
     if ok {
-        let mut control = build_control(persistence, ui);
-        start_app(&mut control);
+        let control = build_control(persistence, ui);
+        start_app(Rc::new(control));
     }
     println!("\n{}\n", t!("program_finished"));
 }
 
-fn start_app(control: &mut Control) {
+fn start_app<'a>(control: Rc<Control>) {
     let mut menu = MainMenu::new(control);
     menu.open_menu();
 }

@@ -1,18 +1,20 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::{errors::SimpleError, repository::Repository, simple_error};
 
-pub struct GetSubjectIndexByNameUseCase<'a> {
-    pub repository: &'a Repository,
+pub struct GetSubjectIndexByNameUseCase {
+    pub repository: Rc<Repository>,
 }
 
-impl GetSubjectIndexByNameUseCase<'_> {
+impl GetSubjectIndexByNameUseCase {
     pub fn get_subject_index_by_name(
         &self,
         subject_name: &str,
     ) -> Result<usize, SimpleError> {
-        let subjects = self.repository.model.subjects.as_ref().unwrap();
-        let index = subjects.iter().position(|a| a.name == subject_name);
+        let model = Rc::clone(&self.repository.model);
+        let index = model.borrow().get_subject_index_by_name(subject_name);
         if let Some(index) = index {
             Ok(index)
         } else {

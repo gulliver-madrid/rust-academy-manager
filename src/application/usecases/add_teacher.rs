@@ -1,32 +1,37 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::{
-    domain::{Teacher, Teachers},
+    domain::Teacher,
     errors::{SimpleError, SimpleResult},
-    helpers,
     repository::Repository,
     simple_error,
 };
 
-pub struct AddTeacherUseCase<'a> {
-    pub repository: &'a mut Repository,
+pub struct AddTeacherUseCase {
+    pub repository: Rc<Repository>,
 }
 
-impl AddTeacherUseCase<'_> {
+impl AddTeacherUseCase {
     pub fn add_new_teacher(&mut self, name: String) -> SimpleResult {
-        let teachers = self.repository.model.teachers.as_ref().unwrap();
-        Self::validate_teacher_doesnt_exist(teachers, &name)?;
-        let id = Self::get_next_id(teachers);
+        self.validate_teacher_doesnt_exist(&name)?;
+        let id = self.get_next_id();
         let new_teacher = Self::create_new_teacher(name, id);
-        self.add_teacher(new_teacher);
+        self.repository.add_teacher(new_teacher);
         Ok(())
     }
 
-    fn validate_teacher_doesnt_exist(teachers: &Teachers, name: &str) -> SimpleResult {
-        match teachers.iter().find(|teacher| teacher.name == name) {
-            Some(_) => Self::create_already_exists_teacher_error(name),
-            None => Ok(()),
+    pub fn validate_teacher_doesnt_exist(&self, name: &str) -> SimpleResult {
+        if self
+            .repository
+            .model
+            .borrow()
+            .does_teacher_exist_by_name(name)
+        {
+            return Self::create_already_exists_teacher_error(name);
         }
+        Ok(())
     }
 
     fn create_new_teacher(name: String, id: u32) -> Teacher {
@@ -37,18 +42,8 @@ impl AddTeacherUseCase<'_> {
         }
     }
 
-    fn get_next_id(teachers: &Teachers) -> u32 {
-        if let Some(last_teacher) = helpers::get_last_element(teachers) {
-            last_teacher.id + 1
-        } else {
-            1
-        }
-    }
-
-    fn add_teacher(&mut self, teacher: Teacher) {
-        let teachers = &mut self.repository.model.teachers.as_mut().unwrap();
-        teachers.push(teacher);
-        self.repository.persistence.save_teachers(teachers);
+    fn get_next_id(&self) -> u32 {
+        self.repository.model.borrow().get_next_teacher_id()
     }
 
     fn create_already_exists_teacher_error(name: &str) -> SimpleResult {

@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use super::remove_subject_menu::RemoveSubjectMenu;
@@ -36,18 +38,19 @@ pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
     (MenuOption::GoBack, "subjects_menu_options.go_back"),
 ];
 
-pub struct SubjectsMenu<'a> {
-    pub control: &'a mut Control,
+pub struct SubjectsMenu {
+    pub control: Rc<Control>,
 }
 
-impl SubjectsMenu<'_> {
-    pub fn new(control: &mut Control) -> SubjectsMenu {
+impl SubjectsMenu {
+    pub fn new(control: Rc<Control>) -> SubjectsMenu {
         SubjectsMenu { control }
     }
-    pub fn open_menu(&mut self) {
+    pub fn open_menu(&self) {
         self.control
             .application
             .subjects_app
+            .borrow()
             .load_subjects_if_needed();
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
@@ -60,7 +63,7 @@ impl SubjectsMenu<'_> {
         }
     }
 
-    fn show_iteration_menu(&mut self, menu_items: &MenuItems) -> Option<MenuExit> {
+    fn show_iteration_menu(&self, menu_items: &MenuItems) -> Option<MenuExit> {
         self.show_menu_text(menu_items);
         let chosen_option = self.control.ui.get_user_choice(&menu_items)?;
         match chosen_option {
@@ -83,7 +86,12 @@ impl SubjectsMenu<'_> {
 
     fn show_subjects_list(&self) {
         let ui = &self.control.ui;
-        let subjects = self.control.application.subjects_app.get_subjects();
+        let subjects = self
+            .control
+            .application
+            .subjects_app
+            .borrow()
+            .get_subjects();
         match subjects {
             Ok(subjects) => {
                 let subjects_list_text = self.create_subjects_list(subjects);
@@ -104,21 +112,21 @@ impl SubjectsMenu<'_> {
             .join("\n")
     }
 
-    fn open_add_subject_menu(&mut self) {
+    fn open_add_subject_menu(&self) {
         AddSubjectMenu {
-            control: self.control,
+            control: Rc::clone(&self.control),
         }
         .open_menu();
     }
-    fn open_remove_subject_menu(&mut self) {
+    fn open_remove_subject_menu(&self) {
         RemoveSubjectMenu {
-            control: self.control,
+            control: Rc::clone(&self.control),
         }
         .open_menu();
     }
-    fn open_assign_teacher_to_subject_menu(&mut self) {
+    fn open_assign_teacher_to_subject_menu(&self) {
         AssignTeacherMenu {
-            control: self.control,
+            control: Rc::clone(&self.control),
         }
         .open_menu();
     }

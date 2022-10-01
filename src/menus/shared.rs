@@ -1,7 +1,9 @@
 use rust_i18n::t;
 
-
-pub struct MenuItem<'a, MenuOption> {
+pub struct MenuItem<'a, MenuOption>
+where
+    MenuOption: Sized,
+{
     pub text: &'a str,
     pub menu_option: MenuOption,
 }
@@ -20,7 +22,7 @@ pub fn extract_option<'a, MenuOption>(
     return Some(&chosen_item.menu_option);
 }
 
-// Creates the text corresponding to the list of received MenuItem
+/// Creates the text corresponding to the list of received MenuItem
 pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
     String::from(t!("choose_an_option") + ":\n")
         + &menu_items
@@ -31,16 +33,16 @@ pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
             .join("\n")
 }
 
-/// Generates a vector of MenuItem from an array of tuples 
+/// Generates a vector of MenuItem from an array of tuples
+/// items_menu_data is an array of tuples (MenuOption, OptionText)
+/// MenuOption is a simple enum
+/// OptionText is a static str
 pub fn create_menu_items<'a, MenuOption, const N: usize>(
     items_menu_data: [(MenuOption, OptionText); N],
 ) -> Vec<MenuItem<'a, MenuOption>>
 where
     MenuOption: Clone,
 {
-    // items_menu_data is an array of tuples (MenuOption, OptionText)
-    // MenuOption is a simple enum
-    // OptionText is a static str
     items_menu_data
         .iter()
         .map(|(menu_option, text)| MenuItem {

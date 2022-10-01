@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::{
@@ -6,15 +8,16 @@ use crate::{
 };
 
 /// Menu for assign a teacher to a subject
-pub struct AssignTeacherMenu<'a> {
-    pub control: &'a mut Control,
+pub struct AssignTeacherMenu {
+    pub control: Rc<Control>,
 }
 
-impl AssignTeacherMenu<'_> {
+impl AssignTeacherMenu {
     pub fn open_menu(&mut self) {
         self.control
             .application
             .teachers_app
+            .borrow()
             .load_teachers_if_needed();
         let ui = &self.control.ui;
         ui.show(t!("assign_teacher_menu.choose_subject"));
@@ -42,15 +45,24 @@ impl AssignTeacherMenu<'_> {
             ui.show(t!("assign_teacher_menu.ask_teacher_id"));
             if let Some(entered_text) = ui.ask_text_to_user() {
                 if let Some(teacher_id) = entered_text.parse::<u32>().ok() {
-                    let result = self
-                        .control
+                    let control = Rc::clone(&self.control);
+                    let result = control
                         .application
                         .assign_teacher_to_subject(subject_index, teacher_id);
                     ui.show(result_msg(result));
                     ui.pause_enter(&t!("continue"));
                     break;
                 }
-                ui.show(t!("teacher_id_should_be_a_number"))
+            }
+            ui.show(t!("teacher_id_should_be_a_number"));
+            ui.show(t!("ask_if_cancel_op"));
+            match ui.ask_text_to_user() {
+                Some(answer) => {
+                    if answer == t!("option_yes_one_char") {
+                        break;
+                    }
+                }
+                None => (),
             }
         }
     }
@@ -59,6 +71,7 @@ impl AssignTeacherMenu<'_> {
         self.control
             .application
             .subjects_app
+            .borrow()
             .get_subject_index_by_name(subject_name)
     }
 }

@@ -31,6 +31,7 @@ impl PersistenceTrait for MockPersistence {
 }
 
 #[cfg(test)]
+/// Returns the option number (indexing from 1)
 pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
     option: MenuOption,
     items_menu_data: [(MenuOption, OptionText); N],
@@ -57,9 +58,14 @@ pub fn create_application_with_void_persistence() -> Application {
 }
 
 #[cfg(test)]
-pub fn create_control(mock_console: MockConsole, application: Application) -> Control {
+use std::rc::Rc;
+#[cfg(test)]
+pub fn create_control(
+    mock_console: Rc<MockConsole>,
+    application: Application,
+) -> Control {
     let ui = UserInterface {
-        inner_console: Box::new(mock_console),
+        inner_console: mock_console,
     };
     Control { ui, application }
 }

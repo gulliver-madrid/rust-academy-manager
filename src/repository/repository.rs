@@ -1,49 +1,74 @@
-use rust_i18n::t;
+use std::{cell::RefCell, rc::Rc};
 
-use crate::{domain::Teacher, errors::SimpleError, simple_error};
+use crate::domain::{Subject, Teacher};
 
 use super::{model::Model, PersistenceTrait};
 
 pub fn create_repo(persistence: Box<dyn PersistenceTrait>) -> Repository {
     let repository = Repository {
         persistence,
-        model: Model {
+        model: Rc::new(RefCell::new(Model {
             teachers: None,
             subjects: None,
-        },
+        })),
     };
     repository
 }
 pub struct Repository {
     pub persistence: Box<dyn PersistenceTrait>,
-    pub model: Model,
+    pub model: Rc<RefCell<Model>>,
 }
 
 impl Repository {
-    pub fn load_teachers_if_needed(&mut self) {
-        match self.model.teachers {
-            None => self.populate_teachers(),
-            _ => {}
+    pub fn load_teachers_if_needed(&self) {
+        let are_loaded = match self.model.borrow().teachers {
+            None => false,
+            _ => true,
+        };
+        if !are_loaded {
+            self.populate_teachers()
+        }
+    }
+    pub fn load_subjects_if_needed(&self) {
+        let are_loaded = match self.model.borrow().subjects {
+            None => false,
+            _ => true,
+        };
+        if !are_loaded {
+            self.populate_subjects()
         }
     }
 
-    pub fn load_subjects_if_needed(&mut self) {
-        match self.model.subjects {
-            None => self.populate_subjects(),
-            _ => {}
-        }
+    pub fn add_subject(&self, subject: Subject) {
+        self.model.borrow_mut().add_subject(subject);
+        self.save_subjects();
     }
-    pub fn get_teachers_as_ref(&self) -> Result<&Vec<Teacher>, SimpleError> {
-        let result = self.model.teachers.as_ref();
-        match result {
-            Some(teachers) => Ok(teachers),
-            None => simple_error!(&t!("couldnt_access_teachers_list")),
-        }
+    pub fn save_subjects(&self) {
+        let model = self.model.borrow();
+        let subjects = model.subjects.as_ref().unwrap();
+        self.persistence.save_subjects(&subjects);
     }
-    fn populate_subjects(&mut self) {
-        self.model.subjects = Some(self.persistence.load_subjects());
+    pub fn save_teachers(&self) {
+        let model = self.model.borrow();
+        let teachers = model.teachers.as_ref().unwrap();
+        self.persistence.save_teachers(&teachers);
     }
-    fn populate_teachers(&mut self) {
-        self.model.teachers = Some(self.persistence.load_teachers());
+
+    pub fn add_teacher(&self, teacher: Teacher) {
+        self.model.borrow_mut().add_teacher(teacher);
+        self.save_teachers();
+    }
+
+    pub fn does_teacher_exist_by_id(&self, id: u32) -> bool {
+        self.model.borrow().does_teacher_exist_by_id(id)
+    }
+
+    fn populate_subjects(&self) {
+        let subjects = self.persistence.load_subjects();
+        self.model.borrow_mut().load_subjects(subjects)
+    }
+    fn populate_teachers(&self) {
+        let teachers = self.persistence.load_teachers();
+        self.model.borrow_mut().load_teachers(teachers)
     }
 }

@@ -1,17 +1,24 @@
+use std::rc::Rc;
+
 use rust_i18n::t;
 
 use crate::components::Control;
 
-pub struct AddSubjectMenu<'a> {
-    pub control: &'a mut Control,
+pub struct AddSubjectMenu {
+    pub control: Rc<Control>,
 }
 
-impl AddSubjectMenu<'_> {
-    pub fn open_menu(&mut self) {
+impl AddSubjectMenu {
+    pub fn open_menu(&self) {
         let ui = &self.control.ui;
         self.show_menu_text();
         if let Some(name) = ui.ask_text_to_user() {
-            let result = self.control.application.subjects_app.add_new_subject(&name);
+            let result = self
+                .control
+                .application
+                .subjects_app
+                .borrow()
+                .add_new_subject(&name);
             let msg = match result {
                 Ok(_) => format!(
                     "{} {} {}",

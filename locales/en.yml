@@ -54,7 +54,6 @@ en:
         id: Id
         phone: Phone number
         subject: Subject
-    couldnt_access_teachers_list: Couldn't access teachers list
     add_subject_menu:
         subject: Subject
         added: added
@@ -67,3 +66,4 @@ en:
     teacher_id_should_be_a_number: Teacher id should be a number.
     option_to_create_data_path: The provided data path (%{path}) doesn't exists. Do you want to create it? y/N
     option_yes_one_char: y
+    ask_if_cancel_op: Would you like to cancel the operation?

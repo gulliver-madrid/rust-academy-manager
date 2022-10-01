@@ -9,6 +9,6 @@ pub struct Control {
 }
 
 #[allow(unused)]
-pub fn warn_not_implemented(control: &mut Control) {
+pub fn warn_not_implemented(control: Control) {
     control.ui.show(t!("errors.not_implemented"))
 }

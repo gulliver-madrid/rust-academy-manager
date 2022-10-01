@@ -1,16 +1,20 @@
 #[cfg(test)]
-use crate::{
-    menus::MainMenu,
-    menus::MainMenuOption,
-    menus::SubjectsMenuOption,
-    menus::ITEMS_MENU_DATA__MAIN_MENU,
-    menus::ITEMS_MENU_DATA__SUBJECTS_MENU,
-    tests::{
-        fixtures::{
-            choice_to_string, create_application_with_void_persistence, create_control,
+use {
+    crate::{
+        menus::MainMenu,
+        menus::MainMenuOption,
+        menus::SubjectsMenuOption,
+        menus::ITEMS_MENU_DATA__MAIN_MENU,
+        menus::ITEMS_MENU_DATA__SUBJECTS_MENU,
+        tests::{
+            fixtures::{
+                choice_to_string, create_application_with_void_persistence,
+                create_control,
+            },
+            mock_console::MockConsole,
         },
-        mock_console::MockConsole,
     },
+    std::rc::Rc,
 };
 
 #[test]
@@ -28,10 +32,10 @@ fn enter_to_subjects_and_exit() {
         println!("Input: {}", s);
         mock_console.add_input(s);
     }
-
-    let mut control = create_control(mock_console, application);
-    let mut menu = MainMenu::new(&mut control);
+    let mock_console = Rc::new(mock_console);
+    let control = create_control(Rc::clone(&mock_console), application);
+    let mut menu = MainMenu::new(Rc::new(control));
     menu.open_menu();
     assert_eq!(menu.loop_limit_exceed(), false);
-    control.ui.inner_console.close();
+    mock_console.show_all();
 }

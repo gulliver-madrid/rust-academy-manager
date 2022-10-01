@@ -27,7 +27,7 @@ impl MockConsole {
     pub fn add_input(&self, s: String) {
         self.provided_inputs.borrow_mut().push_back(s);
     }
-    fn show_all(&self) {
+    pub fn show_all(&self) {
         for s in self.outputs.borrow().iter() {
             println!("{}", s)
         }
@@ -44,8 +44,5 @@ impl InnerConsole for MockConsole {
             println!("{}", text);
         }
         self.outputs.borrow_mut().push(text.to_owned())
-    }
-    fn close(&self) {
-        self.show_all();
     }
 }

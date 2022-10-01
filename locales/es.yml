@@ -54,7 +54,6 @@ es:
         id: Id
         phone: Telefono
         subject: Asignatura
-    couldnt_access_teachers_list: No se pudo acceder al listado de profesores
     add_subject_menu:
         subject: Asignatura
         added: añadida
@@ -67,3 +66,4 @@ es:
     teacher_id_should_be_a_number: El id del profesor debe ser un número.
     option_to_create_data_path: La ruta de datos %{path} no existe. ¿Desea crearla? s/N
     option_yes_one_char: s
+    ask_if_cancel_op: ¿Desea cancelar la operación?
