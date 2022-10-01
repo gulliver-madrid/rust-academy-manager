@@ -2,9 +2,14 @@
 
 use std::rc::Rc;
 
-use crate::{application::AddTeacherUseCase, repository::Repository};
+use crate::{
+    application::AddTeacherUseCase, repository::create_repository,
+    repository::Repository, tests::fixtures::highlight,
+};
 
-use {super::fixtures::mock_persistence, crate::repository::create_repository};
+use super::fixtures::mock_persistence;
+
+use pretty_assertions::assert_eq;
 
 #[test]
 fn test_add_teacher_usecase() {
@@ -16,26 +21,41 @@ fn test_add_teacher_usecase() {
     let usecase = AddTeacherUseCase {
         repository: Rc::clone(&repository),
     };
-    assert_teachers_len(&repository, 0);
+    assert_teachers_length_is_correct(&repository, 0);
     let result = usecase.execute("John".to_string());
-    assert_eq!(result, Ok(()), "Usecase was executed without error");
-    assert_teachers_len(&repository, 2);
+    assert_eq!(
+        result,
+        Ok(()),
+        "{}",
+        highlight("Usecase should be executed without error".to_string())
+    );
+    assert_teachers_length_is_correct(&repository, 1);
 }
 
-fn assert_teachers_len(repository: &Repository, expected_length: usize) {
-    let teachers_len = repository
+fn assert_teachers_length_is_correct(repository: &Repository, expected_length: usize) {
+    let teachers_len = get_teachers_length(repository);
+    assert_eq!(
+        teachers_len,
+        expected_length,
+        "{}",
+        highlight(
+            format!(
+                "After adding a teacher, there should be {} teacher(s) in model, but there are {}",
+                expected_length,
+                teachers_len
+            )
+        )
+
+    );
+}
+
+fn get_teachers_length(repository: &Repository) -> usize {
+    repository
         .model
         .borrow()
         .teachers
         .as_ref()
         .unwrap()
         .clone()
-        .len();
-    assert_eq!(
-        teachers_len,
-        expected_length,
-        "\n\n>>> After adding a teacher, there should be {} teacher(s) in model, but there are {}\n\n",
-        expected_length,
-        teachers_len
-    );
+        .len()
 }

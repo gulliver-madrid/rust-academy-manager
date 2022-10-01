@@ -1,6 +1,9 @@
 pub mod mock_persistence;
 
 #[cfg(test)]
+use colored::*;
+
+#[cfg(test)]
 use {
     crate::{
         application::Application, // fmt
@@ -46,4 +49,14 @@ pub fn create_control(
         inner_console: mock_console,
     };
     Control { ui, application }
+}
+
+#[cfg(test)]
+/// Utility for improving test fail messages
+pub fn highlight(s: String) -> String {
+    format!(
+        "\n\n{}: {}\n\n",
+        "FAIL".red(),
+        s.red().truecolor(255, 180, 0)
+    )
 }
