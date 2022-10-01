@@ -1,34 +1,18 @@
-#[cfg(test)]
-use std::fmt::Debug;
+mod mock_persistence;
 
 #[cfg(test)]
-use crate::{
-    application::Application,
-    components::Control,
-    domain::{Subject, Subjects, Teacher, Teachers},
-    menus::shared::OptionText,
-    repository::PersistenceTrait,
-    tests::mock_console::MockConsole,
-    ui::UserInterface,
+use {
+    self::mock_persistence::MockPersistence,
+    crate::{
+        application::Application,
+        components::Control,
+        domain::{Subject, Teacher},
+        menus::shared::OptionText,
+        tests::mock_console::MockConsole,
+        ui::UserInterface,
+    },
+    std::fmt::Debug,
 };
-
-#[cfg(test)]
-pub struct MockPersistence {
-    pub mock_teachers: Vec<Teacher>,
-    pub mock_subjects: Vec<Subject>,
-}
-
-#[cfg(test)]
-impl PersistenceTrait for MockPersistence {
-    fn save_teachers(&self, _teachers: &Teachers) {}
-    fn save_subjects(&self, _subjects: &Subjects) {}
-    fn load_teachers(&self) -> Teachers {
-        return self.mock_teachers.clone();
-    }
-    fn load_subjects(&self) -> Subjects {
-        return self.mock_subjects.clone();
-    }
-}
 
 #[cfg(test)]
 /// Returns the option number (indexing from 1)
