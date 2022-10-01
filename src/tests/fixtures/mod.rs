@@ -1,12 +1,10 @@
-mod mock_persistence;
+pub mod mock_persistence;
 
 #[cfg(test)]
 use {
-    self::mock_persistence::MockPersistence,
     crate::{
-        application::Application,
+        application::Application, // fmt
         components::Control,
-        domain::{Subject, Teacher},
         menus::shared::OptionText,
         tests::mock_console::MockConsole,
         ui::UserInterface,
@@ -33,11 +31,7 @@ pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
 #[cfg(test)]
 pub fn create_application_with_void_persistence() -> Application {
     use crate::application::create_application;
-
-    let persistence = MockPersistence {
-        mock_teachers: Vec::<Teacher>::new(),
-        mock_subjects: Vec::<Subject>::new(),
-    };
+    let persistence = mock_persistence::create_void_mock_persistence();
     create_application(Box::new(persistence))
 }
 

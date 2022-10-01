@@ -3,7 +3,7 @@ use std::fmt;
 
 pub type SimpleResult = Result<(), SimpleError>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SimpleError {
     details: String,
 }

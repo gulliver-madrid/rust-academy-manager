@@ -13,8 +13,9 @@ pub struct AddTeacherUseCase {
     pub repository: Rc<Repository>,
 }
 
+/// Adds a new teacher, provided his/her name
 impl AddTeacherUseCase {
-    pub fn add_new_teacher(&mut self, name: String) -> SimpleResult {
+    pub fn execute(&self, name: String) -> SimpleResult {
         self.validate_teacher_doesnt_exist(&name)?;
         let id = self.get_next_id();
         let new_teacher = Self::create_new_teacher(name, id);
@@ -22,7 +23,7 @@ impl AddTeacherUseCase {
         Ok(())
     }
 
-    pub fn validate_teacher_doesnt_exist(&self, name: &str) -> SimpleResult {
+    fn validate_teacher_doesnt_exist(&self, name: &str) -> SimpleResult {
         if self
             .repository
             .model

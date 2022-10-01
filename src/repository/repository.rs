@@ -4,14 +4,22 @@ use crate::domain::{Subject, Teacher};
 
 use super::{model::Model, PersistenceTrait};
 
-pub fn create_repo(persistence: Box<dyn PersistenceTrait>) -> Repository {
-    let repository = Repository {
-        persistence,
-        model: Rc::new(RefCell::new(Model {
-            teachers: None,
-            subjects: None,
-        })),
-    };
+fn create_model() -> Rc<RefCell<Model>> {
+    Rc::new(RefCell::new(Model {
+        teachers: None,
+        subjects: None,
+    }))
+}
+
+pub fn create_repository(persistence: Box<dyn PersistenceTrait>) -> Repository {
+    create_repo_providing_model(persistence, create_model())
+}
+
+pub fn create_repo_providing_model(
+    persistence: Box<dyn PersistenceTrait>,
+    model: Rc<RefCell<Model>>,
+) -> Repository {
+    let repository = Repository { persistence, model };
     repository
 }
 pub struct Repository {

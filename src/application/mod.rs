@@ -7,3 +7,4 @@ mod usecases;
 
 pub use application::Application;
 pub use create_application::create_application;
+pub use usecases::AddTeacherUseCase;

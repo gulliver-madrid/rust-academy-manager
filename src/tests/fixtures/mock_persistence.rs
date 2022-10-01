@@ -20,3 +20,10 @@ impl PersistenceTrait for MockPersistence {
         return self.mock_subjects.clone();
     }
 }
+
+pub fn create_void_mock_persistence() -> MockPersistence {
+    MockPersistence {
+        mock_teachers: Vec::<Teacher>::new(),
+        mock_subjects: Vec::<Subject>::new(),
+    }
+}

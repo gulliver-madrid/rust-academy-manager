@@ -37,7 +37,7 @@ impl TeachersApp {
         AddTeacherUseCase {
             repository: Rc::clone(&self.repository),
         }
-        .add_new_teacher(name.to_string())
+        .execute(name.to_string())
     }
 
     /// Remove the teacher with the specified name
