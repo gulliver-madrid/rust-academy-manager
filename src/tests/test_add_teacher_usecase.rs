@@ -13,23 +13,23 @@ use pretty_assertions::assert_eq;
 
 #[test]
 fn test_add_teacher_usecase() {
-    let mock_persistence = mock_persistence::create_void_mock_persistence();
-
-    let repository = create_repository(Box::new(mock_persistence));
-    repository.load_teachers_if_needed();
-    let repository = Rc::new(repository);
+    let repository = setup_repository();
     let usecase = AddTeacherUseCase {
         repository: Rc::clone(&repository),
     };
     assert_teachers_length_is_correct(&repository, 0);
-    let result = usecase.execute("John".to_string());
-    assert_eq!(
-        result,
-        Ok(()),
-        "{}",
-        highlight("Usecase should be executed without error".to_string())
-    );
+    usecase.execute("John".to_string()).expect(&highlight(
+        "Usecase should be executed without error".to_string(),
+    ));
     assert_teachers_length_is_correct(&repository, 1);
+}
+
+fn setup_repository() -> Rc<Repository> {
+    let mock_persistence = mock_persistence::create_void_mock_persistence();
+    let repository = create_repository(Box::new(mock_persistence));
+    repository.load_teachers_if_needed();
+    let repository = Rc::new(repository);
+    repository
 }
 
 fn assert_teachers_length_is_correct(repository: &Repository, expected_length: usize) {
