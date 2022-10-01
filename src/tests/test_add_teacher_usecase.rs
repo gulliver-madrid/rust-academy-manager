@@ -3,30 +3,42 @@
 use std::rc::Rc;
 
 use crate::{
-    application::AddTeacherUseCase, repository::create_repository,
+    application::AddTeacherUseCase, errors::SimpleError, repository::create_repository,
     repository::Repository, tests::fixtures::highlight,
 };
 
-use super::fixtures::mock_persistence;
+use super::fixtures::mock_persistence::{self, MockPersistence};
 
 use pretty_assertions::assert_eq;
 
 #[test]
-fn test_add_teacher_usecase() {
-    let repository = setup_repository();
+fn add_teacher_usecase() {
+    let mock_persistence = Rc::new(mock_persistence::create_void_mock_persistence());
+    let mock_persistence_ref = Rc::clone(&mock_persistence);
+    assert_eq!(mock_persistence_ref.mock_teachers.borrow().len(), 0);
+    let repository = setup_repository(mock_persistence);
     let usecase = AddTeacherUseCase {
         repository: Rc::clone(&repository),
     };
     assert_teachers_length_is_correct(&repository, 0);
-    usecase.execute("John".to_string()).expect(&highlight(
-        "Usecase should be executed without error".to_string(),
-    ));
+    usecase
+        .execute("John".to_string())
+        .unwrap_or_else(err_executing_usecase);
+    // Testing behaviour on error:
+    // Err(SimpleError::new("hola")).unwrap_or_else(err_executing_usecase);
     assert_teachers_length_is_correct(&repository, 1);
+    assert_eq!(mock_persistence_ref.mock_teachers.borrow().len(), 1)
 }
 
-fn setup_repository() -> Rc<Repository> {
-    let mock_persistence = mock_persistence::create_void_mock_persistence();
-    let repository = create_repository(Box::new(mock_persistence));
+fn err_executing_usecase(_: SimpleError) {
+    panic!(
+        "{}",
+        highlight("Usecase should be executed without error".to_string(),)
+    );
+}
+
+fn setup_repository(mock_persistence: Rc<MockPersistence>) -> Rc<Repository> {
+    let repository = create_repository(mock_persistence);
     repository.load_teachers_if_needed();
     let repository = Rc::new(repository);
     repository

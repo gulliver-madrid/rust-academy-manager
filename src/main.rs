@@ -70,6 +70,6 @@ fn option_to_create_data_path(persistence: &JsonPersistence, ui: &UserInterface)
     true
 }
 fn build_control(persistence: JsonPersistence, ui: UserInterface) -> Control {
-    let application = create_application(Box::new(persistence));
+    let application = create_application(Rc::new(persistence));
     Control { ui, application }
 }

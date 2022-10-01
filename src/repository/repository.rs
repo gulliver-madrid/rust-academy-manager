@@ -11,19 +11,19 @@ fn create_model() -> Rc<RefCell<Model>> {
     }))
 }
 
-pub fn create_repository(persistence: Box<dyn PersistenceTrait>) -> Repository {
+pub fn create_repository(persistence: Rc<dyn PersistenceTrait>) -> Repository {
     create_repo_providing_model(persistence, create_model())
 }
 
 pub fn create_repo_providing_model(
-    persistence: Box<dyn PersistenceTrait>,
+    persistence: Rc<dyn PersistenceTrait>,
     model: Rc<RefCell<Model>>,
 ) -> Repository {
     let repository = Repository { persistence, model };
     repository
 }
 pub struct Repository {
-    pub persistence: Box<dyn PersistenceTrait>,
+    pub persistence: Rc<dyn PersistenceTrait>,
     pub model: Rc<RefCell<Model>>,
 }
 

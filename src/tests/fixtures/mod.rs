@@ -35,7 +35,7 @@ pub fn choice_to_string<'a, MenuOption: PartialEq + Debug, const N: usize>(
 pub fn create_application_with_void_persistence() -> Application {
     use crate::application::create_application;
     let persistence = mock_persistence::create_void_mock_persistence();
-    create_application(Box::new(persistence))
+    create_application(Rc::new(persistence))
 }
 
 #[cfg(test)]
@@ -54,6 +54,7 @@ pub fn create_control(
 #[cfg(test)]
 /// Utility for improving test fail messages
 pub fn highlight(s: String) -> String {
+    println!("En highlight hemos recibido {}", s);
     format!(
         "\n\n{}: {}\n\n",
         "FAIL".red(),

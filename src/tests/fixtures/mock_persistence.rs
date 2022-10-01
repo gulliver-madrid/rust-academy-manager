@@ -1,29 +1,35 @@
 #![cfg(test)]
 
+use std::cell::RefCell;
+
 use crate::{
     domain::{Subject, Subjects, Teacher, Teachers},
     repository::PersistenceTrait,
 };
 
 pub struct MockPersistence {
-    pub mock_teachers: Vec<Teacher>,
-    pub mock_subjects: Vec<Subject>,
+    pub mock_teachers: RefCell<Vec<Teacher>>,
+    pub mock_subjects: RefCell<Vec<Subject>>,
 }
 
 impl PersistenceTrait for MockPersistence {
-    fn save_teachers(&self, _teachers: &Teachers) {}
-    fn save_subjects(&self, _subjects: &Subjects) {}
+    fn save_teachers(&self, teachers: &Teachers) {
+        self.mock_teachers.replace(teachers.to_owned());
+    }
+    fn save_subjects(&self, subjects: &Subjects) {
+        self.mock_subjects.replace(subjects.to_owned());
+    }
     fn load_teachers(&self) -> Teachers {
-        return self.mock_teachers.clone();
+        return self.mock_teachers.borrow().clone();
     }
     fn load_subjects(&self) -> Subjects {
-        return self.mock_subjects.clone();
+        return self.mock_subjects.borrow().clone();
     }
 }
 
 pub fn create_void_mock_persistence() -> MockPersistence {
     MockPersistence {
-        mock_teachers: Vec::<Teacher>::new(),
-        mock_subjects: Vec::<Subject>::new(),
+        mock_teachers: RefCell::new(Vec::<Teacher>::new()),
+        mock_subjects: RefCell::new(Vec::<Subject>::new()),
     }
 }
