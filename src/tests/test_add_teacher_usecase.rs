@@ -1,37 +1,35 @@
 #![cfg(test)]
 
+use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
 use crate::{
-    application::AddTeacherUseCase, errors::SimpleError, repository::create_repository,
-    repository::Repository, tests::fixtures::highlight,
+    application::AddTeacherUseCase,
+    errors::SimpleResult,
+    repository::{create_repository, Repository},
+    tests::fixtures::{
+        highlight,
+        mock_persistence::{self, MockPersistence},
+    },
 };
-
-use super::fixtures::mock_persistence::{self, MockPersistence};
-
-use pretty_assertions::assert_eq;
 
 #[test]
 fn add_teacher_usecase() {
     let mock_persistence = Rc::new(mock_persistence::create_void_mock_persistence());
-    let mock_persistence_ref = Rc::clone(&mock_persistence);
-    assert_eq!(mock_persistence_ref.mock_teachers.borrow().len(), 0);
-    let repository = setup_repository(mock_persistence);
+    let repository = setup_repository(Rc::clone(&mock_persistence));
+    let before = "at the beginning";
+    assert_teachers_length_saved_is_correct(&mock_persistence, 0, before);
+    assert_teachers_length_in_memory_is_correct(&repository, 0, before);
+
     let usecase = AddTeacherUseCase {
         repository: Rc::clone(&repository),
     };
-    assert_teachers_length_is_correct(&repository, 0);
-    usecase
-        .execute("John".to_string())
-        .unwrap_or_else(err_executing_usecase);
-    // Testing behaviour on error:
-    // Err(SimpleError::new("hola")).unwrap_or_else(err_executing_usecase);
-    assert_teachers_length_is_correct(&repository, 1);
-    assert_eq!(mock_persistence_ref.mock_teachers.borrow().len(), 1)
-}
+    let result = usecase.execute("John".to_string());
+    assert_execution_without_err(result);
 
-fn err_executing_usecase(_: SimpleError) {
-    panic!("{}", highlight("Usecase should be executed without error"));
+    let after = "after adding 1 teacher";
+    assert_teachers_length_in_memory_is_correct(&repository, 1, after);
+    assert_teachers_length_saved_is_correct(&mock_persistence, 1, after);
 }
 
 fn setup_repository(mock_persistence: Rc<MockPersistence>) -> Rc<Repository> {
@@ -41,21 +39,42 @@ fn setup_repository(mock_persistence: Rc<MockPersistence>) -> Rc<Repository> {
     repository
 }
 
-fn assert_teachers_length_is_correct(repository: &Repository, expected_length: usize) {
-    let teachers_len = get_teachers_length(repository);
-    assert_eq!(
-        teachers_len,
-        expected_length,
+fn assert_execution_without_err(result: SimpleResult) {
+    assert!(
+        result.is_ok(),
         "{}",
-        highlight(
-            format!(
-                "After adding a teacher, there should be {} teacher(s) in model, but there are {}",
-                expected_length,
-                teachers_len
-            ).as_str()
-        )
-
+        highlight("Usecase should be executed without error")
     );
+}
+
+fn assert_teachers_length_saved_is_correct(
+    mock_persistence: &Rc<MockPersistence>,
+    expected: usize,
+    when: &str,
+) {
+    let actual = mock_persistence.mock_teachers.borrow().len();
+    assert_teachers_length_is_correct(actual, expected, "persistence", when);
+}
+
+fn assert_teachers_length_in_memory_is_correct(
+    repository: &Repository,
+    expected: usize,
+    when: &str,
+) {
+    let actual = get_teachers_length(repository);
+    assert_teachers_length_is_correct(actual, expected, "memory", when);
+}
+
+fn assert_teachers_length_is_correct(
+    actual: usize,
+    expected: usize,
+    place: &str,
+    when: &str,
+) {
+    let msg = highlight(
+        format!("There should be {expected} teacher(s) in {place} {when}, but there are {actual}").as_str()
+    );
+    assert_eq!(actual, expected, "{msg}");
 }
 
 fn get_teachers_length(repository: &Repository) -> usize {
