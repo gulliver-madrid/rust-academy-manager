@@ -7,21 +7,16 @@ use crate::menus::shared::OptionText;
 
 /// Returns the option number (indexing from 1)
 pub fn choice_to_string<'a, MenuOption: PartialEq + Debug>(
-    option: MenuOption,
-    items_menu_data: &[(MenuOption, OptionText)],
+    menu_option: MenuOption,
+    menu_items: &[(MenuOption, OptionText)],
 ) -> Option<String> {
-    let mut index = 1;
-    for item in items_menu_data {
-        if item.0 == option {
-            return Some(index.to_string());
-        }
-        index += 1;
-    }
-    None
+    let index = menu_items.iter().position(|item| item.0 == menu_option);
+    index.map(|i| (i + 1).to_string())
 }
 
 /// Utility for improving test fail messages
-pub fn highlight(s: &str) -> String {
-    println!("En highlight hemos recibido {}", s);
-    format!("\n\n{}: {}\n\n", "FAIL".red(), s.truecolor(255, 180, 0))
+pub fn highlight(msg: &str) -> String {
+    let fail = "FAIL".red();
+    let msg = msg.truecolor(255, 180, 0);
+    format!("\n\n{fail}: {msg}\n\n")
 }
