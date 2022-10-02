@@ -19,13 +19,12 @@ impl MockConsole {
         }
     }
     pub fn add_input(&self, s: String) {
+        println!("Input: {}", s);
         self.provided_inputs.borrow_mut().push_back(s);
     }
-    pub fn add_inputs(&self, inputs: &[Option<String>]) {
+    pub fn add_inputs(&self, inputs: &[String]) {
         for input in inputs {
-            let s = input.as_ref().unwrap();
-            println!("Input: {}", s);
-            self.add_input(s.to_string());
+            self.add_input(input.to_string());
         }
     }
 
@@ -39,7 +38,10 @@ impl MockConsole {
 impl InnerConsole for MockConsole {
     fn clear_screen(&self) {}
     fn get_input(&self) -> String {
-        self.provided_inputs.borrow_mut().pop_front().unwrap()
+        self.provided_inputs
+            .borrow_mut()
+            .pop_front()
+            .expect("There should be inputs available")
     }
     fn show(&self, text: &str) {
         if SHOW_CONSOLE_OUTPUT {
