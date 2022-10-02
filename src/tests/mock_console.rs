@@ -1,22 +1,16 @@
-#[cfg(test)]
-use std::cell::RefCell;
+#![cfg(test)]
 
-#[cfg(test)]
-use std::collections::VecDeque;
+use std::{cell::RefCell, collections::VecDeque};
 
-#[cfg(test)]
 use crate::ui::InnerConsole;
 
-#[cfg(test)]
 const SHOW_CONSOLE_OUTPUT: bool = false;
 
-#[cfg(test)]
 pub struct MockConsole {
     provided_inputs: RefCell<VecDeque<String>>,
     outputs: RefCell<Vec<String>>,
 }
 
-#[cfg(test)]
 impl MockConsole {
     pub fn new() -> Self {
         Self {
@@ -27,13 +21,21 @@ impl MockConsole {
     pub fn add_input(&self, s: String) {
         self.provided_inputs.borrow_mut().push_back(s);
     }
+    pub fn add_inputs(&self, inputs: &[Option<String>]) {
+        for input in inputs {
+            let s = input.as_ref().unwrap();
+            println!("Input: {}", s);
+            self.add_input(s.to_string());
+        }
+    }
+
     pub fn show_all(&self) {
         for s in self.outputs.borrow().iter() {
             println!("{}", s)
         }
     }
 }
-#[cfg(test)]
+
 impl InnerConsole for MockConsole {
     fn clear_screen(&self) {}
     fn get_input(&self) -> String {

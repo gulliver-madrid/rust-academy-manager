@@ -1,4 +1,4 @@
-#[cfg(test)] // Compiler only detect this statement in test mode
+#[cfg(test)]
 use crate::helpers;
 
 #[test]
