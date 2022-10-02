@@ -31,10 +31,7 @@ fn add_teacher_usecase() {
 }
 
 fn err_executing_usecase(_: SimpleError) {
-    panic!(
-        "{}",
-        highlight("Usecase should be executed without error".to_string(),)
-    );
+    panic!("{}", highlight("Usecase should be executed without error"));
 }
 
 fn setup_repository(mock_persistence: Rc<MockPersistence>) -> Rc<Repository> {
@@ -55,7 +52,7 @@ fn assert_teachers_length_is_correct(repository: &Repository, expected_length: u
                 "After adding a teacher, there should be {} teacher(s) in model, but there are {}",
                 expected_length,
                 teachers_len
-            )
+            ).as_str()
         )
 
     );

@@ -53,11 +53,7 @@ pub fn create_control(
 
 #[cfg(test)]
 /// Utility for improving test fail messages
-pub fn highlight(s: String) -> String {
+pub fn highlight(s: &str) -> String {
     println!("En highlight hemos recibido {}", s);
-    format!(
-        "\n\n{}: {}\n\n",
-        "FAIL".red(),
-        s.red().truecolor(255, 180, 0)
-    )
+    format!("\n\n{}: {}\n\n", "FAIL".red(), s.truecolor(255, 180, 0))
 }
