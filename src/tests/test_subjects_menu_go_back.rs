@@ -12,11 +12,11 @@ use crate::{
     },
     tests::{
         fixtures::{
-            choice_to_string, // fmt
-            create_application_with_void_persistence,
+            create_application_with_void_persistence, // fmt
             create_control,
         },
-        mock_console::MockConsole,
+        helpers::choice_to_string,
+        mocks::mock_console::MockConsole,
     },
 };
 

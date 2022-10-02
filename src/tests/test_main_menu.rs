@@ -3,12 +3,18 @@
 use std::rc::Rc;
 
 use crate::{
-    menus::{MainMenu, MainMenuOption, ITEMS_MENU_DATA__MAIN_MENU},
+    menus::{
+        MainMenu, // fmt
+        MainMenuOption,
+        ITEMS_MENU_DATA__MAIN_MENU,
+    },
     tests::{
         fixtures::{
-            choice_to_string, create_application_with_void_persistence, create_control,
+            create_application_with_void_persistence, // fmt
+            create_control,
         },
-        mock_console::MockConsole,
+        helpers::choice_to_string,
+        mocks::mock_console::MockConsole,
     },
 };
 

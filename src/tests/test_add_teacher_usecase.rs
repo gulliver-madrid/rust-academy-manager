@@ -7,9 +7,12 @@ use crate::{
     application::AddTeacherUseCase,
     errors::SimpleResult,
     repository::{create_repository, Repository},
-    tests::fixtures::{
-        highlight,
-        mock_persistence::{self, MockPersistence},
+    tests::{
+        helpers::highlight,
+        mocks::{
+            mock_persistence, // fmt
+            mock_persistence::MockPersistence,
+        },
     },
 };
 
