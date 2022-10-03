@@ -5,27 +5,34 @@ use rust_i18n::t;
 use crate::{components::Control, errors::SimpleResult};
 
 pub struct RemoveTeacherMenu {
-    pub control: Rc<Control>,
+    control: Rc<Control>,
 }
 
 impl RemoveTeacherMenu {
+    pub fn new(control: &Rc<Control>) -> Self {
+        Self {
+            control: Rc::clone(control),
+        }
+    }
     pub fn open_menu(&self) {
         let ui = &self.control.ui;
         ui.show(menu_text());
-        let name = match ui.ask_text_to_user() {
-            Some(entered_text) => entered_text,
-            None => return,
+        if let Some(name) = ui.ask_text_to_user() {
+            let result = self.remove_teacher(&name);
+            let msg = self.get_info_result(result, name);
+            ui.show(msg);
+            ui.pause_enter(&t!("continue"));
         };
+    }
 
+    fn remove_teacher(&self, name: &str) -> SimpleResult {
         let result = self
             .control
             .application
             .teachers_app
             .borrow()
-            .remove_teacher(&name);
-        let msg = self.get_info_result(result, name);
-        ui.show(msg);
-        ui.pause_enter(&t!("continue"));
+            .remove_teacher(name);
+        result
     }
 
     fn get_info_result(&self, result: SimpleResult, name: String) -> String {

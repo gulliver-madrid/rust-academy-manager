@@ -28,7 +28,7 @@ type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
 
 /// Main menu of the academy-manager app
 pub struct MainMenu {
-    pub control: Rc<Control>,
+    control: Rc<Control>,
     loop_limit_exceed: bool,
 }
 impl MainMenu {
@@ -50,9 +50,7 @@ impl MainMenu {
 
         for _ in Counter::new(LOOP_LIMIT) {
             match self.show_iteration_menu(&menu_items) {
-                Some(MenuExit) => {
-                    return;
-                }
+                Some(MenuExit) => return,
                 _ => (),
             }
         }
@@ -77,12 +75,10 @@ impl MainMenu {
     }
 
     fn open_teachers_menu(&self) {
-        let menu = TeachersMenu::new(Rc::clone(&self.control));
-        menu.open_menu();
+        TeachersMenu::new(&self.control).open_menu();
     }
 
     fn open_subjects_menu(&self) {
-        let menu = SubjectsMenu::new(Rc::clone(&self.control));
-        menu.open_menu();
+        SubjectsMenu::new(&self.control).open_menu();
     }
 }

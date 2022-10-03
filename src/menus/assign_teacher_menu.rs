@@ -10,11 +10,16 @@ use crate::{
 
 /// Menu for assign a teacher to a subject
 pub struct AssignTeacherMenu {
-    pub control: Rc<Control>,
+    control: Rc<Control>,
 }
 
 impl AssignTeacherMenu {
-    pub fn open_menu(&mut self) {
+    pub fn new(control: &Rc<Control>) -> Self {
+        Self {
+            control: Rc::clone(control),
+        }
+    }
+    pub fn open_menu(&self) {
         // TODO: Make subject & teacher selection user-friendly
         self.control
             .application

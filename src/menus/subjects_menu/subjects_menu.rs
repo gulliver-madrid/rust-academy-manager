@@ -39,12 +39,14 @@ pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
 ];
 
 pub struct SubjectsMenu {
-    pub control: Rc<Control>,
+    control: Rc<Control>,
 }
 
 impl SubjectsMenu {
-    pub fn new(control: Rc<Control>) -> SubjectsMenu {
-        SubjectsMenu { control }
+    pub fn new(control: &Rc<Control>) -> Self {
+        Self {
+            control: Rc::clone(control),
+        }
     }
     pub fn open_menu(&self) {
         self.control
@@ -55,9 +57,7 @@ impl SubjectsMenu {
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
-                Some(MenuExit) => {
-                    break;
-                }
+                Some(MenuExit) => break,
                 _ => continue,
             }
         }
@@ -94,7 +94,7 @@ impl SubjectsMenu {
             .get_subjects();
         match subjects {
             Ok(subjects) => {
-                let subjects_list_text = self.create_subjects_list(subjects);
+                let subjects_list_text = create_subjects_list(subjects);
                 ui.clear_screen();
                 ui.show_title(t!("subjects_list"));
                 ui.show(subjects_list_text);
@@ -104,30 +104,21 @@ impl SubjectsMenu {
         ui.pause_enter(&t!("back_subjects_menu"));
     }
 
-    fn create_subjects_list(&self, subjects: Subjects) -> String {
-        subjects
-            .iter()
-            .map(|subject| subject.create_table_row())
-            .collect::<Vec<String>>()
-            .join("\n")
-    }
-
     fn open_add_subject_menu(&self) {
-        AddSubjectMenu {
-            control: Rc::clone(&self.control),
-        }
-        .open_menu();
+        AddSubjectMenu::new(&self.control).open_menu();
     }
     fn open_remove_subject_menu(&self) {
-        RemoveSubjectMenu {
-            control: Rc::clone(&self.control),
-        }
-        .open_menu();
+        RemoveSubjectMenu::new(&self.control).open_menu();
     }
     fn open_assign_teacher_to_subject_menu(&self) {
-        AssignTeacherMenu {
-            control: Rc::clone(&self.control),
-        }
-        .open_menu();
+        AssignTeacherMenu::new(&self.control).open_menu();
     }
+}
+
+fn create_subjects_list(subjects: Subjects) -> String {
+    subjects
+        .iter()
+        .map(|subject| subject.create_table_row())
+        .collect::<Vec<String>>()
+        .join("\n")
 }

@@ -2,14 +2,14 @@ use std::rc::Rc;
 
 use rust_i18n::t;
 
-use super::add_teacher_menu;
-use super::remove_teacher_menu::RemoveTeacherMenu;
+use super::{add_teacher_menu::AddTeacherMenu, remove_teacher_menu::RemoveTeacherMenu};
 
-use crate::components::Control;
-
-use crate::menus::shared;
-use crate::menus::shared::{MenuExit, MenuItem, OptionText};
-use crate::views::View;
+use crate::{
+    components::Control,
+    menus::shared,
+    menus::shared::{MenuExit, MenuItem, OptionText},
+    views::View,
+};
 
 #[derive(Clone)]
 enum MenuOption {
@@ -35,8 +35,10 @@ pub struct TeachersMenu {
 }
 
 impl TeachersMenu {
-    pub fn new(control: Rc<Control>) -> TeachersMenu {
-        TeachersMenu { control }
+    pub fn new(control: &Rc<Control>) -> Self {
+        Self {
+            control: Rc::clone(control),
+        }
     }
 
     pub fn open_menu(&self) {
@@ -48,9 +50,7 @@ impl TeachersMenu {
         let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
-                Some(MenuExit) => {
-                    break;
-                }
+                Some(MenuExit) => break,
                 _ => continue,
             }
         }
@@ -90,16 +90,10 @@ impl TeachersMenu {
     }
 
     fn open_add_teacher_menu(&self) {
-        let menu = add_teacher_menu::AddTeacherMenu {
-            control: Rc::clone(&self.control),
-        };
-        menu.open_menu();
+        AddTeacherMenu::new(&self.control).open_menu();
     }
 
     fn open_remove_teacher_menu(&self) {
-        let menu = RemoveTeacherMenu {
-            control: Rc::clone(&self.control),
-        };
-        menu.open_menu();
+        RemoveTeacherMenu::new(&self.control).open_menu();
     }
 }

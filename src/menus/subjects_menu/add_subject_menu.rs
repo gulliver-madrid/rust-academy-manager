@@ -5,22 +5,24 @@ use rust_i18n::t;
 use crate::{components::Control, errors::SimpleResult};
 
 pub struct AddSubjectMenu {
-    pub control: Rc<Control>,
+    control: Rc<Control>,
 }
 
 impl AddSubjectMenu {
+    pub fn new(control: &Rc<Control>) -> Self {
+        Self {
+            control: Rc::clone(control),
+        }
+    }
     pub fn open_menu(&self) {
         let ui = &self.control.ui;
         self.show_menu_text();
-        let name = match ui.ask_text_to_user() {
-            Some(entered_text) => entered_text,
-            None => return,
+        if let Some(name) = ui.ask_text_to_user() {
+            let result = self.add_new_subject(&name);
+            let msg = get_info_result(result, &name);
+            ui.show(msg);
+            ui.pause_enter(&t!("continue"));
         };
-
-        let result = self.add_new_subject(&name);
-        let msg = get_info_result(result, &name);
-        ui.show(msg);
-        ui.pause_enter(&t!("continue"));
     }
 
     fn show_menu_text(&self) {
