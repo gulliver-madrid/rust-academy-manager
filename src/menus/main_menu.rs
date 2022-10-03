@@ -46,7 +46,7 @@ impl MainMenu {
 
 impl MainMenu {
     pub fn open_menu(&mut self) {
-        let menu_items: MenuItems = menus::create_menu_items(MENU_ITEMS_DATA);
+        let menu_items = menus::create_menu_items(&MENU_ITEMS_DATA);
 
         for _ in Counter::new(LOOP_LIMIT) {
             match self.show_iteration_menu(&menu_items) {

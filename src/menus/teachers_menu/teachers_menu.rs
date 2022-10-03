@@ -47,7 +47,7 @@ impl TeachersMenu {
             .teachers_app
             .borrow()
             .load_teachers_if_needed();
-        let menu_items = shared::create_menu_items(MENU_ITEMS_DATA);
+        let menu_items = shared::create_menu_items(&MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
                 Some(MenuExit) => break,

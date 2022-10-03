@@ -18,32 +18,32 @@ pub fn extract_option<'a, MenuOption>(
     menu_items: &'a Vec<MenuItem<MenuOption>>,
 ) -> Option<&'a MenuOption> {
     let option_number: usize = choice.parse().ok()?;
-    let &chosen_item = &menu_items.get(option_number - 1)?;
+    let chosen_item = menu_items.get(option_number - 1)?;
     return Some(&chosen_item.menu_option);
 }
 
-/// Creates the text corresponding to the list of received MenuItem
+/// Creates the text corresponding to the list of given MenuItem
 pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
-    String::from(t!("choose_an_option") + ":\n")
-        + &menu_items
-            .iter()
-            .enumerate()
-            .map(|(i, item)| format!("{} - {}", i + 1, t!(item.text)))
-            .collect::<Vec<String>>()
-            .join("\n")
+    let formatted_item_list = &menu_items
+        .iter()
+        .enumerate()
+        .map(|(i, item)| format!("{} - {}", i + 1, t!(item.text)))
+        .collect::<Vec<String>>()
+        .join("\n");
+    format!("{}:\n{}", t!("choose_an_option"), formatted_item_list)
 }
 
 /// Generates a vector of MenuItem from an array of tuples
 /// items_menu_data is an array of tuples (MenuOption, OptionText)
 /// MenuOption is a simple enum
 /// OptionText is a static str
-pub fn create_menu_items<'a, MenuOption, const N: usize>(
-    items_menu_data: [(MenuOption, OptionText); N],
+pub fn create_menu_items<'a, MenuOption>(
+    menu_items_data: &[(MenuOption, OptionText)],
 ) -> Vec<MenuItem<'a, MenuOption>>
 where
     MenuOption: Clone,
 {
-    items_menu_data
+    menu_items_data
         .iter()
         .map(|(menu_option, text)| MenuItem {
             text,
