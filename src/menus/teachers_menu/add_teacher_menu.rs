@@ -20,7 +20,7 @@ impl AddTeacherMenu {
                 .borrow()
                 .add_new_teacher(&name);
             let msg = match result {
-                Ok(_) => get_msg_success(&name),
+                Ok(_) => get_success_msg(&name),
                 Err(e) => e.to_string(),
             };
             ui.show(msg);
@@ -33,7 +33,7 @@ impl AddTeacherMenu {
     }
 }
 
-fn get_msg_success(name: &str) -> String {
+fn get_success_msg(name: &str) -> String {
     format!(
         "{} {} {}",
         t!("add_teacher_success.before"),
