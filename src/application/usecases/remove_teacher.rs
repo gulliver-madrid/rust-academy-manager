@@ -13,7 +13,7 @@ pub struct RemoveTeacherUseCase {
 }
 
 impl RemoveTeacherUseCase {
-    pub fn remove_teacher(&mut self, name: String) -> SimpleResult {
+    pub fn remove_teacher(&self, name: String) -> SimpleResult {
         self.repository.load_subjects_if_needed();
         let teacher_id = self
             .repository
