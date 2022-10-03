@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
 use crate::{
@@ -12,7 +13,7 @@ use crate::{
     },
     tests::{
         fixtures::{
-            create_application_with_void_persistence, // fmt
+            create_application_with_mock_persistence, // fmt
             create_control,
         },
         helpers::choice_to_string,
@@ -22,7 +23,7 @@ use crate::{
 
 #[test]
 fn enter_to_subjects_and_exit() {
-    let application = create_application_with_void_persistence();
+    let application = create_application_with_mock_persistence(None);
     let inputs = [
         choice_to_string(MainMenuOption::Subjects, &ITEMS_MENU_DATA__MAIN_MENU),
         choice_to_string(SubjectsMenuOption::GoBack, &ITEMS_MENU_DATA__SUBJECTS_MENU),

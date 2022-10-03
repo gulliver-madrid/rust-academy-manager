@@ -8,7 +8,7 @@ const SHOW_CONSOLE_OUTPUT: bool = false;
 
 pub struct MockConsole {
     provided_inputs: RefCell<VecDeque<String>>,
-    outputs: RefCell<Vec<String>>,
+    pub outputs: RefCell<Vec<String>>,
 }
 
 impl MockConsole {

@@ -64,6 +64,8 @@ en:
         before: Teacher
         after: was removed successfully
     teacher_id_should_be_a_number: Teacher id should be a number.
-    option_to_create_data_path: The provided data path (%{path}) doesn't exists. Do you want to create it? y/N
+    option_to_create_data_path: The provided data path (%{path}) doesn't exists. Do you want to create it? (y/N)
     option_yes_one_char: y
-    ask_if_cancel_op: Would you like to cancel the operation?
+    ask_if_cancel_op: Would you like to cancel the operation? (y/N)
+    no_id_was_entered: No id was entered
+    id_should_have_only_digits: The identifier should be composed of only digits

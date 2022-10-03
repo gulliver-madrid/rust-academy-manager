@@ -9,9 +9,16 @@ use crate::{
     ui::UserInterface,
 };
 
-pub fn create_application_with_void_persistence() -> Application {
+use super::mocks::mock_persistence::MockPersistence;
+
+pub fn create_application_with_mock_persistence(
+    mock_persistence: Option<MockPersistence>,
+) -> Application {
     use crate::application::create_application;
-    let persistence = mock_persistence::create_void_mock_persistence();
+    let persistence: MockPersistence = match mock_persistence {
+        None => mock_persistence::create_void_mock_persistence(),
+        Some(mock_persistence) => mock_persistence,
+    };
     create_application(Rc::new(persistence))
 }
 

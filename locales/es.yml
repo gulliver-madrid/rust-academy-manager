@@ -67,3 +67,5 @@ es:
     option_to_create_data_path: La ruta de datos %{path} no existe. ¿Desea crearla? s/N
     option_yes_one_char: s
     ask_if_cancel_op: ¿Desea cancelar la operación?
+    no_id_was_entered: No se introdujo ningún id
+    id_should_have_only_digits: El id debería estar formado solo por dígitos

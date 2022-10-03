@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
 use crate::{
@@ -10,7 +11,7 @@ use crate::{
     },
     tests::{
         fixtures::{
-            create_application_with_void_persistence, // fmt
+            create_application_with_mock_persistence, // fmt
             create_control,
         },
         helpers::choice_to_string,
@@ -20,7 +21,7 @@ use crate::{
 
 #[test]
 fn salir_desde_menu_principal() {
-    let application = create_application_with_void_persistence();
+    let application = create_application_with_mock_persistence(None);
     let provided_input =
         choice_to_string(MainMenuOption::Exit, &ITEMS_MENU_DATA__MAIN_MENU);
     let mock_console = Rc::new(MockConsole::new());

@@ -50,3 +50,7 @@ pub fn get_last_element<T>(vector: &Vec<T>) -> Option<&T> {
         }
     }
 }
+
+pub fn is_numeric(string: &str) -> bool {
+    string.chars().all(|c| c.is_numeric())
+}
