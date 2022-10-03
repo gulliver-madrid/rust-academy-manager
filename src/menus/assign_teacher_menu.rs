@@ -15,6 +15,7 @@ pub struct AssignTeacherMenu {
 
 impl AssignTeacherMenu {
     pub fn open_menu(&mut self) {
+        // TODO: Make subject & teacher selection user-friendly
         self.control
             .application
             .teachers_app
@@ -22,48 +23,45 @@ impl AssignTeacherMenu {
             .load_teachers_if_needed();
         let ui = &self.control.ui;
         ui.show(t!("assign_teacher_menu.choose_subject"));
-        let subject_name: String;
-        if let Some(entered_text) = ui.ask_text_to_user() {
-            subject_name = entered_text
-        } else {
-            ui.show(t!("cancelled_op"));
-            ui.pause_enter(&t!("continue"));
-            return;
-        }
+        let subject_name = match ui.ask_text_to_user() {
+            Some(entered_text) => entered_text,
+            None => {
+                ui.show(t!("cancelled_op"));
+                ui.pause_enter(&t!("continue"));
+                return;
+            }
+        };
 
-        let subject_index: usize;
-        match self.get_subject_index(&subject_name) {
-            Ok(index) => subject_index = index,
+        let subject_index = match self.get_subject_index(&subject_name) {
+            Ok(index) => index,
             Err(e) => {
                 ui.show(e.to_string());
                 ui.pause_enter(&t!("continue"));
                 return;
             }
-        }
+        };
 
         ui.show(introduced_subject_msg(&subject_name));
-        loop {
+        let teacher_id = loop {
             ui.show(t!("assign_teacher_menu.ask_teacher_id"));
             let user_input = ui.ask_text_to_user();
             let result = validate_teacher_id(&user_input);
             match result {
-                Ok(teacher_id) => {
-                    let result =
-                        self.assign_teacher_to_subject(subject_index, teacher_id);
-                    ui.show(result_msg(result));
-                    ui.pause_enter(&t!("continue"));
-                    break;
-                }
+                Ok(teacher_id) => break teacher_id,
                 Err(msg) => ui.show(msg),
             }
 
             ui.show(t!("ask_if_cancel_op"));
             if let Some(answer) = ui.ask_text_to_user() {
                 if answer == t!("option_yes_one_char") {
-                    break;
+                    return;
                 }
             }
-        }
+        };
+
+        let result = self.assign_teacher_to_subject(subject_index, teacher_id);
+        ui.show(result_msg(result));
+        ui.pause_enter(&t!("continue"));
     }
 
     fn assign_teacher_to_subject(
