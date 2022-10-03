@@ -51,6 +51,9 @@ pub fn get_last_element<T>(vector: &Vec<T>) -> Option<&T> {
     }
 }
 
-pub fn is_numeric(string: &str) -> bool {
+pub fn only_contains_digits(string: &str) -> bool {
     string.chars().all(|c| c.is_numeric())
+}
+pub fn contains_some_digits(string: &str) -> bool {
+    string.chars().any(|c| c.is_numeric())
 }
