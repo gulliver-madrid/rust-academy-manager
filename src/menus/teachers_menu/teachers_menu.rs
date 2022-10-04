@@ -18,7 +18,7 @@ enum MenuOption {
     RemoveTeacher,
     GoBack,
 }
-type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
+type MenuItems = Vec<MenuItem<MenuOption>>;
 
 const MENU_ITEMS_DATA: [(MenuOption, OptionText); 4] = [
     (MenuOption::ShowList, "teachers_menu_options.show_list"),

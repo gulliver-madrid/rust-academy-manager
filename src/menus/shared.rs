@@ -1,10 +1,10 @@
 use rust_i18n::t;
 
-pub struct MenuItem<'a, MenuOption>
+pub struct MenuItem<MenuOption>
 where
     MenuOption: Sized,
 {
-    pub text: &'a str,
+    pub text: &'static str,
     pub menu_option: MenuOption,
 }
 
@@ -37,11 +37,11 @@ pub fn create_options_text<T>(menu_items: &Vec<MenuItem<T>>) -> String {
 /// items_menu_data is an array of tuples (MenuOption, OptionText)
 /// MenuOption is a simple enum
 /// OptionText is a static str
-pub fn create_menu_items<'a, MenuOption>(
-    menu_items_data: &[(MenuOption, OptionText)],
-) -> Vec<MenuItem<'a, MenuOption>>
+pub fn create_menu_items<GenericMenuOption>(
+    menu_items_data: &[(GenericMenuOption, OptionText)],
+) -> Vec<MenuItem<GenericMenuOption>>
 where
-    MenuOption: Clone,
+    GenericMenuOption: Clone,
 {
     menu_items_data
         .iter()

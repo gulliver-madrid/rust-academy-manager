@@ -8,7 +8,9 @@ use crate::components::Control;
 
 use crate::domain::Subjects;
 use crate::menus::assign_teacher_menu::AssignTeacherMenu;
-use crate::menus::shared::{self, MenuExit, MenuItem};
+use crate::menus::shared::{
+    create_menu_items, create_options_text, MenuExit, MenuItem, OptionText,
+};
 use crate::views::View;
 
 use super::add_subject_menu::AddSubjectMenu;
@@ -22,9 +24,9 @@ pub enum MenuOption {
     GoBack,
 }
 
-type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
+type MenuItems = Vec<MenuItem<MenuOption>>;
 
-pub const MENU_ITEMS_DATA: [(MenuOption, shared::OptionText); 5] = [
+pub static MENU_ITEMS_DATA: [(MenuOption, OptionText); 5] = [
     (MenuOption::ShowList, "subjects_menu_options.show_list"),
     (MenuOption::AddSubject, "subjects_menu_options.add_subject"),
     (
@@ -54,7 +56,7 @@ impl SubjectsMenu {
             .subjects_app
             .borrow()
             .load_subjects_if_needed();
-        let menu_items = shared::create_menu_items(&MENU_ITEMS_DATA);
+        let menu_items = create_menu_items(&MENU_ITEMS_DATA);
         loop {
             match self.show_iteration_menu(&menu_items) {
                 Some(MenuExit) => break,
@@ -80,7 +82,7 @@ impl SubjectsMenu {
         let ui = &self.control.ui;
         ui.clear_screen();
         ui.show_title(t!("subjects_menu"));
-        let options_text = shared::create_options_text(menu_items);
+        let options_text = create_options_text(menu_items);
         ui.show(options_text);
     }
 

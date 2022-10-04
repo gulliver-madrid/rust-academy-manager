@@ -24,7 +24,7 @@ pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
     (MenuOption::Exit, "menu_options.exit"),
 ];
 
-type MenuItems<'a> = Vec<MenuItem<'a, MenuOption>>;
+type MenuItems = Vec<MenuItem<MenuOption>>;
 
 /// Main menu of the academy-manager app
 pub struct MainMenu {
