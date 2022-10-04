@@ -8,37 +8,18 @@ use crate::components::Control;
 
 use crate::domain::Subjects;
 use crate::menus::assign_teacher_menu::AssignTeacherMenu;
-use crate::menus::shared::{
-    create_menu_items, create_options_text, MenuExit, MenuItem, OptionText,
-};
+use crate::menus::shared::{create_menu_items, create_options_text, MenuExit};
 use crate::views::View;
 
 use super::add_subject_menu::AddSubjectMenu;
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum MenuOption {
-    ShowList,
-    AddSubject,
-    RemoveSubject,
-    AssignTeacher,
-    GoBack,
-}
-
-type MenuItems = Vec<MenuItem<MenuOption>>;
-
-pub static MENU_ITEMS_DATA: [(MenuOption, OptionText); 5] = [
-    (MenuOption::ShowList, "subjects_menu_options.show_list"),
-    (MenuOption::AddSubject, "subjects_menu_options.add_subject"),
-    (
-        MenuOption::RemoveSubject,
-        "subjects_menu_options.remove_subject",
-    ),
-    (
-        MenuOption::AssignTeacher,
-        "subjects_menu_options.assign_teacher",
-    ),
-    (MenuOption::GoBack, "subjects_menu_options.go_back"),
-];
+create_menu_options!(
+    (ShowList, "subjects_menu_options.show_list"),
+    (AddSubject, "subjects_menu_options.add_subject"),
+    (RemoveSubject, "subjects_menu_options.remove_subject"),
+    (AssignTeacher, "subjects_menu_options.assign_teacher"),
+    (GoBack, "subjects_menu_options.go_back")
+);
 
 pub struct SubjectsMenu {
     control: Rc<Control>,

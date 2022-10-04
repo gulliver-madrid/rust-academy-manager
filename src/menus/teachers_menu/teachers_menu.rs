@@ -4,31 +4,14 @@ use rust_i18n::t;
 
 use super::{add_teacher_menu::AddTeacherMenu, remove_teacher_menu::RemoveTeacherMenu};
 
-use crate::{
-    components::Control,
-    menus::shared,
-    menus::shared::{MenuExit, MenuItem, OptionText},
-    views::View,
-};
+use crate::{components::Control, menus::shared, menus::shared::MenuExit, views::View};
 
-#[derive(Clone)]
-enum MenuOption {
-    ShowList,
-    AddTeacher,
-    RemoveTeacher,
-    GoBack,
-}
-type MenuItems = Vec<MenuItem<MenuOption>>;
-
-const MENU_ITEMS_DATA: [(MenuOption, OptionText); 4] = [
-    (MenuOption::ShowList, "teachers_menu_options.show_list"),
-    (MenuOption::AddTeacher, "teachers_menu_options.add_teacher"),
-    (
-        MenuOption::RemoveTeacher,
-        "teachers_menu_options.remove_teacher",
-    ),
-    (MenuOption::GoBack, "teachers_menu_options.go_back"),
-];
+create_menu_options!(
+    (ShowList, "teachers_menu_options.show_list"),
+    (AddTeacher, "teachers_menu_options.add_teacher"),
+    (RemoveTeacher, "teachers_menu_options.remove_teacher"),
+    (GoBack, "teachers_menu_options.go_back")
+);
 
 pub struct TeachersMenu {
     control: Rc<Control>,

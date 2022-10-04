@@ -4,27 +4,18 @@ use rust_i18n::t;
 
 use super::counter::Counter;
 use super::shared as menus;
-use super::shared::{MenuExit, MenuItem};
+use super::shared::MenuExit;
 use super::subjects_menu::SubjectsMenu;
 use super::teachers_menu::TeachersMenu;
 use crate::components::Control;
 
 const LOOP_LIMIT: u32 = 200;
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum MenuOption {
-    Teachers,
-    Subjects,
-    Exit,
-}
-
-pub const MENU_ITEMS_DATA: [(MenuOption, menus::OptionText); 3] = [
-    (MenuOption::Teachers, "menu_options.teachers"),
-    (MenuOption::Subjects, "menu_options.subjects"),
-    (MenuOption::Exit, "menu_options.exit"),
-];
-
-type MenuItems = Vec<MenuItem<MenuOption>>;
+create_menu_options!(
+    (Teachers, "menu_options.teachers"),
+    (Subjects, "menu_options.subjects"),
+    (Exit, "menu_options.exit")
+);
 
 /// Main menu of the academy-manager app
 pub struct MainMenu {
