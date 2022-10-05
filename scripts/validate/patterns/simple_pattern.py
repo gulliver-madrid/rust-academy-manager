@@ -1,5 +1,5 @@
 import re
-from .menu_option_pattern import menu_option_pattern
+
 NO_CLOSE_PAREN_CHAR = r'[^)]'
 simple_pattern = re.compile(fr"""
     [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)

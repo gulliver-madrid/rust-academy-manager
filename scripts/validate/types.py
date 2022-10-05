@@ -7,14 +7,17 @@ from pathlib import Path
 
 YmlPath = NewType('YmlPath', Path)
 SrcPath = NewType('SrcPath', Path)
+PatternName = NewType('PatternName', str)
 
 Paths = list[Path]
 SrcPaths = list[SrcPath]
 YmlPaths = list[YmlPath]
-KeysToPaths = dict[str, SrcPaths]
+MatchedStringsToPaths = dict[str, SrcPaths]
+KeysToPaths = NewType('KeysToPaths', MatchedStringsToPaths)
 KeysToPathsMapping = Mapping[str, SrcPaths]
-RegexPattern = re.Pattern[str]
+RegexPattern = tuple[PatternName, re.Pattern[str]]
 PathsToLines = dict[SrcPath, list[str]]
+
 
 
 @dataclass(frozen=True)
