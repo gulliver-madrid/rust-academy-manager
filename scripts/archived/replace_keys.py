@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import yaml
 
-from ..validate.helpers import get_paths_with_extension
+from ..validate.helpers import FileReader
 
 ENABLED = False
 translations = r"locales\es.yml"
@@ -14,7 +14,7 @@ def main() -> None:
     if not ENABLED:
         print("Script not enabled")
         return
-    paths = get_paths_with_extension(Path(src), ".rs")
+    paths = FileReader.get_paths_with_extension(Path(src), ".rs")
     with open(translations, "r") as file:
         content = file.read()
 

@@ -2,16 +2,15 @@
 
 import sys
 from collections import defaultdict
-from typing import Final, Sequence
+from typing import Final, Optional, Sequence
 from pathlib import Path
 
 from .translations import TranslationKey, TranslationsExplorer
 from .key_finder import KeyFinder
 from .types import KeysToPaths, SrcPath, SrcPaths, Pattern
-from .patterns import regex_patterns
+from .patterns import top_level_regex_patterns
 
 DEBUG: Final = False
-
 
 
 def main() -> None:
@@ -19,7 +18,7 @@ def main() -> None:
     if len(args) < 2:
         print("Should be called with 2 arguments: src folder and locale folder")
         sys.exit()
-    patterns = [Pattern(regex) for regex in regex_patterns]
+    patterns = [Pattern(regex) for regex in top_level_regex_patterns]
     src_path_str, locale_path_str = sys.argv[1:]
     src_base_path = Path.cwd() / src_path_str
     locale_dir = Path.cwd() / locale_path_str
@@ -57,15 +56,9 @@ def main() -> None:
 
 
 
-def show_msg_found_keys_not_defined(key: TranslationKey, paths: SrcPaths, src_path: Path, langs: Sequence[str] = None) -> None:
+def show_msg_found_keys_not_defined(key: TranslationKey, paths: SrcPaths, src_path: Path, langs: Optional[Sequence[str]] = None) -> None:
     key_sources = [path.relative_to(src_path) for path in paths]
-    if not langs:
-        langs_str = "any language"
-    elif len(langs) == 1:
-        langs_str = f"language '{langs[0]}'"
-    else:
-        langs_list = ','.join(langs)
-        langs_str = f"languages '{langs_list}'"
+    langs_str = create_langs_str(langs)
     if len(key_sources) == 1:
         src_str = f" from '{key_sources[0]}',"
     else:
@@ -75,7 +68,18 @@ def show_msg_found_keys_not_defined(key: TranslationKey, paths: SrcPaths, src_pa
         show_locations(key_sources)
 
 
-def show_locations(key_sources: Sequence[Path]):
+def create_langs_str(langs: Optional[Sequence[str]]) -> str:
+    if not langs:
+        langs_str = "any language"
+    elif len(langs) == 1:
+        langs_str = f"language '{langs[0]}'"
+    else:
+        langs_list = ','.join(langs)
+        langs_str = f"languages '{langs_list}'"
+    return langs_str
+
+
+def show_locations(key_sources: Sequence[Path]) -> None:
     print("It appears in the next src files:")
     for path in key_sources:
         print(f"\t{path}")

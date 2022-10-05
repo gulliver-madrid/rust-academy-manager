@@ -1,17 +1,22 @@
 import re
+from typing import Final
 
-NO_CLOSE_PAREN_CHAR = r'[^)]'
-simple_pattern = re.compile(fr"""
-    [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
-    t!\("           # t!("
-    ([^"]+)         # the translation key as a captured group
-    "               # "
-    (?:,
-        {NO_CLOSE_PAREN_CHAR}+
-    )?               # optional non-capturing group with a comma and several characters more, excepting close parens.
-            \)              # )
-""", re.VERBOSE)
 
+def _create_simple_pattern() -> re.Pattern[str]:
+    NO_CLOSE_PAREN_CHAR = r'[^)]'
+    return re.compile(fr"""
+        [^a-zA-Z]       # Some non alphabetic character (prevent format! false positives)
+        t!\("           # t!("
+        ([^"]+)         # the translation key as a captured group
+        "               # "
+        (?:,
+            {NO_CLOSE_PAREN_CHAR}+
+        )?               # optional non-capturing group with a comma and several characters more, excepting close parens.
+                \)              # )
+    """, re.VERBOSE)
+
+
+simple_pattern: Final = _create_simple_pattern()
 
 
 def test_match_simple_pattern_1() -> None:

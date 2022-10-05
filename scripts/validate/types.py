@@ -2,12 +2,13 @@ import re
 
 from dataclasses import dataclass, field
 import itertools
-from typing import ClassVar, Mapping, NewType
+from typing import ClassVar, Literal, Mapping, NewType, TypedDict
 from pathlib import Path
 
 YmlPath = NewType('YmlPath', Path)
 SrcPath = NewType('SrcPath', Path)
-PatternName = NewType('PatternName', str)
+
+PatternName = Literal["simple_pattern", "macro_menu_option_pattern"]
 
 Paths = list[Path]
 SrcPaths = list[SrcPath]
@@ -15,9 +16,8 @@ YmlPaths = list[YmlPath]
 MatchedStringsToPaths = dict[str, SrcPaths]
 KeysToPaths = NewType('KeysToPaths', MatchedStringsToPaths)
 KeysToPathsMapping = Mapping[str, SrcPaths]
-RegexPattern = tuple[PatternName, re.Pattern[str]]
+RegexPattern = TypedDict('RegexPattern', {'name': PatternName, 'regex': re.Pattern[str]})
 PathsToLines = dict[SrcPath, list[str]]
-
 
 
 @dataclass(frozen=True)

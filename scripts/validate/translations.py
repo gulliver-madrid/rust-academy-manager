@@ -1,11 +1,12 @@
 
 import yaml
-from typing import  Union, cast
+from typing import Union, cast
 from dataclasses import dataclass
 from pathlib import Path
 
-from .helpers import get_path_to_contents, get_paths_with_extension
-from .types import  YmlPath
+from .helpers import FileReader
+from .types import YmlPath
+
 
 LangKey = str  # ex. 'en'
 Translation = str
@@ -57,8 +58,8 @@ class TranslationsExplorer:
 
     def _get_paths_to_parsed_yml(self, base_dir: Path) -> dict[YmlPath, Parsed]:
         """Builds a dict mapping translations files paths to parsed content"""
-        yml_paths = cast(list[YmlPath], get_paths_with_extension(base_dir, ".yml"))
-        files_to_contents = get_path_to_contents(yml_paths)
+        yml_paths = cast(list[YmlPath], FileReader.get_paths_with_extension(base_dir, ".yml"))
+        files_to_contents = FileReader.get_path_to_contents(yml_paths)
         paths_to_parsed = {}
         for path, content in files_to_contents.items():
             if path.parts[-1].startswith("TODO"):
@@ -71,12 +72,12 @@ class TranslationsExplorer:
             paths_to_parsed[path] = parsed
         return paths_to_parsed
 
-    def _convert_parser_error(self, err: yaml.parser.ParserError, path: Path)-> RuntimeError:
+    def _convert_parser_error(self, err: yaml.parser.ParserError, path: Path) -> RuntimeError:
         info_line = self._get_info_line(err)
         info = f"Error while parsing {path}, {info_line}"
         return RuntimeError(info)
 
-    def _get_info_line(self, err: yaml.parser.ParserError):
+    def _get_info_line(self, err: yaml.parser.ParserError) -> str:
         if err.problem_mark:
             return "line " + str(err.problem_mark.line + 1)
         return "unknown"
