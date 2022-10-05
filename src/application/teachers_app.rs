@@ -22,7 +22,7 @@ impl TeachersApp {
     }
 
     /// Returns a copy of the teachers list
-    pub fn get_teachers(&self) -> Teachers {
+    pub fn get_teachers_copy(&self) -> Teachers {
         self.repository
             .model
             .borrow()

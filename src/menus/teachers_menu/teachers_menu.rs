@@ -62,7 +62,7 @@ impl TeachersMenu {
             .application
             .teachers_app
             .borrow()
-            .get_teachers();
+            .get_teachers_copy();
         let ui = &self.control.ui;
         ui.clear_screen();
         ui.show_title(t!("teachers_list"));

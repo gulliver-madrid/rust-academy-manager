@@ -16,7 +16,7 @@ impl RemoveTeacherMenu {
     }
     pub fn open_menu(&self) {
         let ui = &self.control.ui;
-        ui.show(menu_text());
+        ui.show(t!("enter_name_teacher_to_be_deleted"));
         if let Some(name) = ui.ask_text_to_user() {
             let result = self.remove_teacher(&name);
             let msg = self.get_info_result(result, name);
@@ -26,13 +26,11 @@ impl RemoveTeacherMenu {
     }
 
     fn remove_teacher(&self, name: &str) -> SimpleResult {
-        let result = self
-            .control
+        self.control
             .application
             .teachers_app
             .borrow()
-            .remove_teacher(name);
-        result
+            .remove_teacher(name)
     }
 
     fn get_info_result(&self, result: SimpleResult, name: String) -> String {
@@ -50,8 +48,4 @@ fn get_success_msg(name: &str) -> String {
         name,
         t!("successfully_removed_teacher.after")
     )
-}
-
-fn menu_text() -> String {
-    t!("enter_name_teacher_to_be_deleted")
 }
