@@ -7,8 +7,9 @@ from pathlib import Path
 
 from .translations import TranslationKey, TranslationsExplorer
 from .key_finder import KeyFinder
-from .types import KeysToPaths, SrcPath, SrcPaths, Pattern
-from .patterns import top_level_regex_patterns
+from .types import KeysToPaths, SrcPath, SrcPaths
+from .patterns import RegexPattern, top_level_regex_patterns
+from .extra_types import PatternWithDebug
 
 DEBUG: Final = False
 
@@ -18,8 +19,12 @@ def main() -> None:
     if len(args) < 2:
         print("Should be called with 2 arguments: src folder and locale folder")
         sys.exit()
-    patterns = [Pattern(regex) for regex in top_level_regex_patterns]
     src_path_str, locale_path_str = sys.argv[1:]
+    run(src_path_str, locale_path_str, plugins=[])
+
+
+def run(src_path_str: str, locale_path_str: str, plugins: list[RegexPattern]) -> None:
+    patterns = [PatternWithDebug(regex) for regex in top_level_regex_patterns]
     src_base_path = Path.cwd() / src_path_str
     locale_dir = Path.cwd() / locale_path_str
     print(f"src dir: {src_base_path}")
@@ -28,7 +33,7 @@ def main() -> None:
         print("Locale directory introduced does not exist")
         sys.exit()
     key_finder = KeyFinder(src_base_path)
-    keys_to_paths = key_finder.get_used_keys(patterns)
+    keys_to_paths = key_finder.get_used_keys(patterns, plugins)
     if len(keys_to_paths) == 0:
         print("No keys found in src directory")
         sys.exit()
