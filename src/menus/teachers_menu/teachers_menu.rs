@@ -4,7 +4,12 @@ use rust_i18n::t;
 
 use super::{add_teacher_menu::AddTeacherMenu, remove_teacher_menu::RemoveTeacherMenu};
 
-use crate::{components::Control, menus::shared, menus::shared::MenuExit, views::View};
+use crate::{
+    components::Control,
+    create_menu_options,
+    menus::shared::{self, MenuExit},
+    views::View,
+};
 
 create_menu_options!(
     (ShowList, "teachers_menu_options.show_list"),

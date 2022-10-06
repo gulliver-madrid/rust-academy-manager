@@ -6,6 +6,7 @@ use super::remove_subject_menu::RemoveSubjectMenu;
 
 use crate::components::Control;
 
+use crate::create_menu_options;
 use crate::domain::Subjects;
 use crate::menus::assign_teacher_menu::AssignTeacherMenu;
 use crate::menus::shared::{create_menu_items, create_options_text, MenuExit};

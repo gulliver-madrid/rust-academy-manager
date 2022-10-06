@@ -8,6 +8,7 @@ use super::shared::MenuExit;
 use super::subjects_menu::SubjectsMenu;
 use super::teachers_menu::TeachersMenu;
 use crate::components::Control;
+use crate::create_menu_options;
 
 const LOOP_LIMIT: u32 = 200;
 

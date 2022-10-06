@@ -1,5 +1,4 @@
-#![macro_use]
-
+#[macro_export]
 macro_rules! count {
         () => (0usize);
         ( $one_token:tt $($token:tt)* ) => (1usize + count!($($token)*));
@@ -10,9 +9,11 @@ macro_rules! count {
 /// MenuItems: it's a type
 /// MENU_ITEMS_DATA: it's an const array
 /// It depends on MenuItem
+#[macro_export]
 macro_rules! create_menu_options {
 
     ($(($first:ident, $second:expr)),+) => {
+        use crate::count;
 
         use crate::menus::shared::MenuItem;
 
