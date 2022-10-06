@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use crate::{
     domain::{Subject, Subjects, Teacher, Teachers},
+    errors::SimpleResult,
     helpers,
 };
 
@@ -14,7 +15,6 @@ pub fn create_model() -> Rc<RefCell<Model>> {
         _private: (),
     }))
 }
-
 pub struct Model {
     pub teachers: Option<Teachers>,
     pub subjects: Option<Subjects>,
@@ -32,69 +32,57 @@ impl Model {
             None => None,
         }
     }
+    /// Delete the teacher with the given name
+    /// Return an Option wrapping the teacher id
     pub fn remove_teacher(&mut self, name: String) -> Option<u32> {
         let teachers = &mut self.teachers.as_mut().unwrap();
-        match teachers.iter().position(|a| a.name == name) {
-            Some(index) => {
-                let id = teachers[index].id;
-                teachers.remove(index);
-                Some(id)
-            }
-            None => None,
-        }
+        teachers.iter().position(|a| a.name == name).map(|index| {
+            let id = teachers[index].id;
+            teachers.remove(index);
+            id
+        })
     }
     pub fn add_subject(&mut self, subject: Subject) {
-        let subjects = self.subjects.as_mut().unwrap();
-        subjects.push(subject);
+        self.subjects.as_mut().unwrap().push(subject);
     }
     pub fn add_teacher(&mut self, teacher: Teacher) {
-        let teachers = self.teachers.as_mut().unwrap();
-        teachers.push(teacher);
+        self.teachers.as_mut().unwrap().push(teacher);
     }
     pub fn does_teacher_exist_by_name(&self, name: &str) -> bool {
-        match self
-            .teachers
-            .as_ref()
-            .unwrap()
-            .iter()
-            .find(|teacher| teacher.name == name)
-        {
-            Some(_) => true,
-            None => false,
-        }
+        self.does_teacher_meet_condition(|teacher| teacher.name == name)
     }
+
     pub fn does_teacher_exist_by_id(&self, id: u32) -> bool {
-        match self
-            .teachers
-            .as_ref()
-            .unwrap()
-            .iter()
-            .find(|teacher| teacher.id == id)
-        {
-            Some(_) => true,
-            None => false,
-        }
+        self.does_teacher_meet_condition(|teacher| teacher.id == id)
     }
+
     pub fn get_next_teacher_id(&self) -> u32 {
         let teachers = self.teachers.as_ref().unwrap();
-        if let Some(last_teacher) = helpers::get_last_element(&teachers) {
-            last_teacher.id + 1
-        } else {
-            1
+        match helpers::get_last_element(teachers) {
+            Some(last_teacher) => last_teacher.id + 1,
+            None => 1,
         }
     }
 
     pub fn get_subjects_size(&self) -> usize {
         self.subjects.as_ref().unwrap().len()
     }
+
     pub fn assign_teacher_id_to_subject(
         &mut self,
         subject_index: usize,
         teacher_id: u32,
-    ) {
-        self.subjects.as_mut().unwrap()[subject_index]
-            .assigned_teachers
-            .push(teacher_id);
+    ) -> SimpleResult {
+        {
+            self.subjects
+                .as_mut()
+                .ok_or_else(|| format!("{}", SUBJECTS_SHOULD_BE_DEFINED))?
+                .get_mut(subject_index)
+                .ok_or_else(|| format!("Wrong subject index: {subject_index}"))?
+                .assigned_teachers
+                .push(teacher_id);
+            Ok(())
+        }
     }
 
     pub fn get_subject_index_by_name(&self, subject_name: &str) -> Option<usize> {
@@ -122,5 +110,17 @@ impl Model {
 
     pub fn load_teachers(&mut self, teachers: Teachers) {
         self.teachers = Some(teachers);
+    }
+
+    pub fn does_teacher_meet_condition<F: Fn(&&Teacher) -> bool>(
+        &self,
+        condition: F,
+    ) -> bool {
+        self.teachers
+            .as_ref()
+            .expect(SUBJECTS_SHOULD_BE_DEFINED)
+            .iter()
+            .find(condition)
+            .is_some()
     }
 }

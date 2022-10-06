@@ -93,21 +93,24 @@ type ParseIdResult = Result<u32, String>;
 pub fn validate_teacher_id(user_input: &Option<String>) -> ParseIdResult {
     let trimmed_input = user_input.as_ref().map(|s| s.trim().to_string());
     match trimmed_input {
-        Some(entered_text) => {
-            if entered_text.is_empty() {
-                return Err(t!("no_id_was_entered"));
-            }
-            if only_contains_digits(&entered_text) {
-                return parse_numeric_id(&entered_text);
-            }
-            if contains_some_digits(&entered_text) {
-                return Err(t!("id_should_have_only_digits"));
-            }
-            Err(t!("teacher_id_should_be_a_number"))
-        }
+        Some(entered_text) => parse_teacher_id(&entered_text),
         None => Err(t!("no_id_was_entered")),
     }
 }
+
+fn parse_teacher_id(entered_text: &str) -> ParseIdResult {
+    if entered_text.is_empty() {
+        return Err(t!("no_id_was_entered"));
+    }
+    if only_contains_digits(entered_text) {
+        return parse_numeric_id(entered_text);
+    }
+    if contains_some_digits(entered_text) {
+        return Err(t!("id_should_have_only_digits"));
+    }
+    Err(t!("teacher_id_should_be_a_number"))
+}
+
 fn parse_numeric_id(entered_text: &str) -> ParseIdResult {
     match entered_text.parse::<u32>().ok() {
         Some(teacher_id) => Ok(teacher_id),

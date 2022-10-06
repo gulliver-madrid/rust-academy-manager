@@ -33,7 +33,7 @@ impl AssignTeacherToSubjectUseCase {
         }
         model
             .borrow_mut()
-            .assign_teacher_id_to_subject(subject_index, teacher_id);
+            .assign_teacher_id_to_subject(subject_index, teacher_id)?;
         self.repository.save_subjects();
         Ok(())
     }

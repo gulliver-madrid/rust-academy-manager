@@ -28,6 +28,16 @@ impl Error for SimpleError {
     }
 }
 
+impl From<&str> for SimpleError {
+    fn from(s: &str) -> Self {
+        Self::new(s)
+    }
+}
+impl From<String> for SimpleError {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
 /// If receive multiple args, first should be a format string
 /// that will be used to format the other args
 /// If receive an only arg, it should be a String

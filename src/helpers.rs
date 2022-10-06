@@ -44,10 +44,7 @@ fn get_substring(s: String, n: usize) -> String {
 pub fn get_last_element<T>(vector: &Vec<T>) -> Option<&T> {
     match vector.len() {
         0 => None,
-        length => {
-            let last_index = length - 1;
-            vector.get(last_index)
-        }
+        length => vector.get(length - 1),
     }
 }
 
