@@ -1,11 +1,24 @@
+use std::{cell::RefCell, rc::Rc};
+
 use crate::{
     domain::{Subject, Subjects, Teacher, Teachers},
     helpers,
 };
 
+const SUBJECTS_SHOULD_BE_DEFINED: &'static str = "Subjects should be defined";
+
+pub fn create_model() -> Rc<RefCell<Model>> {
+    Rc::new(RefCell::new(Model {
+        teachers: None,
+        subjects: None,
+        _private: (),
+    }))
+}
+
 pub struct Model {
     pub teachers: Option<Teachers>,
     pub subjects: Option<Subjects>,
+    _private: (),
 }
 
 impl Model {
@@ -83,19 +96,30 @@ impl Model {
             .assigned_teachers
             .push(teacher_id);
     }
+
     pub fn get_subject_index_by_name(&self, subject_name: &str) -> Option<usize> {
-        let subjects = self.subjects.as_ref().unwrap();
-        subjects.iter().position(|a| a.name == subject_name)
+        self.subjects
+            .as_ref()
+            .unwrap()
+            .iter()
+            .position(|a| a.name == subject_name)
     }
+
     pub fn remove_teacher_from_subjects_assignments(&mut self, teacher_id: u32) {
-        let subjects = self.subjects.as_mut().unwrap();
-        for subject in &mut subjects.into_iter() {
+        for subject in self
+            .subjects
+            .as_mut()
+            .expect(SUBJECTS_SHOULD_BE_DEFINED)
+            .iter_mut()
+        {
             subject.assigned_teachers.retain(|id| *id != teacher_id);
         }
     }
+
     pub fn load_subjects(&mut self, subjects: Subjects) {
         self.subjects = Some(subjects);
     }
+
     pub fn load_teachers(&mut self, teachers: Teachers) {
         self.teachers = Some(teachers);
     }

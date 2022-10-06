@@ -2,14 +2,10 @@ use std::{cell::RefCell, rc::Rc};
 
 use crate::domain::{Subject, Teacher};
 
-use super::{model::Model, PersistenceTrait};
-
-fn create_model() -> Rc<RefCell<Model>> {
-    Rc::new(RefCell::new(Model {
-        teachers: None,
-        subjects: None,
-    }))
-}
+use super::{
+    model::{create_model, Model},
+    PersistenceTrait,
+};
 
 pub fn create_repository(persistence: Rc<dyn PersistenceTrait>) -> Repository {
     create_repo_providing_model(persistence, create_model())
