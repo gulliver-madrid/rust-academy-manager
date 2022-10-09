@@ -44,7 +44,7 @@ impl From<String> for SimpleError {
 #[macro_export]
 macro_rules! simple_error {
     ($e:expr) => {
-        Err(SimpleError::new($e))
+        SimpleError::new($e)
     };
     ($($e:expr),+) => {
         simple_error!(&format!(

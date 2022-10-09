@@ -14,14 +14,16 @@ pub struct RemoveSubjectUseCase {
 
 impl RemoveSubjectUseCase {
     pub fn remove_subject(&mut self, name: String) -> SimpleResult {
-        let model = Rc::clone(&self.repository.model);
-        let result = model.borrow_mut().subjects.remove_by_name(name.to_owned());
-        match result {
-            Some(()) => {
-                self.repository.save_subjects();
-                Ok(())
-            }
-            None => simple_error!("{} {}", t!("no_subject_with_name"), name),
-        }
+        self.repository
+            .model
+            .borrow_mut()
+            .subjects
+            .remove_by_name(name.to_owned())
+            .ok_or_else(|| create_no_subject_with_this_name_error(&name))?;
+        self.repository.save_subjects();
+        Ok(())
     }
+}
+fn create_no_subject_with_this_name_error(name: &str) -> SimpleError {
+    simple_error!("{} {}", t!("no_subject_with_name"), name)
 }

@@ -44,9 +44,7 @@ impl Subjects {
     pub fn add_subject(&mut self, subject: Subject) {
         self.0.as_mut().unwrap().push(subject);
     }
-    pub fn get_number_of_subjects(&self) -> usize {
-        self.0.as_ref().unwrap().len()
-    }
+
     pub fn assign_teacher_id_to_subject(
         &mut self,
         subject_index: usize,

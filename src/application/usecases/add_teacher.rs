@@ -24,13 +24,13 @@ impl AddTeacherUseCase {
     }
 
     fn validate_teacher_doesnt_exist(&self, name: &str) -> SimpleResult {
-        if self
+        let exists = self
             .repository
             .model
             .borrow()
-            .is_there_any_teacher_with_name(name)
-        {
-            return Self::create_already_exists_teacher_error(name);
+            .is_there_any_teacher_with_name(name);
+        if exists {
+            return Err(create_already_exists_teacher_error(name));
         }
         Ok(())
     }
@@ -46,8 +46,8 @@ impl AddTeacherUseCase {
     fn get_next_id(&self) -> u32 {
         self.repository.model.borrow().get_next_teacher_id()
     }
+}
 
-    fn create_already_exists_teacher_error(name: &str) -> SimpleResult {
-        simple_error!("{} {}", t!("errors.already_exists_teacher"), name)
-    }
+fn create_already_exists_teacher_error(name: &str) -> SimpleError {
+    simple_error!("{} {}", t!("errors.already_exists_teacher"), name)
 }

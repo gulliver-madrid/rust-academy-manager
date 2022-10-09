@@ -15,27 +15,24 @@ pub struct AddSubjectUseCase {
 
 impl AddSubjectUseCase {
     pub fn add_new_subject(&self, name: String) -> SimpleResult {
-        let new_subject: Subject;
-        {
-            self.validate_name_is_free(&name)?;
-            let next_id: u32 = self.get_next_id();
-            new_subject = create_new_subject(name, next_id);
-        }
+        self.validate_name_is_free(&name)?;
+        let next_id = self.get_next_id();
+        let new_subject = create_new_subject(name, next_id);
         self.repository.add_subject(new_subject);
         Ok(())
     }
     fn validate_name_is_free(&self, name: &str) -> SimpleResult {
-        match self
+        let exists = self
             .repository
             .model
             .try_borrow()
             .unwrap()
             .subjects
-            .exists_subject_with_name(name)
-        {
-            true => create_already_exists_subject_error(name),
-            false => Ok(()),
+            .exists_subject_with_name(name);
+        if exists {
+            return Err(create_already_exists_subject_error(name));
         }
+        Ok(())
     }
     fn get_next_id(&self) -> u32 {
         let subjects = &self.repository.model.try_borrow().unwrap().subjects;
@@ -54,6 +51,6 @@ fn create_new_subject(name: String, id: u32) -> Subject {
     }
 }
 
-fn create_already_exists_subject_error(name: &str) -> SimpleResult {
+fn create_already_exists_subject_error(name: &str) -> SimpleError {
     simple_error!("{} {}", t!("errors.already_exists_subject"), name)
 }

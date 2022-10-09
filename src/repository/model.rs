@@ -37,10 +37,6 @@ impl Model {
         self.teachers.get_last_id().map(|id| id + 1).unwrap_or(1)
     }
 
-    pub fn get_subjects_size(&self) -> usize {
-        self.subjects.get_number_of_subjects()
-    }
-
     pub fn assign_teacher_id_to_subject(
         &mut self,
         subject_index: usize,

@@ -23,18 +23,18 @@ impl AssignTeacherToSubjectUseCase {
         subject_index: usize,
         teacher_id: u32,
     ) -> SimpleResult {
-        let model = Rc::clone(&self.repository.model);
-        let subjects_size = model.borrow().get_subjects_size();
-        if subject_index >= subjects_size {
-            panic!("{}", format!("Index error: {}", subject_index))
-        }
         if !(self.repository.does_teacher_exist_by_id(teacher_id)) {
-            return simple_error!("{} {}", t!("no_valid_id"), teacher_id);
+            return create_no_valid_id_error(teacher_id);
         }
-        model
+        self.repository
+            .model
             .borrow_mut()
             .assign_teacher_id_to_subject(subject_index, teacher_id)?;
         self.repository.save_subjects();
         Ok(())
     }
+}
+
+fn create_no_valid_id_error(teacher_id: u32) -> SimpleResult {
+    Err(simple_error!("{} {}", t!("no_valid_id"), teacher_id))
 }
