@@ -28,12 +28,7 @@ impl SubjectsApp {
 
     /// Returns a copy of the subjects list
     pub fn get_subjects_copy(&self) -> Result<Vec<Subject>, SimpleError> {
-        let subjects = self
-            .repository
-            .model
-            .borrow()
-            .subjects
-            .get_subjects_copy()?;
+        let subjects = self.repository.model.borrow().subjects.get_vec_copy()?;
         Ok(subjects)
     }
 

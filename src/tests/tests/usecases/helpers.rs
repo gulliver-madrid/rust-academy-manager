@@ -55,12 +55,5 @@ fn assert_teachers_length_is_correct(
 }
 
 fn get_teachers_length(repository: &Repository) -> usize {
-    repository
-        .model
-        .borrow()
-        .teachers
-        .as_ref()
-        .unwrap()
-        .clone()
-        .len()
+    repository.model.borrow().teachers.get_number_of_teachers()
 }

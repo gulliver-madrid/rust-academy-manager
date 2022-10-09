@@ -19,7 +19,8 @@ impl RemoveTeacherUseCase {
             .repository
             .model
             .borrow_mut()
-            .remove_teacher(name.to_owned());
+            .teachers
+            .remove_by_name(name.to_owned());
         let removed: u32;
         match teacher_id {
             Some(teacher_id) => removed = teacher_id,

@@ -28,7 +28,7 @@ impl AddTeacherUseCase {
             .repository
             .model
             .borrow()
-            .does_teacher_exist_by_name(name)
+            .is_there_any_teacher_with_name(name)
         {
             return Self::create_already_exists_teacher_error(name);
         }

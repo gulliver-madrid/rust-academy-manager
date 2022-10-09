@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::{domain::Teachers, errors::SimpleResult, repository::Repository};
+use crate::{domain::Teacher, errors::SimpleResult, repository::Repository};
 
 use super::usecases::{AddTeacherUseCase, RemoveTeacherUseCase};
 
@@ -22,14 +22,13 @@ impl TeachersApp {
     }
 
     /// Returns a copy of the teachers list
-    pub fn get_teachers_copy(&self) -> Teachers {
+    pub fn get_teachers_copy(&self) -> Vec<Teacher> {
         self.repository
             .model
             .borrow()
             .teachers
-            .as_ref()
+            .get_vec_copy()
             .unwrap()
-            .clone()
     }
 
     /// Add a new teacher with the specified name

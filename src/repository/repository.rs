@@ -25,11 +25,7 @@ pub struct Repository {
 
 impl Repository {
     pub fn load_teachers_if_needed(&self) {
-        let are_loaded = match self.model.borrow().teachers {
-            None => false,
-            _ => true,
-        };
-        if !are_loaded {
+        if !self.model.borrow().teachers.are_loaded() {
             self.populate_teachers()
         }
     }
@@ -45,12 +41,12 @@ impl Repository {
     }
     pub fn save_subjects(&self) {
         let model = self.model.borrow();
-        let subjects = model.subjects.get();
+        let subjects = model.subjects.get_vec();
         self.persistence.save_subjects(&subjects);
     }
     pub fn save_teachers(&self) {
         let model = self.model.borrow();
-        let teachers = model.teachers.as_ref().unwrap();
+        let teachers = model.teachers.get_vec();
         self.persistence.save_teachers(&teachers);
     }
 
@@ -60,11 +56,12 @@ impl Repository {
     }
 
     pub fn does_teacher_exist_by_id(&self, id: u32) -> bool {
-        self.model.borrow().does_teacher_exist_by_id(id)
+        self.model.borrow().is_there_any_teacher_with_id(id)
     }
 
     fn populate_subjects(&self) {
         let subjects = self.persistence.load_subjects();
+
         self.model.borrow_mut().load_subjects(subjects)
     }
     fn populate_teachers(&self) {

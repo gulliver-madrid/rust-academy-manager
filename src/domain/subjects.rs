@@ -19,7 +19,7 @@ impl Subjects {
         let vec: &Vec<Subject> = self.0.as_ref().unwrap();
         vec.iter().find(|subject| subject.name == name).is_some()
     }
-    pub fn get_subjects_copy(&self) -> Result<Vec<Subject>, SimpleError> {
+    pub fn get_vec_copy(&self) -> Result<Vec<Subject>, SimpleError> {
         let subjects = self
             .0
             .as_ref()
@@ -29,13 +29,9 @@ impl Subjects {
     }
     pub fn get_last_id(&self) -> Option<u32> {
         let vec = self.0.as_ref().unwrap();
-        if let Some(last_subject) = helpers::get_last_element(&vec) {
-            Some(last_subject.id)
-        } else {
-            None
-        }
+        helpers::get_last_element(&vec).map(|subject| subject.id)
     }
-    pub fn remove_subject(&mut self, name: String) -> Option<()> {
+    pub fn remove_by_name(&mut self, name: String) -> Option<()> {
         let subjects = &mut self.0.as_mut()?;
         match subjects.iter().position(|a| a.name == name) {
             Some(index) => {
@@ -48,7 +44,7 @@ impl Subjects {
     pub fn add_subject(&mut self, subject: Subject) {
         self.0.as_mut().unwrap().push(subject);
     }
-    pub fn get_subjects_size(&self) -> usize {
+    pub fn get_number_of_subjects(&self) -> usize {
         self.0.as_ref().unwrap().len()
     }
     pub fn assign_teacher_id_to_subject(
@@ -84,13 +80,13 @@ impl Subjects {
             subject.assigned_teachers.retain(|id| *id != teacher_id);
         }
     }
-    pub fn load_subjects(&mut self, subjects: Vec<Subject>) {
+    pub fn load_data(&mut self, subjects: Vec<Subject>) {
         self.0 = Some(subjects);
     }
     pub fn are_loaded(&self) -> bool {
         self.0.is_some()
     }
-    pub fn get(&self) -> &Vec<Subject> {
+    pub fn get_vec(&self) -> &Vec<Subject> {
         return self.0.as_ref().unwrap();
     }
 }
