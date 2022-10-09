@@ -7,7 +7,7 @@ use super::remove_subject_menu::RemoveSubjectMenu;
 use crate::components::Control;
 
 use crate::create_menu_options;
-use crate::domain::Subjects;
+use crate::domain::Subject;
 use crate::menus::assign_teacher_menu::AssignTeacherMenu;
 use crate::menus::shared::{create_menu_items, create_options_text, MenuExit};
 use crate::views::View;
@@ -75,7 +75,7 @@ impl SubjectsMenu {
             .application
             .subjects_app
             .borrow()
-            .get_subjects();
+            .get_subjects_copy();
         match subjects {
             Ok(subjects) => {
                 let subjects_list_text = create_subjects_list(subjects);
@@ -99,7 +99,7 @@ impl SubjectsMenu {
     }
 }
 
-fn create_subjects_list(subjects: Subjects) -> String {
+fn create_subjects_list(subjects: Vec<Subject>) -> String {
     subjects
         .iter()
         .map(|subject| subject.create_table_row())

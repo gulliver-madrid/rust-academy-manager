@@ -3,7 +3,7 @@
 use std::cell::RefCell;
 
 use crate::{
-    domain::{Subject, Subjects, Teacher, Teachers},
+    domain::{Subject, Teacher, Teachers},
     repository::PersistenceTrait,
 };
 
@@ -16,13 +16,13 @@ impl PersistenceTrait for MockPersistence {
     fn save_teachers(&self, teachers: &Teachers) {
         self.mock_teachers.replace(teachers.to_owned());
     }
-    fn save_subjects(&self, subjects: &Subjects) {
+    fn save_subjects(&self, subjects: &Vec<Subject>) {
         self.mock_subjects.replace(subjects.to_owned());
     }
     fn load_teachers(&self) -> Teachers {
         return self.mock_teachers.borrow().clone();
     }
-    fn load_subjects(&self) -> Subjects {
+    fn load_subjects(&self) -> Vec<Subject> {
         return self.mock_subjects.borrow().clone();
     }
 }

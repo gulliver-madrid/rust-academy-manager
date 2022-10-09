@@ -34,11 +34,7 @@ impl Repository {
         }
     }
     pub fn load_subjects_if_needed(&self) {
-        let are_loaded = match self.model.borrow().subjects {
-            None => false,
-            _ => true,
-        };
-        if !are_loaded {
+        if !self.model.borrow().subjects.are_loaded() {
             self.populate_subjects()
         }
     }
@@ -49,7 +45,7 @@ impl Repository {
     }
     pub fn save_subjects(&self) {
         let model = self.model.borrow();
-        let subjects = model.subjects.as_ref().unwrap();
+        let subjects = model.subjects.get();
         self.persistence.save_subjects(&subjects);
     }
     pub fn save_teachers(&self) {

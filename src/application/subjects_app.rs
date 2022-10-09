@@ -1,9 +1,7 @@
 use std::rc::Rc;
 
-use rust_i18n::t;
-
 use crate::{
-    domain::Subjects,
+    domain::Subject,
     errors::{SimpleError, SimpleResult},
     repository::Repository,
 };
@@ -29,9 +27,14 @@ impl SubjectsApp {
     }
 
     /// Returns a copy of the subjects list
-    pub fn get_subjects(&self) -> Result<Subjects, SimpleError> {
-        let option = self.repository.model.borrow().subjects.clone();
-        option.ok_or(SimpleError::new(&t!("couldnt_get_subjects")))
+    pub fn get_subjects_copy(&self) -> Result<Vec<Subject>, SimpleError> {
+        let subjects = self
+            .repository
+            .model
+            .borrow()
+            .subjects
+            .get_subjects_copy()?;
+        Ok(subjects)
     }
 
     /// Returns the index of the subject with the specified name

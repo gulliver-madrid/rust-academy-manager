@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub type Subjects = Vec<Subject>;
-
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Subject {
     pub name: String,
     pub id: u32,

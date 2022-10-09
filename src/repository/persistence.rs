@@ -10,7 +10,7 @@ use std::path::PathBuf;
 
 use super::serializable::{SerializableSubject, SerializableTeacher};
 use super::serialization;
-use crate::domain::Subjects;
+use crate::domain::Subject;
 use crate::domain::Teachers;
 
 use super::PersistenceTrait;
@@ -80,7 +80,7 @@ impl PersistenceTrait for JsonPersistence {
         let json = to_json(&data_to_serialize);
         write_in_file(&self.get_teachers_path(), json);
     }
-    fn save_subjects(&self, subjects: &Subjects) {
+    fn save_subjects(&self, subjects: &Vec<Subject>) {
         let data_to_serialize =
             serialization::convert_subjects_to_serializable(subjects.clone());
         let json = to_json(&data_to_serialize);
@@ -93,7 +93,7 @@ impl PersistenceTrait for JsonPersistence {
         teachers
     }
 
-    fn load_subjects(&self) -> Subjects {
+    fn load_subjects(&self) -> Vec<Subject> {
         let serialized = self.read_json_subjects();
         let subjects = serialization::convert_serialized_to_subjects(serialized);
         subjects

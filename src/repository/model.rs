@@ -6,31 +6,24 @@ use crate::{
     helpers,
 };
 
-const SUBJECTS_SHOULD_BE_DEFINED: &'static str = "Subjects should be defined";
+pub const TEACHERS_SHOULD_BE_DEFINED: &'static str = "Teachers should be defined";
 
 pub fn create_model() -> Rc<RefCell<Model>> {
     Rc::new(RefCell::new(Model {
         teachers: None,
-        subjects: None,
+        subjects: Subjects::new(),
         _private: (),
     }))
 }
 pub struct Model {
     pub teachers: Option<Teachers>,
-    pub subjects: Option<Subjects>,
+    pub subjects: Subjects,
     _private: (),
 }
 
 impl Model {
     pub fn remove_subject(&mut self, name: String) -> Option<()> {
-        let subjects = &mut self.subjects.as_mut().unwrap();
-        match subjects.iter().position(|a| a.name == name) {
-            Some(index) => {
-                subjects.remove(index);
-                Some(())
-            }
-            None => None,
-        }
+        self.subjects.remove_subject(name)
     }
     /// Delete the teacher with the given name
     /// Return an Option wrapping the teacher id
@@ -43,7 +36,7 @@ impl Model {
         })
     }
     pub fn add_subject(&mut self, subject: Subject) {
-        self.subjects.as_mut().unwrap().push(subject);
+        self.subjects.add_subject(subject);
     }
     pub fn add_teacher(&mut self, teacher: Teacher) {
         self.teachers.as_mut().unwrap().push(teacher);
@@ -65,7 +58,7 @@ impl Model {
     }
 
     pub fn get_subjects_size(&self) -> usize {
-        self.subjects.as_ref().unwrap().len()
+        self.subjects.get_subjects_size()
     }
 
     pub fn assign_teacher_id_to_subject(
@@ -75,37 +68,21 @@ impl Model {
     ) -> SimpleResult {
         {
             self.subjects
-                .as_mut()
-                .ok_or_else(|| format!("{}", SUBJECTS_SHOULD_BE_DEFINED))?
-                .get_mut(subject_index)
-                .ok_or_else(|| format!("Wrong subject index: {subject_index}"))?
-                .assigned_teachers
-                .push(teacher_id);
-            Ok(())
+                .assign_teacher_id_to_subject(subject_index, teacher_id)
         }
     }
 
     pub fn get_subject_index_by_name(&self, subject_name: &str) -> Option<usize> {
-        self.subjects
-            .as_ref()
-            .unwrap()
-            .iter()
-            .position(|a| a.name == subject_name)
+        self.subjects.get_subject_index_by_name(subject_name)
     }
 
     pub fn remove_teacher_from_subjects_assignments(&mut self, teacher_id: u32) {
-        for subject in self
-            .subjects
-            .as_mut()
-            .expect(SUBJECTS_SHOULD_BE_DEFINED)
-            .iter_mut()
-        {
-            subject.assigned_teachers.retain(|id| *id != teacher_id);
-        }
+        self.subjects
+            .remove_teacher_from_subjects_assignments(teacher_id)
     }
 
-    pub fn load_subjects(&mut self, subjects: Subjects) {
-        self.subjects = Some(subjects);
+    pub fn load_subjects(&mut self, subjects: Vec<Subject>) {
+        self.subjects.load_subjects(subjects);
     }
 
     pub fn load_teachers(&mut self, teachers: Teachers) {
@@ -118,7 +95,7 @@ impl Model {
     ) -> bool {
         self.teachers
             .as_ref()
-            .expect(SUBJECTS_SHOULD_BE_DEFINED)
+            .expect(TEACHERS_SHOULD_BE_DEFINED)
             .iter()
             .find(condition)
             .is_some()
