@@ -4,10 +4,12 @@ use std::rc::Rc;
 
 use crate::{application::AddTeacherUseCase, tests::mocks::mock_persistence};
 
+use super::helpers::teachers::{
+    assert_teachers_length_in_memory_is_correct, // fmt
+    assert_teachers_length_saved_is_correct,
+};
 use super::helpers::{
     assert_execution_without_err, // fmt
-    assert_teachers_length_in_memory_is_correct,
-    assert_teachers_length_saved_is_correct,
     setup_repository,
 };
 
